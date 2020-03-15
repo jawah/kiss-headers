@@ -204,6 +204,20 @@ class Headers:
     def __init__(self, headers: List[Header]):
         self._headers: List[Header] = headers
 
+    def has(self, header: str) -> bool:
+        """
+        Safely check if header name is in headers
+        """
+        return header in self
+
+    def get(self, header: str) -> Optional[Header]:
+        """
+        Retrieve header from headers if exists
+        """
+        if header not in self:
+            return None
+        return self[header]
+
     def __iter__(self):
         for header in self._headers:
             yield header
