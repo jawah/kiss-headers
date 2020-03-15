@@ -26,6 +26,8 @@
 
 ### Why ?
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/53eaf1e502014e9b86ccf2044289734b)](https://app.codacy.com/manual/Ousret/kiss-headers?utm_source=github.com&utm_medium=referral&utm_content=Ousret/kiss-headers&utm_campaign=Badge_Grade_Dashboard)
+
 No matters your religion, IMAP4 or HTTP, you should not worries about accessing easily header and associated attributes, adjectives or values.
 
 ### Installation
