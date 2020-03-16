@@ -134,9 +134,9 @@ class Header(object):
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(item=item, header=self.name))
 
-        if isinstance(value, str):
-            if value.startswith('"') and value.endswith('"'):
-                return value[1:-1]
+        # Unquote value if necessary
+        if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
+            return value[1:-1]
 
         return value
 
@@ -267,7 +267,7 @@ class Headers:
         return '\n'.join([header.__repr__() for header in self])
 
     def __getitem__(self, item: str) -> Union[Header, List[Header]]:
-        item = item.lower().replace('-', '_')
+        item = Header.normalize_name(item)
 
         if item not in self:
             raise KeyError("'{item}' header is not defined in headers.".format(item=item))
