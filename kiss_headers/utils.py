@@ -100,7 +100,7 @@ class Header(object):
         return "{head}: {content}".format(head=self._head, content=self._content)
 
     def __dir__(self) -> Iterable[str]:
-        return super().__dir__() + list(self._valued_attrs.keys())
+        return super().__dir__() + list(self._valued_attrs_normalized.keys())
 
     @property
     def attrs(self) -> List[str]:
