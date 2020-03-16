@@ -330,4 +330,14 @@ def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase]) -> Headers:
 
         revised_headers.append((head, revised_content))
 
+    # Sometime raw content does not begin with headers. If that is the case, search for the next line.
+    if len(revised_headers) == 0 and len(raw_headers) > 0 and (isinstance(raw_headers, bytes) or isinstance(raw_headers, str)):
+        next_iter = raw_headers.split(
+            b'\n' if isinstance(raw_headers, bytes) else '\n',
+            maxsplit=1
+        )
+
+        if len(next_iter) >= 2:
+            return parse_it(next_iter[-1])
+
     return Headers([Header(head, content) for head, content in revised_headers])
