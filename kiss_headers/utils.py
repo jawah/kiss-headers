@@ -227,6 +227,16 @@ class Headers:
         for header in self._headers:
             yield header
 
+    def to_dict(self) -> Dict[str, str]:
+        """
+        Provide a dict output of current headers
+        """
+        return dict(
+            [
+                (header.name, header.content) for header in self
+            ]
+        )
+
     def __eq__(self, other: 'Headers') -> bool:
         if len(other) != len(self):
             return False
