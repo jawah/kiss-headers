@@ -26,7 +26,7 @@
 No matters your religion, IMAP4 or HTTP, you should not worries about accessing easily header and associated attributes, adjectives or values.
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/9326700/76709832-32513600-6702-11ea-81cd-b68a7e85abb2.gif" alt="using kiss-headers from python interpreter"/>
+<img src="https://user-images.githubusercontent.com/9326700/76808050-bf6dbb00-67e6-11ea-9799-d2b20068bbb7.gif" alt="using kiss-headers from python interpreter"/>
 </p>
 
 I have seen so much chunk of code trying to deal with them, often I saw this :
