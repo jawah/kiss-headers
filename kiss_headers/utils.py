@@ -14,6 +14,8 @@ class Header(object):
     timeout: Union['Header', str]
     max: Union['Header', str]
     path: Union['Header', str]
+    samesite: Union['Header', str]
+    domain: Union['Header', str]
 
     def __init__(self, head: str, content: str):
 
