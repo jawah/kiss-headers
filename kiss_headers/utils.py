@@ -3,6 +3,7 @@ from io import BytesIO, IOBase
 from typing import List, Optional, Union, Dict, Mapping, Iterator, Tuple, Iterable
 from email.header import decode_header
 from cached_property import cached_property
+from requests import Response
 
 
 class Header(object):
@@ -14,6 +15,8 @@ class Header(object):
     timeout: Union['Header', str]
     max: Union['Header', str]
     path: Union['Header', str]
+    samesite: Union['Header', str]
+    domain: Union['Header', str]
 
     def __init__(self, head: str, content: str):
 
@@ -31,7 +34,7 @@ class Header(object):
                 key, value = tuple(member.split('=', maxsplit=1))
 
                 # avoid confusing base64 look alike single value for (key, value)
-                if value.count('=') == len(value) or len(value) == 0:
+                if value.count('=') == len(value) or len(value) == 0 or ' ' in key:
                     self._not_valued_attrs.append(member)
                     continue
 
@@ -120,7 +123,7 @@ class Header(object):
             return None
         return self._valued_attrs[attr]
 
-    def __getitem__(self, item: str) -> Union[str, List[str]]:
+    def __getitem__(self, item: Union[str, int]) -> Union[str, List[str]]:
         """
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
         """
@@ -140,7 +143,7 @@ class Header(object):
 
         return value
 
-    def __getattr__(self, item) -> str:
+    def __getattr__(self, item: str) -> str:
         """
         All the magic happen here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
@@ -266,7 +269,7 @@ class Headers:
     def __repr__(self) -> str:
         return '\n'.join([header.__repr__() for header in self])
 
-    def __getitem__(self, item: str) -> Union[Header, List[Header]]:
+    def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
         item = Header.normalize_name(item)
 
         if item not in self:
@@ -301,7 +304,7 @@ class Headers:
         return super().__dir__() + list(set([header.normalized_name for header in self]))
 
 
-def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase]) -> Headers:
+def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase, Response]) -> Headers:
     """
     Just decode anything that could represent headers. That simple PERIOD.
     """
@@ -312,6 +315,13 @@ def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase]) -> Headers:
         headers = BytesHeaderParser().parse(buf, headersonly=True).items()
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
+    elif isinstance(raw_headers, Response):
+        headers = list()
+        for header_name in raw_headers.raw.headers:
+            for header_content in raw_headers.raw.headers.getlist(header_name):
+                headers.append(
+                    (header_name, header_content)
+                )
     else:
         raise TypeError('Cannot parse type {type_} as it is not supported by kiss-header.'.format(type_=type(raw_headers)))
 
@@ -327,5 +337,15 @@ def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase]) -> Headers:
                 revised_content += partial.decode(partial_encoding if partial_encoding is not None else 'utf-8', errors='ignore')
 
         revised_headers.append((head, revised_content))
+
+    # Sometime raw content does not begin with headers. If that is the case, search for the next line.
+    if len(revised_headers) == 0 and len(raw_headers) > 0 and (isinstance(raw_headers, bytes) or isinstance(raw_headers, str)):
+        next_iter = raw_headers.split(
+            b'\n' if isinstance(raw_headers, bytes) else '\n',
+            maxsplit=1
+        )
+
+        if len(next_iter) >= 2:
+            return parse_it(next_iter[-1])
 
     return Headers([Header(head, content) for head, content in revised_headers])
