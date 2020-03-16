@@ -88,7 +88,7 @@ class Header(object):
 
     def __eq__(self, other) -> bool:
         if isinstance(other, str):
-            return self.content == other or other in self
+            return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
             return self.normalized_name == other.normalized_name and self.content == other.content
         raise TypeError('Cannot compare type {type_} to an Header. Use str or Header.'.format(type_=type(other)))
