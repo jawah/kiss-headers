@@ -121,6 +121,9 @@ class Header(object):
         return self._valued_attrs[attr]
 
     def __getitem__(self, item: str) -> Union[str, List[str]]:
+        """
+        This method will allow you to retrieve attribute value using the bracket syntax, list-like.
+        """
         normalized_item = Header.normalize_name(item)
 
         if item in self._valued_attrs:
@@ -138,6 +141,10 @@ class Header(object):
         return value
 
     def __getattr__(self, item) -> str:
+        """
+        All the magic happen here, this method should be invoked when trying to call (not declared) properties.
+        For instance, calling self.charset should end up here and be replaced by self['charset'].
+        """
         if item not in self._valued_attrs and Header.normalize_name(item) not in self._valued_attrs_normalized:
             raise AttributeError("'{item}' attribute is not defined within '{header}' header.".format(item=item, header=self.name))
 
