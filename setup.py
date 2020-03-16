@@ -25,6 +25,7 @@ VERSION = get_version()
 
 REQUIRED = [
     'cached_property',
+    'requests'
 ]
 
 EXTRAS = {}

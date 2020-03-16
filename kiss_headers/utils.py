@@ -3,6 +3,7 @@ from io import BytesIO, IOBase
 from typing import List, Optional, Union, Dict, Mapping, Iterator, Tuple, Iterable
 from email.header import decode_header
 from cached_property import cached_property
+from requests import Response
 
 
 class Header(object):
@@ -303,7 +304,7 @@ class Headers:
         return super().__dir__() + list(set([header.normalized_name for header in self]))
 
 
-def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase]) -> Headers:
+def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase, Response]) -> Headers:
     """
     Just decode anything that could represent headers. That simple PERIOD.
     """
@@ -314,6 +315,13 @@ def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase]) -> Headers:
         headers = BytesHeaderParser().parse(buf, headersonly=True).items()
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
+    elif isinstance(raw_headers, Response):
+        headers = list()
+        for header_name in raw_headers.raw.headers:
+            for header_content in raw_headers.raw.headers.getlist(header_name):
+                headers.append(
+                    (header_name, header_content)
+                )
     else:
         raise TypeError('Cannot parse type {type_} as it is not supported by kiss-header.'.format(type_=type(raw_headers)))
 
