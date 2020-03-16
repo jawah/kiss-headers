@@ -64,10 +64,10 @@ str(headers.content_type)  # output : text/html; charset=ISO-8859-1
 'application/json' in headers.content_type  # output: False
 'text/html' in headers.content_type # output: True
 
-str(headers.content_type.charset)  # output : utf-8
+str(headers.content_type.charset)  # output : ISO-8859-1
 ```
 
-Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple within the same header.
+Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple value within the same header.
 
 ```python
 from kiss_headers import parse_it
