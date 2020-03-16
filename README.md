@@ -29,7 +29,13 @@ No matters your religion, IMAP4 or HTTP, you should not worries about accessing 
 <img src="https://user-images.githubusercontent.com/9326700/76709832-32513600-6702-11ea-81cd-b68a7e85abb2.gif" alt="using kiss-headers from python interpreter"/>
 </p>
 
-## Your support
+I have seen so much chunk of code trying to deal with them, often I saw this :
+```python
+charset = headers['Content-Type'].split(';')[-1].split('=')[-1]
+```
+**No more of that !**
+
+### Your support
 
 Please ⭐ this repository if this project helped you!
 
@@ -48,16 +54,31 @@ pip install kiss-headers
 from requests import get
 from kiss_headers import parse_it
 
-response = get('https://httpbin.org/get')
+response = get('https://www.google.fr')
 headers = parse_it(response.headers)
 
 'Content-Type' in headers  # output: True
 'Content_type' in headers  # output: True
 
-str(headers.content_type)  # output : application/json
-'application/json' in headers.content_type  # output: True
+str(headers.content_type)  # output : text/html; charset=ISO-8859-1
+'application/json' in headers.content_type  # output: False
+'text/html' in headers.content_type # output: True
 
 str(headers.content_type.charset)  # output : utf-8
+```
+
+Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple within the same header.
+
+```python
+from kiss_headers import parse_it
+
+my_cookies = """set-cookie: 1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT; path=/; domain=.google.fr; Secure; SameSite=none
+set-cookie: CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; domain=.google.fr"""
+
+headers = parse_it(my_cookies)
+
+type(headers.set_cookie)  # output: list
+headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
 ```
 
 ## 👤 Contributing
