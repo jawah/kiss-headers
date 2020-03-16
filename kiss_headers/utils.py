@@ -30,6 +30,11 @@ class Header(object):
             if '=' in member:
                 key, value = tuple(member.split('=', maxsplit=1))
 
+                # avoid confusing base64 look alike single value for (key, value)
+                if value.count('=') == len(value) or len(value) == 0:
+                    self._not_valued_attrs.append(member)
+                    continue
+
                 if key not in self._valued_attrs:
                     self._valued_attrs[key] = value
                 else:
@@ -83,7 +88,7 @@ class Header(object):
 
     def __eq__(self, other) -> bool:
         if isinstance(other, str):
-            return self.content == other
+            return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
             return self.normalized_name == other.normalized_name and self.content == other.content
         raise TypeError('Cannot compare type {type_} to an Header. Use str or Header.'.format(type_=type(other)))
@@ -95,7 +100,7 @@ class Header(object):
         return "{head}: {content}".format(head=self._head, content=self._content)
 
     def __dir__(self) -> Iterable[str]:
-        return super().__dir__() + list(self._valued_attrs.keys())
+        return super().__dir__() + list(self._valued_attrs_normalized.keys())
 
     @property
     def attrs(self) -> List[str]:
@@ -116,6 +121,9 @@ class Header(object):
         return self._valued_attrs[attr]
 
     def __getitem__(self, item: str) -> Union[str, List[str]]:
+        """
+        This method will allow you to retrieve attribute value using the bracket syntax, list-like.
+        """
         normalized_item = Header.normalize_name(item)
 
         if item in self._valued_attrs:
@@ -126,13 +134,17 @@ class Header(object):
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(item=item, header=self.name))
 
-        if isinstance(value, str):
-            if value.startswith('"') and value.endswith('"'):
-                return value[1:-1]
+        # Unquote value if necessary
+        if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
+            return value[1:-1]
 
         return value
 
     def __getattr__(self, item) -> str:
+        """
+        All the magic happen here, this method should be invoked when trying to call (not declared) properties.
+        For instance, calling self.charset should end up here and be replaced by self['charset'].
+        """
         if item not in self._valued_attrs and Header.normalize_name(item) not in self._valued_attrs_normalized:
             raise AttributeError("'{item}' attribute is not defined within '{header}' header.".format(item=item, header=self.name))
 
@@ -175,6 +187,9 @@ class Headers:
     vary: Header
     connection: Header
     keep_alive: Header
+
+    x_cache: Header
+    via: Header
 
     accept: Header
     accept_charset: Header
@@ -222,6 +237,16 @@ class Headers:
         for header in self._headers:
             yield header
 
+    def to_dict(self) -> Dict[str, str]:
+        """
+        Provide a dict output of current headers
+        """
+        return dict(
+            [
+                (header.name, header.content) for header in self
+            ]
+        )
+
     def __eq__(self, other: 'Headers') -> bool:
         if len(other) != len(self):
             return False
@@ -235,8 +260,14 @@ class Headers:
     def __len__(self) -> int:
         return len(self._headers)
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self) -> str:
+        return '\n'.join([header.__repr__() for header in self])
+
     def __getitem__(self, item: str) -> Union[Header, List[Header]]:
-        item = item.lower().replace('-', '_')
+        item = Header.normalize_name(item)
 
         if item not in self:
             raise KeyError("'{item}' header is not defined in headers.".format(item=item))

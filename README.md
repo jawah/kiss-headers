@@ -29,14 +29,18 @@ No matters your religion, IMAP4 or HTTP, you should not worries about accessing 
 <img src="https://user-images.githubusercontent.com/9326700/76709832-32513600-6702-11ea-81cd-b68a7e85abb2.gif" alt="using kiss-headers from python interpreter"/>
 </p>
 
-### Installation
+## Your support
+
+Please ⭐ this repository if this project helped you!
+
+### ✨ Installation
 
 Whatever you like, use `Pipenv` or `pip`, it simply work. We are expecting you to have python 3.6+ installed.
 ```sh 
 pip install kiss-headers
 ```
 
-### Usage
+### 🍰 Usage
 
 `parse_it()` method take `bytes`, `str`, `fp` or `dict` and give you back a `Headers` object.
 
@@ -50,10 +54,10 @@ headers = parse_it(response.headers)
 'Content-Type' in headers  # output: True
 'Content_type' in headers  # output: True
 
-headers.content_type  # output : application/json
+str(headers.content_type)  # output : application/json
 'application/json' in headers.content_type  # output: True
 
-headers.content_type.charset  # output : utf-8
+str(headers.content_type.charset)  # output : utf-8
 ```
 
 ## 👤 Contributing
