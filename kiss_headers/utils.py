@@ -30,6 +30,11 @@ class Header(object):
             if '=' in member:
                 key, value = tuple(member.split('=', maxsplit=1))
 
+                # avoid confusing base64 look alike single value for (key, value)
+                if value.count('=') == len(value) or len(value) == 0:
+                    self._not_valued_attrs.append(member)
+                    continue
+
                 if key not in self._valued_attrs:
                     self._valued_attrs[key] = value
                 else:
