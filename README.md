@@ -2,7 +2,7 @@
 
 <p align="center">
   <img alt="Temporary logo" src="https://user-images.githubusercontent.com/9326700/76708477-64a96600-66f7-11ea-9d4a-8cc07866e185.png"/><br>
-  <sup>So simple, you may fall in love at first sight ! With auto-completion !</sup><br>
+  <sup>So simple ! With auto-completion !</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
