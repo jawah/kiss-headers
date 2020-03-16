@@ -48,14 +48,14 @@ pip install kiss-headers
 
 ### 🍰 Usage
 
-`parse_it()` method take `bytes`, `str`, `fp` or `dict` and give you back a `Headers` object.
+`parse_it()` method take `bytes`, `str`, `fp`, `dict` or even `requests.Response` itself and give you back a `Headers` object.
 
 ```python
 from requests import get
 from kiss_headers import parse_it
 
 response = get('https://www.google.fr')
-headers = parse_it(response.headers)
+headers = parse_it(response)
 
 'Content-Type' in headers  # output: True
 'Content_type' in headers  # output: True
@@ -65,6 +65,10 @@ str(headers.content_type)  # output : text/html; charset=ISO-8859-1
 'text/html' in headers.content_type # output: True
 
 str(headers.content_type.charset)  # output : ISO-8859-1
+type(headers.set_cookie) # output: list
+'Secure' in headers.set_cookie[0] # output: True
+'domain' in headers.set_cookie[0] # output: True
+headers.set_cookie[0].domain # output: .google.fr
 ```
 
 Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple value within the same header.
