@@ -122,7 +122,7 @@ class Header(object):
             return None
         return self._valued_attrs[attr]
 
-    def __getitem__(self, item: str) -> Union[str, List[str]]:
+    def __getitem__(self, item: Union[str, int]) -> Union[str, List[str]]:
         """
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
         """
@@ -142,7 +142,7 @@ class Header(object):
 
         return value
 
-    def __getattr__(self, item) -> str:
+    def __getattr__(self, item: str) -> str:
         """
         All the magic happen here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
@@ -268,7 +268,7 @@ class Headers:
     def __repr__(self) -> str:
         return '\n'.join([header.__repr__() for header in self])
 
-    def __getitem__(self, item: str) -> Union[Header, List[Header]]:
+    def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
         item = Header.normalize_name(item)
 
         if item not in self:
