@@ -250,6 +250,12 @@ class Headers:
     def __len__(self) -> int:
         return len(self._headers)
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self) -> str:
+        return '\n'.join([header.__repr__() for header in self])
+
     def __getitem__(self, item: str) -> Union[Header, List[Header]]:
         item = item.lower().replace('-', '_')
 
