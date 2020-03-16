@@ -188,6 +188,9 @@ class Headers:
     connection: Header
     keep_alive: Header
 
+    x_cache: Header
+    via: Header
+
     accept: Header
     accept_charset: Header
     accept_encoding: Header
