@@ -33,7 +33,7 @@ class Header(object):
                 key, value = tuple(member.split('=', maxsplit=1))
 
                 # avoid confusing base64 look alike single value for (key, value)
-                if value.count('=') == len(value) or len(value) == 0:
+                if value.count('=') == len(value) or len(value) == 0 or ' ' in key:
                     self._not_valued_attrs.append(member)
                     continue
 
