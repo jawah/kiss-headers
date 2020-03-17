@@ -7,6 +7,9 @@
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
   <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
+  <a href="https://pepy.tech/project/kiss-headers/">
+    <img alt="Download Count /Month" src="https://pepy.tech/badge/kiss-headers/month"/>
+  </a>
   <a href="https://github.com/ousret/kiss-headers/blob/master/LICENSE">
     <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" target="_blank" />
   </a>
@@ -18,7 +21,8 @@
   </a>
   <a href='https://kiss-headers.readthedocs.io/en/latest/?badge=latest'>
     <img src='https://readthedocs.org/projects/kiss-headers/badge/?version=latest' alt='Documentation Status' />
-  </a>
+  </a><br>
+  <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
 </p>
 
 ### Why ?
