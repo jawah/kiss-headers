@@ -35,9 +35,9 @@ No matters your religion, IMAP4 or HTTP, you should not worries about accessing 
 
 I have seen so much chunk of code trying to deal with them, often I saw this :
 ```python
-charset = headers['Content-Type'].split(';')[-1].split('=')[-1]
+charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
-**No more of that !**
+**No more of that !** 🤮
 
 ### Your support
 
