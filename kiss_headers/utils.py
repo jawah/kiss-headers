@@ -90,6 +90,9 @@ class Header(object):
 
         return self._content
 
+    def __deepcopy__(self, memodict: Dict) -> 'Header':
+        return Header(deepcopy(self.name), deepcopy(self.content))
+
     def __iter__(self) -> Iterator[Tuple[str, Optional[str]]]:
         for key, value in self._valued_attrs.items():
             yield key, self[key]
@@ -256,6 +259,9 @@ class Headers:
                 (header.name, header.content) for header in self
             ]
         )
+
+    def __deepcopy__(self, memodict: Dict) -> 'Headers':
+        return Headers(deepcopy(self._headers))
 
     def __eq__(self, other: 'Headers') -> bool:
         if len(other) != len(self):
