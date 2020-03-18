@@ -8,15 +8,15 @@ from requests import Response
 
 class Header(object):
 
-    charset: Union['Header', str]
-    format: Union['Header', str]
-    boundary: Union['Header', str]
-    expires: Union['Header', str]
-    timeout: Union['Header', str]
-    max: Union['Header', str]
-    path: Union['Header', str]
-    samesite: Union['Header', str]
-    domain: Union['Header', str]
+    charset: str
+    format: str
+    boundary: str
+    expires: str
+    timeout: str
+    max: str
+    path: str
+    samesite: str
+    domain: str
 
     def __init__(self, head: str, content: str):
 
