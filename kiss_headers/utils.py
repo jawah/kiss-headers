@@ -101,7 +101,7 @@ class Header(object):
         for adjective in self._not_valued_attrs:
             yield adjective, None
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Union[str, 'Header']) -> bool:
         if isinstance(other, str):
             return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
