@@ -284,6 +284,52 @@ class Headers:
     def __repr__(self) -> str:
         return '\n'.join([header.__repr__() for header in self])
 
+    def __add__(self, other: Header) -> 'Headers':
+        """
+        Add using syntax c = a + b. The result is a newly created object.
+        """
+        headers = deepcopy(self)
+        headers += other
+
+        return headers
+
+    def __sub__(self, other: Union[Header, str]) -> 'Headers':
+        """
+        Subtract using syntax c = a - b. The result is a newly created object.
+        """
+        headers = deepcopy(self)
+        headers -= other
+
+        return headers
+
+    def __iadd__(self, other: Header) -> 'Headers':
+        if isinstance(other, Header):
+            self._headers.append(other)
+            return self
+
+        raise TypeError('Cannot add type "{type_}" to Headers.'.format(type_=str(type(other))))
+
+    def __isub__(self, other: Union[Header, str]) -> 'Headers':
+        if isinstance(other, str):
+            other_normalized = Header.normalize_name(other)
+            to_be_removed = list()
+
+            for header in self:
+                if other_normalized == header.normalized_name:
+                    to_be_removed.append(header)
+
+            for header in to_be_removed:
+                self._headers.remove(header)
+
+            return self
+
+        if isinstance(other, Header):
+            if other in self:
+                self._headers.remove(other)
+                return self
+
+        raise TypeError('Cannot subtract type "{type_}" to Headers.'.format(type_=str(type(other))))
+
     def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
         item = Header.normalize_name(item)
 
