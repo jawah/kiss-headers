@@ -374,7 +374,7 @@ class Headers:
 
 def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase, Response]) -> Headers:
     """
-    Just decode anything that could represent headers. That simple PERIOD.
+    Just decode anything that could contain headers. That simple PERIOD.
     """
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
