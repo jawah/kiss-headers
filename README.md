@@ -71,6 +71,8 @@ str(headers.content_type)  # output : text/html; charset=ISO-8859-1
 str(headers.content_type.charset)  # output : ISO-8859-1
 type(headers.set_cookie) # output: list
 'Secure' in headers.set_cookie[0] # output: True
+'secure' in headers.set_cookie[0] # output: True
+'Secur' in headers.set_cookie[0] # output: False
 'domain' in headers.set_cookie[0] # output: True
 headers.set_cookie[0].domain # output: .google.fr
 ```
