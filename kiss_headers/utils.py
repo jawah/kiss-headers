@@ -5,6 +5,13 @@ from email.header import decode_header
 from cached_property import cached_property
 from requests import Response
 
+RESERVED_KEYWORD = [
+    'and_', 'assert_', 'in_', 'not_',
+    'pass_', 'finally_', 'while_',
+    'yield_', 'is_', 'as_', 'break_',
+    'return_', 'elif_', 'except_', 'def_',
+    'from_'
+]
 
 class Header(object):
 
@@ -284,6 +291,13 @@ class Headers:
         return headers if len(headers) > 1 else headers.pop()
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
+
+        if item[0] == '_':
+            item = item[1:]
+
+        if item.lower() in RESERVED_KEYWORD:
+            item = item[:-1]
+
         if item not in self:
             raise AttributeError("'{item}' header is not defined in headers.".format(item=item))
 
