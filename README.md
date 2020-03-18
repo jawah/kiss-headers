@@ -41,7 +41,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 ### Your support
 
-Please ⭐ this repository if this project helped you!
+Please ⭐ this repository if this project helped you! ✨ That would be very much appreciated ✨
 
 ### ✨ Installation
 
@@ -75,6 +75,11 @@ type(headers.set_cookie) # output: list
 'Secur' in headers.set_cookie[0] # output: False
 'domain' in headers.set_cookie[0] # output: True
 headers.set_cookie[0].domain # output: .google.fr
+
+# Hell, you can do this if you wish to remove all 'Set-Cookies' entries.
+headers -= 'Set-Cookies'
+# Or this, if you must !
+headers = headers - 'Set-Cookies'
 ```
 
 Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple value within the same header.
@@ -89,6 +94,16 @@ headers = parse_it(my_cookies)
 
 type(headers.set_cookie)  # output: list
 headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
+```
+
+Just a note to inform you that accessing a header that have the same name as a reserved keyword must be done this way :
+```python
+headers = parse_it('From: Ousret; origin=www.github.com\nIS: 1\nWhile: Not-True')
+
+# this flavour
+headers.from_ # to access From, just add a single underscore to it
+# or..
+headers['from']
 ```
 
 ## 👤 Contributing

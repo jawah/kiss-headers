@@ -4,19 +4,28 @@ from typing import List, Optional, Union, Dict, Mapping, Iterator, Tuple, Iterab
 from email.header import decode_header
 from cached_property import cached_property
 from requests import Response
+from copy import deepcopy, copy
 
+
+RESERVED_KEYWORD = [
+    'and_', 'assert_', 'in_', 'not_',
+    'pass_', 'finally_', 'while_',
+    'yield_', 'is_', 'as_', 'break_',
+    'return_', 'elif_', 'except_', 'def_',
+    'from_'
+]
 
 class Header(object):
 
-    charset: Union['Header', str]
-    format: Union['Header', str]
-    boundary: Union['Header', str]
-    expires: Union['Header', str]
-    timeout: Union['Header', str]
-    max: Union['Header', str]
-    path: Union['Header', str]
-    samesite: Union['Header', str]
-    domain: Union['Header', str]
+    charset: str
+    format: str
+    boundary: str
+    expires: str
+    timeout: str
+    max: str
+    path: str
+    samesite: str
+    domain: str
 
     def __init__(self, head: str, content: str):
 
@@ -83,13 +92,16 @@ class Header(object):
 
         return self._content
 
+    def __deepcopy__(self, memodict: Dict) -> 'Header':
+        return Header(deepcopy(self.name), deepcopy(self.content))
+
     def __iter__(self) -> Iterator[Tuple[str, Optional[str]]]:
         for key, value in self._valued_attrs.items():
             yield key, self[key]
         for adjective in self._not_valued_attrs:
             yield adjective, None
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Union[str, 'Header']) -> bool:
         if isinstance(other, str):
             return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
@@ -250,6 +262,9 @@ class Headers:
             ]
         )
 
+    def __deepcopy__(self, memodict: Dict) -> 'Headers':
+        return Headers(deepcopy(self._headers))
+
     def __eq__(self, other: 'Headers') -> bool:
         if len(other) != len(self):
             return False
@@ -269,6 +284,52 @@ class Headers:
     def __repr__(self) -> str:
         return '\n'.join([header.__repr__() for header in self])
 
+    def __add__(self, other: Header) -> 'Headers':
+        """
+        Add using syntax c = a + b. The result is a newly created object.
+        """
+        headers = deepcopy(self)
+        headers += other
+
+        return headers
+
+    def __sub__(self, other: Union[Header, str]) -> 'Headers':
+        """
+        Subtract using syntax c = a - b. The result is a newly created object.
+        """
+        headers = deepcopy(self)
+        headers -= other
+
+        return headers
+
+    def __iadd__(self, other: Header) -> 'Headers':
+        if isinstance(other, Header):
+            self._headers.append(other)
+            return self
+
+        raise TypeError('Cannot add type "{type_}" to Headers.'.format(type_=str(type(other))))
+
+    def __isub__(self, other: Union[Header, str]) -> 'Headers':
+        if isinstance(other, str):
+            other_normalized = Header.normalize_name(other)
+            to_be_removed = list()
+
+            for header in self:
+                if other_normalized == header.normalized_name:
+                    to_be_removed.append(header)
+
+            for header in to_be_removed:
+                self._headers.remove(header)
+
+            return self
+
+        if isinstance(other, Header):
+            if other in self:
+                self._headers.remove(other)
+                return self
+
+        raise TypeError('Cannot subtract type "{type_}" to Headers.'.format(type_=str(type(other))))
+
     def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
         item = Header.normalize_name(item)
 
@@ -284,6 +345,13 @@ class Headers:
         return headers if len(headers) > 1 else headers.pop()
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
+
+        if item[0] == '_':
+            item = item[1:]
+
+        if item.lower() in RESERVED_KEYWORD:
+            item = item[:-1]
+
         if item not in self:
             raise AttributeError("'{item}' header is not defined in headers.".format(item=item))
 
@@ -306,7 +374,7 @@ class Headers:
 
 def parse_it(raw_headers: Union[bytes, str, Dict[str, str], IOBase, Response]) -> Headers:
     """
-    Just decode anything that could represent headers. That simple PERIOD.
+    Just decode anything that could contain headers. That simple PERIOD.
     """
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
