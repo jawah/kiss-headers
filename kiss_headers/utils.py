@@ -4,6 +4,8 @@ from typing import List, Optional, Union, Dict, Mapping, Iterator, Tuple, Iterab
 from email.header import decode_header
 from cached_property import cached_property
 from requests import Response
+from copy import deepcopy, copy
+
 
 RESERVED_KEYWORD = [
     'and_', 'assert_', 'in_', 'not_',
