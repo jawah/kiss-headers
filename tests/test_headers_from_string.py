@@ -41,6 +41,28 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
     def setUp(self) -> None:
         MyKissHeadersFromStringTest.headers = parse_it(RAW_HEADERS)
 
+    def test_repr_dict(self):
+
+        dict_ = MyKissHeadersFromStringTest.headers.to_dict()
+
+        self.assertIn(
+            'set-cookie',
+            dict_
+        )
+
+        self.assertIn(
+            'p3p',
+            dict_
+        )
+
+        self.assertTrue(
+            dict_['set-cookie'].startswith('1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT; path=/;')
+        )
+
+        self.assertTrue(
+            dict_['set-cookie'].endswith('CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; domain=.google.fr')
+        )
+
     def test_repr_str(self):
 
         self.assertEqual(
