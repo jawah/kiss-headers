@@ -52,7 +52,7 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
             MyKissHeadersFromStringTest.headers,
             parse_it(RAW_HEADERS_MOZILLA)
         )
-    
+
     def test_repr_dict(self):
 
         dict_ = MyKissHeadersFromStringTest.headers.to_dict()
