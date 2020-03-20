@@ -19,8 +19,8 @@
   <a href="https://codecov.io/gh/Ousret/kiss-headers">
       <img src="https://codecov.io/gh/Ousret/kiss-headers/branch/master/graph/badge.svg" />
   </a>
-  <a href='https://kiss-headers.readthedocs.io/en/latest/?badge=latest'>
-    <img src='https://readthedocs.org/projects/kiss-headers/badge/?version=latest' alt='Documentation Status' />
+  <a href='https://pypi.org/project/kiss-headers/'>
+    <img src='https://github.com/Ousret/kiss-headers/workflows/Upload%20Python%20Package/badge.svg' alt='PyPi Publish Action' />
   </a><br>
   <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
 </p>
