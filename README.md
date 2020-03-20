@@ -20,7 +20,7 @@
       <img src="https://codecov.io/gh/Ousret/kiss-headers/branch/master/graph/badge.svg" />
   </a>
   <a href='https://pypi.org/project/kiss-headers/'>
-    <img src='https://github.com/Ousret/kiss-headers/workflows/Upload%20Python%20Package/badge.svg' alt='PyPi Publish Action' />
+    <img src='https://badge.fury.io/py/kiss-headers.svg' alt='PyPi Publish Action' />
   </a><br>
   <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
 </p>
