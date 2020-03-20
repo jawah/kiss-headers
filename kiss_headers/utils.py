@@ -309,6 +309,52 @@ class Headers:
     def __deepcopy__(self, memodict: Dict) -> 'Headers':
         return Headers(deepcopy(self._headers))
 
+    def __delitem__(self, key: str):
+        """
+        Remove all matching header named after called key.
+           >>> del headers['content-type']
+        """
+        key = Header.normalize_name(key)
+        to_be_removed = []
+
+        if key not in self:
+            raise KeyError("'{item}' header is not defined in headers.".format(item=key))
+
+        for header in self:
+            if header.normalized_name == key:
+                to_be_removed.append(header)
+
+        for header in to_be_removed:
+            self._headers.remove(header)
+
+    def __setitem__(self, key: str, value: str):
+        """
+        Set header using the bracket syntax. This operation would remove any existing header named after the key.
+        """
+        if key in self:
+            del self[key]
+
+        self._headers.append(Header(key, value))
+
+    def __delattr__(self, item: str):
+        """
+        Remove header using the property notation.
+           >>> del headers.content_type
+        """
+        if item not in self:
+            raise AttributeError("'{item}' header is not defined in headers.".format(item=item))
+
+        del self[item]
+
+    def __setattr__(self, key: str, value: str):
+        """
+        Set header like it is a property/member. This operation would remove any existing header named after the key.
+        """
+        if key == '_headers':
+            return super().__setattr__(key, value)
+
+        self[key] = value
+
     def __eq__(self, other: 'Headers') -> bool:
         """
         Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
