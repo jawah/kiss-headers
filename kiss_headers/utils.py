@@ -283,6 +283,12 @@ class Headers:
         for header in self._headers:
             yield header
 
+    def keys(self) -> List[str]:
+        """
+        Return a list of distinct header name set in headers.
+        """
+        return list(set([header.name for header in self]))
+
     def to_dict(self) -> CaseInsensitiveDict:
         """
         Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
