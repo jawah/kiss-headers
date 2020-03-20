@@ -259,6 +259,8 @@ class Headers:
     transfer_encoding: Header
     date: Header
 
+    from_: Header
+
     def __init__(self, headers: List[Header]):
         self._headers: List[Header] = headers
 
