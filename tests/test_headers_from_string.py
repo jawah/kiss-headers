@@ -41,6 +41,28 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
     def setUp(self) -> None:
         MyKissHeadersFromStringTest.headers = parse_it(RAW_HEADERS)
 
+    def test_repr_str(self):
+
+        self.assertEqual(
+            RAW_HEADERS,
+            repr(MyKissHeadersFromStringTest.headers)
+        )
+
+        self.assertEqual(
+            RAW_HEADERS,
+            str(MyKissHeadersFromStringTest.headers)
+        )
+
+        self.assertEqual(
+            'SAMEORIGIN',
+            str(MyKissHeadersFromStringTest.headers.x_frame_options)
+        )
+
+        self.assertEqual(
+            'x-frame-options: SAMEORIGIN',
+            repr(MyKissHeadersFromStringTest.headers.x_frame_options)
+        )
+
     def test_control_basis_exist(self):
 
         self.assertEqual(
