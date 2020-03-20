@@ -16,7 +16,12 @@ RESERVED_KEYWORD = [
 ]
 
 class Header(object):
+    """
+    Object representation of a single Header.
+    """
 
+    # Most common attribute that are associated with value in headers.
+    # Used for type hint, auto completion purpose
     charset: str
     format: str
     boundary: str
@@ -102,6 +107,10 @@ class Header(object):
             yield adjective, None
 
     def __eq__(self, other: Union[str, 'Header']) -> bool:
+        """
+        Verify equality between a Header object and str or another Header object.
+        If testing against str, the first thing is to match it to raw content, if not equal verify if not in members.
+        """
         if isinstance(other, str):
             return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
@@ -109,16 +118,31 @@ class Header(object):
         raise TypeError('Cannot compare type {type_} to an Header. Use str or Header.'.format(type_=type(other)))
 
     def __str__(self) -> str:
+        """
+        Allow to cast a single header to a string. Only content would be exposed here.
+        """
         return self._content
 
     def __repr__(self) -> str:
+        """
+        Unambiguous representation of a single header.
+        """
         return "{head}: {content}".format(head=self._head, content=self._content)
 
     def __dir__(self) -> Iterable[str]:
+        """
+        Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
+        of what properties are callable. In other word, more precise auto-completion when not using IDE.
+        """
         return super().__dir__() + list(self._valued_attrs_normalized.keys())
 
     @property
     def attrs(self) -> List[str]:
+        """
+        List of members or attributes found in provided content.
+        eg. Content-Type: application/json; charset=utf-8; format=origin
+        Would output : ['application/json', 'charset', 'format']
+        """
         return list(self._valued_attrs.keys()) + self._not_valued_attrs
 
     def has(self, attr: str) -> bool:
@@ -175,10 +199,13 @@ class Header(object):
 
 
 class Headers:
+    """
+    Object oriented representation for Headers. Contains a list of Header with some level of abstraction.
+    Combine advantages of dict, CaseInsensibleDict and objects.
+    """
 
-    """
-    Most common headers that you may or may not find. This should be appreciated when having auto-completion.
-    """
+    # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
+    # Lowercase only.
     access_control_allow_origin: Header
 
     www_authenticate: Header
@@ -266,6 +293,9 @@ class Headers:
         return Headers(deepcopy(self._headers))
 
     def __eq__(self, other: 'Headers') -> bool:
+        """
+        Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
+        """
         if len(other) != len(self):
             return False
 
@@ -276,12 +306,21 @@ class Headers:
         return True
 
     def __len__(self) -> int:
+        """
+        Return number of headers. If one header appear multiple time, it is not reduced to one in this count.
+        """
         return len(self._headers)
 
     def __str__(self):
+        """
+        Just calling __repr__ of self. see __repr__.
+        """
         return self.__repr__()
 
     def __repr__(self) -> str:
+        """
+        Non-ambiguous representation of an Headers instance.
+        """
         return '\n'.join([header.__repr__() for header in self])
 
     def __add__(self, other: Header) -> 'Headers':
@@ -303,6 +342,9 @@ class Headers:
         return headers
 
     def __iadd__(self, other: Header) -> 'Headers':
+        """
+        Inline add, using operator '+'. It is only possible to add to it another Header object.
+        """
         if isinstance(other, Header):
             self._headers.append(other)
             return self
@@ -310,6 +352,13 @@ class Headers:
         raise TypeError('Cannot add type "{type_}" to Headers.'.format(type_=str(type(other))))
 
     def __isub__(self, other: Union[Header, str]) -> 'Headers':
+        """
+        Inline subtract, using operator '-'. If a str is subtracted to it,
+        would be looking for header named like provided str.
+        eg.
+           >>> headers -= 'Set-Cookies'
+        Would remove any entries named 'Set-Cookies'.
+        """
         if isinstance(other, str):
             other_normalized = Header.normalize_name(other)
             to_be_removed = list()
@@ -331,6 +380,9 @@ class Headers:
         raise TypeError('Cannot subtract type "{type_}" to Headers.'.format(type_=str(type(other))))
 
     def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
+        """
+        Extract header using the bracket syntax, dict-like. The result is either a single Header or a list of Header.
+        """
         item = Header.normalize_name(item)
 
         if item not in self:
@@ -345,7 +397,10 @@ class Headers:
         return headers if len(headers) > 1 else headers.pop()
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
-
+        """
+        Where the magic happen, every header are accessible via the property notation. eg.
+           >>> headers.content_type
+        """
         if item[0] == '_':
             item = item[1:]
 
@@ -358,6 +413,10 @@ class Headers:
         return self[item]
 
     def __contains__(self, item: Union[Header, str]) -> bool:
+        """
+        This method will allow you to test if a header, based on it's string name, is present or not in headers.
+        You could also use a Header object to verify it's presence.
+        """
         item = Header.normalize_name(item) if isinstance(item, str) else item
 
         for header in self:
@@ -369,6 +428,10 @@ class Headers:
         return False
 
     def __dir__(self) -> Iterable[str]:
+        """
+        Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
+        of what properties are callable. In other word, more precise auto-completion when not using IDE.
+        """
         return super().__dir__() + list(set([header.normalized_name for header in self]))
 
 
