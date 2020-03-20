@@ -4,8 +4,8 @@ from typing import List, Optional, Union, Dict, Mapping, Iterator, Tuple, Iterab
 from email.header import decode_header
 from cached_property import cached_property
 from requests import Response
-from copy import deepcopy, copy
-
+from requests.structures import CaseInsensitiveDict
+from copy import deepcopy
 
 RESERVED_KEYWORD = [
     'and_', 'assert_', 'in_', 'not_',
@@ -15,8 +15,14 @@ RESERVED_KEYWORD = [
     'from_'
 ]
 
-class Header(object):
 
+class Header(object):
+    """
+    Object representation of a single Header.
+    """
+
+    # Most common attribute that are associated with value in headers.
+    # Used for type hint, auto completion purpose
     charset: str
     format: str
     boundary: str
@@ -102,6 +108,10 @@ class Header(object):
             yield adjective, None
 
     def __eq__(self, other: Union[str, 'Header']) -> bool:
+        """
+        Verify equality between a Header object and str or another Header object.
+        If testing against str, the first thing is to match it to raw content, if not equal verify if not in members.
+        """
         if isinstance(other, str):
             return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
@@ -109,16 +119,31 @@ class Header(object):
         raise TypeError('Cannot compare type {type_} to an Header. Use str or Header.'.format(type_=type(other)))
 
     def __str__(self) -> str:
+        """
+        Allow to cast a single header to a string. Only content would be exposed here.
+        """
         return self._content
 
     def __repr__(self) -> str:
+        """
+        Unambiguous representation of a single header.
+        """
         return "{head}: {content}".format(head=self._head, content=self._content)
 
     def __dir__(self) -> Iterable[str]:
+        """
+        Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
+        of what properties are callable. In other word, more precise auto-completion when not using IDE.
+        """
         return super().__dir__() + list(self._valued_attrs_normalized.keys())
 
     @property
     def attrs(self) -> List[str]:
+        """
+        List of members or attributes found in provided content.
+        eg. Content-Type: application/json; charset=utf-8; format=origin
+        Would output : ['application/json', 'charset', 'format']
+        """
         return list(self._valued_attrs.keys()) + self._not_valued_attrs
 
     def has(self, attr: str) -> bool:
@@ -168,17 +193,21 @@ class Header(object):
     def __contains__(self, item: str) -> bool:
         if item in self.attrs:
             return True
+        item = Header.normalize_name(item)
         for attr in self.attrs:
-            if Header.normalize_name(item) == Header.normalize_name(attr):
+            if item == Header.normalize_name(attr):
                 return True
         return False
 
 
 class Headers:
+    """
+    Object oriented representation for Headers. Contains a list of Header with some level of abstraction.
+    Combine advantages of dict, CaseInsensibleDict and objects.
+    """
 
-    """
-    Most common headers that you may or may not find. This should be appreciated when having auto-completion.
-    """
+    # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
+    # Lowercase only.
     access_control_allow_origin: Header
 
     www_authenticate: Header
@@ -231,6 +260,8 @@ class Headers:
     transfer_encoding: Header
     date: Header
 
+    from_: Header
+
     def __init__(self, headers: List[Header]):
         self._headers: List[Header] = headers
 
@@ -252,20 +283,82 @@ class Headers:
         for header in self._headers:
             yield header
 
-    def to_dict(self) -> Dict[str, str]:
+    def keys(self) -> List[str]:
         """
-        Provide a dict output of current headers
+        Return a list of distinct header name set in headers.
         """
-        return dict(
-            [
-                (header.name, header.content) for header in self
-            ]
-        )
+        return list(set([header.name for header in self]))
+
+    def to_dict(self) -> CaseInsensitiveDict:
+        """
+        Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
+        If one header appear multiple times, if would be concatenated into the same value, separated by comma.
+        Be aware that this repr could lead to mistake.
+        """
+        dict_headers = CaseInsensitiveDict()
+
+        for header in self:
+            header_name_no_underscore = header.name.replace('_', '-')
+            if header_name_no_underscore not in dict_headers:
+                dict_headers[header_name_no_underscore] = header.content
+                continue
+            dict_headers[header_name_no_underscore] += ', '+header.content
+
+        return dict_headers
 
     def __deepcopy__(self, memodict: Dict) -> 'Headers':
         return Headers(deepcopy(self._headers))
 
+    def __delitem__(self, key: str):
+        """
+        Remove all matching header named after called key.
+           >>> del headers['content-type']
+        """
+        key = Header.normalize_name(key)
+        to_be_removed = []
+
+        if key not in self:
+            raise KeyError("'{item}' header is not defined in headers.".format(item=key))
+
+        for header in self:
+            if header.normalized_name == key:
+                to_be_removed.append(header)
+
+        for header in to_be_removed:
+            self._headers.remove(header)
+
+    def __setitem__(self, key: str, value: str):
+        """
+        Set header using the bracket syntax. This operation would remove any existing header named after the key.
+        """
+        if key in self:
+            del self[key]
+
+        self._headers.append(Header(key, value))
+
+    def __delattr__(self, item: str):
+        """
+        Remove header using the property notation.
+           >>> del headers.content_type
+        """
+        if item not in self:
+            raise AttributeError("'{item}' header is not defined in headers.".format(item=item))
+
+        del self[item]
+
+    def __setattr__(self, key: str, value: str):
+        """
+        Set header like it is a property/member. This operation would remove any existing header named after the key.
+        """
+        if key == '_headers':
+            return super().__setattr__(key, value)
+
+        self[key] = value
+
     def __eq__(self, other: 'Headers') -> bool:
+        """
+        Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
+        """
         if len(other) != len(self):
             return False
 
@@ -276,12 +369,21 @@ class Headers:
         return True
 
     def __len__(self) -> int:
+        """
+        Return number of headers. If one header appear multiple time, it is not reduced to one in this count.
+        """
         return len(self._headers)
 
     def __str__(self):
+        """
+        Just calling __repr__ of self. see __repr__.
+        """
         return self.__repr__()
 
     def __repr__(self) -> str:
+        """
+        Non-ambiguous representation of an Headers instance.
+        """
         return '\n'.join([header.__repr__() for header in self])
 
     def __add__(self, other: Header) -> 'Headers':
@@ -303,6 +405,9 @@ class Headers:
         return headers
 
     def __iadd__(self, other: Header) -> 'Headers':
+        """
+        Inline add, using operator '+'. It is only possible to add to it another Header object.
+        """
         if isinstance(other, Header):
             self._headers.append(other)
             return self
@@ -310,6 +415,13 @@ class Headers:
         raise TypeError('Cannot add type "{type_}" to Headers.'.format(type_=str(type(other))))
 
     def __isub__(self, other: Union[Header, str]) -> 'Headers':
+        """
+        Inline subtract, using operator '-'. If a str is subtracted to it,
+        would be looking for header named like provided str.
+        eg.
+           >>> headers -= 'Set-Cookies'
+        Would remove any entries named 'Set-Cookies'.
+        """
         if isinstance(other, str):
             other_normalized = Header.normalize_name(other)
             to_be_removed = list()
@@ -331,6 +443,9 @@ class Headers:
         raise TypeError('Cannot subtract type "{type_}" to Headers.'.format(type_=str(type(other))))
 
     def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
+        """
+        Extract header using the bracket syntax, dict-like. The result is either a single Header or a list of Header.
+        """
         item = Header.normalize_name(item)
 
         if item not in self:
@@ -345,7 +460,10 @@ class Headers:
         return headers if len(headers) > 1 else headers.pop()
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
-
+        """
+        Where the magic happen, every header are accessible via the property notation. eg.
+           >>> headers.content_type
+        """
         if item[0] == '_':
             item = item[1:]
 
@@ -358,6 +476,10 @@ class Headers:
         return self[item]
 
     def __contains__(self, item: Union[Header, str]) -> bool:
+        """
+        This method will allow you to test if a header, based on it's string name, is present or not in headers.
+        You could also use a Header object to verify it's presence.
+        """
         item = Header.normalize_name(item) if isinstance(item, str) else item
 
         for header in self:
@@ -369,6 +491,10 @@ class Headers:
         return False
 
     def __dir__(self) -> Iterable[str]:
+        """
+        Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
+        of what properties are callable. In other word, more precise auto-completion when not using IDE.
+        """
         return super().__dir__() + list(set([header.normalized_name for header in self]))
 
 

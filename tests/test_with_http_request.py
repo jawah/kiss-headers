@@ -64,6 +64,28 @@ Cache-Control: max-age=0""".encode('utf-8')
             headers.cache_control.max_age
         )
 
+    def test_parse_response(self):
+
+        headers = parse_it(MyHttpTestKissHeaders.HTTPBIN_GET)
+
+        self.assertEqual(
+            headers.content_type,
+            'application/json'
+        )
+
+        self.assertIn(
+            'application/json',
+            headers.content_type
+        )
+
+        self.assertNotIn(
+            'charset',
+            headers.content_type
+        )
+
+        with self.assertRaises(AttributeError):
+            headers.user_agent
+
     def test_httpbin_get(self):
 
         response_headers = MyHttpTestKissHeaders.HTTPBIN_GET.headers
