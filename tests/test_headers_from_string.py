@@ -20,6 +20,19 @@ strict-transport-security: max-age=31536000
 x-frame-options: SAMEORIGIN
 x-xss-protection: 0"""
 
+RAW_HEADERS_MOZILLA = """GET /home.html HTTP/1.1
+Host: developer.mozilla.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: https://developer.mozilla.org/testpage.html
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
+If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
+Cache-Control: max-age=0"""
+
 
 class MyKissHeadersFromStringTest(unittest.TestCase):
 
@@ -48,6 +61,38 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         self.assertEqual(
             'This is not a P3P policy! See g.co/p3phelp for more info.',
             MyKissHeadersFromStringTest.headers.p3p.cp
+        )
+
+        self.assertTrue(
+            MyKissHeadersFromStringTest.headers.has('Cache-Control')
+        )
+
+        self.assertTrue(
+            MyKissHeadersFromStringTest.headers.content_type.has('charset')
+        )
+
+        self.assertEqual(
+            'UTF-8',
+            MyKissHeadersFromStringTest.headers.content_type.get('charset')
+        )
+
+    def test_control_first_line_not_header(self):
+
+        headers = parse_it(RAW_HEADERS_MOZILLA)
+
+        self.assertEqual(
+            11,
+            len(headers)
+        )
+
+        self.assertIn(
+            'host',
+            headers
+        )
+
+        self.assertIn(
+            'Cache-Control',
+            headers
         )
 
 

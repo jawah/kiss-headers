@@ -68,6 +68,33 @@ class KissHeadersOperationTest(unittest.TestCase):
             len(headers_two)
         )
 
+    def test_add(self):
+        headers = parse_it(
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost""")
+
+        self.assertEqual(
+            5,
+            len(headers)
+        )
+
+        headers_ = headers + Header('content-type', 'application/json')
+
+        self.assertEqual(
+            6,
+            len(headers_)
+        )
+
+        self.assertIn(
+            'content-type',
+            headers_
+        )
+
+        self.assertNotIn(
+            'content-type',
+            headers
+        )
+
+
 
 if __name__ == '__main__':
     unittest.main()
