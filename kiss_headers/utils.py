@@ -193,8 +193,9 @@ class Header(object):
     def __contains__(self, item: str) -> bool:
         if item in self.attrs:
             return True
+        item = Header.normalize_name(item)
         for attr in self.attrs:
-            if Header.normalize_name(item) == Header.normalize_name(attr):
+            if item == Header.normalize_name(attr):
                 return True
         return False
 
