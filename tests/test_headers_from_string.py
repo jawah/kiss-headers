@@ -41,6 +41,18 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
     def setUp(self) -> None:
         MyKissHeadersFromStringTest.headers = parse_it(RAW_HEADERS)
 
+    def test_two_headers_eq(self):
+
+        self.assertEqual(
+            MyKissHeadersFromStringTest.headers,
+            parse_it(RAW_HEADERS)
+        )
+
+        self.assertNotEqual(
+            MyKissHeadersFromStringTest.headers,
+            parse_it(RAW_HEADERS_MOZILLA)
+        )
+    
     def test_repr_dict(self):
 
         dict_ = MyKissHeadersFromStringTest.headers.to_dict()
