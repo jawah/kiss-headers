@@ -4,8 +4,8 @@ from typing import List, Optional, Union, Dict, Mapping, Iterator, Tuple, Iterab
 from email.header import decode_header
 from cached_property import cached_property
 from requests import Response
-from copy import deepcopy, copy
-
+from requests.structures import CaseInsensitiveDict
+from copy import deepcopy
 
 RESERVED_KEYWORD = [
     'and_', 'assert_', 'in_', 'not_',
@@ -14,6 +14,7 @@ RESERVED_KEYWORD = [
     'return_', 'elif_', 'except_', 'def_',
     'from_'
 ]
+
 
 class Header(object):
     """
@@ -279,15 +280,22 @@ class Headers:
         for header in self._headers:
             yield header
 
-    def to_dict(self) -> Dict[str, str]:
+    def to_dict(self) -> CaseInsensitiveDict:
         """
-        Provide a dict output of current headers
+        Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
+        If one header appear multiple times, if would be concatenated into the same value, separated by comma.
+        Be aware that this repr could lead to mistake.
         """
-        return dict(
-            [
-                (header.name, header.content) for header in self
-            ]
-        )
+        dict_headers = CaseInsensitiveDict()
+
+        for header in self:
+            header_name_no_underscore = header.name.replace('_', '-')
+            if header_name_no_underscore not in dict_headers:
+                dict_headers[header_name_no_underscore] = header.content
+                continue
+            dict_headers[header_name_no_underscore] += ', '+header.content
+
+        return dict_headers
 
     def __deepcopy__(self, memodict: Dict) -> 'Headers':
         return Headers(deepcopy(self._headers))
