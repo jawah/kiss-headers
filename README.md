@@ -21,6 +21,9 @@
   </a>
   <a href='https://pypi.org/project/kiss-headers/'>
     <img src='https://badge.fury.io/py/kiss-headers.svg' alt='PyPi Publish Action' />
+  </a>
+  <a href="https://github.com/psf/black">
+    <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
   </a><br>
   <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
 </p>
