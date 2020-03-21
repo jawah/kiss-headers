@@ -43,114 +43,78 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
     def test_two_headers_eq(self):
 
-        self.assertEqual(
-            MyKissHeadersFromStringTest.headers,
-            parse_it(RAW_HEADERS)
-        )
+        self.assertEqual(MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS))
 
         self.assertNotEqual(
-            MyKissHeadersFromStringTest.headers,
-            parse_it(RAW_HEADERS_MOZILLA)
+            MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS_MOZILLA)
         )
 
     def test_repr_dict(self):
 
         dict_ = MyKissHeadersFromStringTest.headers.to_dict()
 
-        self.assertIn(
-            'set-cookie',
-            dict_
-        )
+        self.assertIn("set-cookie", dict_)
 
-        self.assertIn(
-            'p3p',
-            dict_
+        self.assertIn("p3p", dict_)
+
+        self.assertTrue(
+            dict_["set-cookie"].startswith(
+                "1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT; path=/;"
+            )
         )
 
         self.assertTrue(
-            dict_['set-cookie'].startswith('1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT; path=/;')
-        )
-
-        self.assertTrue(
-            dict_['set-cookie'].endswith('CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; domain=.google.fr')
+            dict_["set-cookie"].endswith(
+                "CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; domain=.google.fr"
+            )
         )
 
     def test_repr_str(self):
 
+        self.assertEqual(RAW_HEADERS, repr(MyKissHeadersFromStringTest.headers))
+
+        self.assertEqual(RAW_HEADERS, str(MyKissHeadersFromStringTest.headers))
+
         self.assertEqual(
-            RAW_HEADERS,
-            repr(MyKissHeadersFromStringTest.headers)
+            "SAMEORIGIN", str(MyKissHeadersFromStringTest.headers.x_frame_options)
         )
 
         self.assertEqual(
-            RAW_HEADERS,
-            str(MyKissHeadersFromStringTest.headers)
-        )
-
-        self.assertEqual(
-            'SAMEORIGIN',
-            str(MyKissHeadersFromStringTest.headers.x_frame_options)
-        )
-
-        self.assertEqual(
-            'x-frame-options: SAMEORIGIN',
-            repr(MyKissHeadersFromStringTest.headers.x_frame_options)
+            "x-frame-options: SAMEORIGIN",
+            repr(MyKissHeadersFromStringTest.headers.x_frame_options),
         )
 
     def test_control_basis_exist(self):
 
-        self.assertEqual(
-            'DPR',
-            MyKissHeadersFromStringTest.headers.accept_ch
-        )
+        self.assertEqual("DPR", MyKissHeadersFromStringTest.headers.accept_ch)
+
+        self.assertEqual(3, len(MyKissHeadersFromStringTest.headers.set_cookie))
+
+        self.assertIn("Secure", MyKissHeadersFromStringTest.headers.set_cookie[0])
 
         self.assertEqual(
-            3,
-            len(MyKissHeadersFromStringTest.headers.set_cookie)
+            "This is not a P3P policy! See g.co/p3phelp for more info.",
+            MyKissHeadersFromStringTest.headers.p3p.cp,
         )
 
-        self.assertIn(
-            'Secure',
-            MyKissHeadersFromStringTest.headers.set_cookie[0]
-        )
+        self.assertTrue(MyKissHeadersFromStringTest.headers.has("Cache-Control"))
 
-        self.assertEqual(
-            'This is not a P3P policy! See g.co/p3phelp for more info.',
-            MyKissHeadersFromStringTest.headers.p3p.cp
-        )
-
-        self.assertTrue(
-            MyKissHeadersFromStringTest.headers.has('Cache-Control')
-        )
-
-        self.assertTrue(
-            MyKissHeadersFromStringTest.headers.content_type.has('charset')
-        )
+        self.assertTrue(MyKissHeadersFromStringTest.headers.content_type.has("charset"))
 
         self.assertEqual(
-            'UTF-8',
-            MyKissHeadersFromStringTest.headers.content_type.get('charset')
+            "UTF-8", MyKissHeadersFromStringTest.headers.content_type.get("charset")
         )
 
     def test_control_first_line_not_header(self):
 
         headers = parse_it(RAW_HEADERS_MOZILLA)
 
-        self.assertEqual(
-            11,
-            len(headers)
-        )
+        self.assertEqual(11, len(headers))
 
-        self.assertIn(
-            'host',
-            headers
-        )
+        self.assertIn("host", headers)
 
-        self.assertIn(
-            'Cache-Control',
-            headers
-        )
+        self.assertIn("Cache-Control", headers)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

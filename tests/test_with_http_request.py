@@ -14,12 +14,12 @@ class MyHttpTestKissHeaders(unittest.TestCase):
 
     def setUp(self) -> None:
 
-        MyHttpTestKissHeaders.HTTPBIN_GET = get('https://httpbin.org/get')
+        MyHttpTestKissHeaders.HTTPBIN_GET = get("https://httpbin.org/get")
         MyHttpTestKissHeaders.HTTPBIN_RESPONSE_HEADER = get(
-            'https://httpbin.org/response-headers',
+            "https://httpbin.org/response-headers",
             params={
-                'freeform': 'application/kiss; format="flowed"; expires=Thu, 12 Mar 2020 03:18:25 -0700 (PDT)'
-            }
+                "freeform": 'application/kiss; format="flowed"; expires=Thu, 12 Mar 2020 03:18:25 -0700 (PDT)'
+            },
         )
 
     def test_httpbin_raw_headers(self):
@@ -36,52 +36,32 @@ Connection: keep-alive
 Upgrade-Insecure-Requests: 1
 If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
 If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
-Cache-Control: max-age=0""".encode('utf-8')
+Cache-Control: max-age=0""".encode(
+                "utf-8"
+            )
         )
+
+        self.assertEqual(11, len(headers))
 
         self.assertEqual(
-            11,
-            len(headers)
+            "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a", headers.if_none_match
         )
 
-        self.assertEqual(
-            'c561c68d0ba92bbeb8b0fff2a9199f722e3a621a',
-            headers.if_none_match
-        )
+        self.assertIn("text/html,application/xhtml+xml,application/xml", headers.accept)
 
-        self.assertIn(
-            'text/html,application/xhtml+xml,application/xml',
-            headers.accept
-        )
+        self.assertIn("q", headers.accept)
 
-        self.assertIn(
-            'q',
-            headers.accept
-        )
-
-        self.assertEqual(
-            '0',
-            headers.cache_control.max_age
-        )
+        self.assertEqual("0", headers.cache_control.max_age)
 
     def test_parse_response(self):
 
         headers = parse_it(MyHttpTestKissHeaders.HTTPBIN_GET)
 
-        self.assertEqual(
-            headers.content_type,
-            'application/json'
-        )
+        self.assertEqual(headers.content_type, "application/json")
 
-        self.assertIn(
-            'application/json',
-            headers.content_type
-        )
+        self.assertIn("application/json", headers.content_type)
 
-        self.assertNotIn(
-            'charset',
-            headers.content_type
-        )
+        self.assertNotIn("charset", headers.content_type)
 
         with self.assertRaises(AttributeError):
             headers.user_agent
@@ -91,20 +71,11 @@ Cache-Control: max-age=0""".encode('utf-8')
         response_headers = MyHttpTestKissHeaders.HTTPBIN_GET.headers
         headers = parse_it(response_headers)
 
-        self.assertEqual(
-            headers.content_type,
-            'application/json'
-        )
+        self.assertEqual(headers.content_type, "application/json")
 
-        self.assertIn(
-            'application/json',
-            headers.content_type
-        )
+        self.assertIn("application/json", headers.content_type)
 
-        self.assertNotIn(
-            'charset',
-            headers.content_type
-        )
+        self.assertNotIn("charset", headers.content_type)
 
         with self.assertRaises(AttributeError):
             headers.user_agent
@@ -114,25 +85,19 @@ Cache-Control: max-age=0""".encode('utf-8')
         response_headers = MyHttpTestKissHeaders.HTTPBIN_RESPONSE_HEADER.headers
         headers = parse_it(response_headers)
 
-        self.assertIn(
-            'freeform',
-            headers
-        )
+        self.assertIn("freeform", headers)
 
         self.assertEqual(
             {
-                'application/kiss': None,
-                'format': 'flowed',
-                'expires': 'Thu, 12 Mar 2020 03:18:25 -0700 (PDT)'
+                "application/kiss": None,
+                "format": "flowed",
+                "expires": "Thu, 12 Mar 2020 03:18:25 -0700 (PDT)",
             },
-            dict(headers.freeform)
+            dict(headers.freeform),
         )
 
-        self.assertIn(
-            'application/kiss',
-            headers.freeform
-        )
+        self.assertIn("application/kiss", headers.freeform)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
