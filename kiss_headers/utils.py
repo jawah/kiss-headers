@@ -9,7 +9,7 @@ from typing import (
     Iterator,
     Tuple,
     Iterable,
-    AbstractSet,
+    Any,
 )
 from email.header import decode_header
 from re import findall
@@ -554,9 +554,7 @@ class Headers:
         )
 
 
-def parse_it(
-    raw_headers: Any
-) -> Headers:
+def parse_it(raw_headers: Any) -> Headers:
     """
     Just decode anything that could contain headers. That simple PERIOD.
     """
@@ -591,7 +589,7 @@ def parse_it(
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
     else:
-        r = findall(r'<class \'([a-zA-Z0-9.]+)\'>', str(type(raw_headers)))
+        r = findall(r"<class '([a-zA-Z0-9.]+)'>", str(type(raw_headers)))
 
         if r and r[0] == "requests.models.Response":
             headers = []

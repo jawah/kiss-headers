@@ -43,13 +43,13 @@ class CaseInsensitiveDict(MutableMapping):
     def __setitem__(self, key: str, value: Any) -> NoReturn:
         # Use the lowercased key for lookups, but store the actual
         # key alongside the value.
-        self._store[key.lower().replace('-', '_')] = (key, value)
+        self._store[key.lower().replace("-", "_")] = (key, value)
 
     def __getitem__(self, key: str) -> Any:
-        return self._store[key.lower().replace('-', '_')][1]
+        return self._store[key.lower().replace("-", "_")][1]
 
     def __delitem__(self, key: str) -> NoReturn:
-        del self._store[key.lower().replace('-', '_')]
+        del self._store[key.lower().replace("-", "_")]
 
     def __iter__(self) -> Iterator[Tuple[str, Any]]:
         return (casedkey for casedkey, mappedvalue in self._store.values())
@@ -59,11 +59,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     def lower_items(self) -> Iterator[Tuple[str, Any]]:
         """Like iteritems(), but with all lowercase keys."""
-        return (
-            (lowerkey, keyval[1])
-            for (lowerkey, keyval)
-            in self._store.items()
-        )
+        return ((lowerkey, keyval[1]) for (lowerkey, keyval) in self._store.items())
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Mapping):
