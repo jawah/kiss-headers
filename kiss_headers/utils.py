@@ -220,6 +220,12 @@ class Header(object):
         All the magic happen here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
         """
+        if item[0] == "_":
+            item = item[1:]
+
+        if item.lower() in RESERVED_KEYWORD:
+            item = item[:-1]
+
         if (
             item not in self._valued_attrs
             and Header.normalize_name(item) not in self._valued_attrs_normalized
