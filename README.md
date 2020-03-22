@@ -59,6 +59,7 @@ Plus all the features that you would expect from handling headers...
 * Properties syntax for headers and attribute in header.
 * Support headers and attributes OneToOne and OneToMany.
 * Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
+* Automatically unquote value of an attribute when retrieving it.
 * Case insensible on header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like. We like.
