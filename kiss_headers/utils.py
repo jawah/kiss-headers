@@ -34,6 +34,7 @@ RESERVED_KEYWORD = [
     "except_",
     "def_",
     "from_",
+    "for_",
 ]
 
 
