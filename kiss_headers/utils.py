@@ -683,24 +683,6 @@ def parse_it(raw_headers: Any) -> Headers:
         buf: BytesIO = (
             BytesIO(raw_headers) if not hasattr(raw_headers, "closed") else raw_headers
         )
-
-        bytes_: bytes = buf.read()
-
-        try:
-            bytes_.decode("ascii")
-        except UnicodeDecodeError:
-            try:
-                bytes_.decode("utf-8")
-            except UnicodeDecodeError:
-                raise UnicodeDecodeError(
-                    "utf-8",
-                    bytes_,
-                    0,
-                    len(bytes_),
-                    "You intended to parse headers that are neither from ASCII encoding or UTF-8.",
-                )
-
-        buf.seek(0)
         headers = BytesHeaderParser().parse(buf, headersonly=True).items()
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
