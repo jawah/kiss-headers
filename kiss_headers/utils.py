@@ -127,6 +127,11 @@ class Header(object):
         return Header(deepcopy(self.name), deepcopy(self.content))
 
     def __setattr__(self, key: str, value: str) -> NoReturn:
+        """
+        Set attribute on header using the property notation.
+        """
+
+        # Avoid conflict with __init__ sequence of Header
         if key in [
             "_name",
             "_normalized_name",
@@ -147,6 +152,9 @@ class Header(object):
         self[key] = value
 
     def __setitem__(self, key: str, value: str) -> NoReturn:
+        """
+        Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
+        """
         key_normalized = Header.normalize_name(key)
 
         if key in self:
@@ -158,6 +166,10 @@ class Header(object):
         self._content += '; {key}="{value}"'.format(key=key, value=value)
 
     def __delitem__(self, key: str) -> NoReturn:
+        """
+        Remove any attribute named after the key in header using the bracket syntax.
+           >>> del headers.content_type['charset']
+        """
         key_normalized = Header.normalize_name(key)
 
         if key_normalized not in self._valued_attrs_normalized:
@@ -200,6 +212,10 @@ class Header(object):
                 self._content = self._content[:-1]
 
     def __delattr__(self, item: str) -> NoReturn:
+        """
+        Remove any attribute named after the key in header using the property notation.
+           >>> del headers.content_type.charset
+        """
         item = Header.normalize_name(item)
 
         if item not in self._valued_attrs_normalized:
