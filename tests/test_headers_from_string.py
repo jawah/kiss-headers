@@ -49,6 +49,15 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
             MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS_MOZILLA)
         )
 
+    def test_headers_get_has(self):
+
+        self.assertIsNone(MyKissHeadersFromStringTest.headers.get("received"))
+        self.assertFalse(MyKissHeadersFromStringTest.headers.has("received"))
+
+        self.assertEqual(
+            "SAMEORIGIN", MyKissHeadersFromStringTest.headers.get("x-frame-options")
+        )
+
     def test_repr_dict(self):
 
         dict_ = MyKissHeadersFromStringTest.headers.to_dict()
