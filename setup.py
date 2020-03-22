@@ -54,6 +54,10 @@ setup(
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Intended Audience :: Developers',
+        'Development Status :: 5 - Production/Stable',
+        'Topic :: Communications :: Email',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Content Management System',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
