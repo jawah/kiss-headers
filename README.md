@@ -28,7 +28,7 @@
   <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
 </p>
 
-### Why ?
+### ❓ Why
 
 No matters your religion, IMAP4 or HTTP, you should not worries about accessing easily header and associated attributes, adjectives or values.
 
@@ -86,25 +86,7 @@ from kiss_headers import parse_it
 response = get('https://www.google.fr')
 headers = parse_it(response)
 
-'Content-Type' in headers  # output: True
-'Content_type' in headers  # output: True
-
-str(headers.content_type)  # output : text/html; charset=ISO-8859-1
-'application/json' in headers.content_type  # output: False
-'text/html' in headers.content_type # output: True
-
-str(headers.content_type.charset)  # output : ISO-8859-1
-type(headers.set_cookie) # output: list
-'Secure' in headers.set_cookie[0] # output: True
-'secure' in headers.set_cookie[0] # output: True
-'Secur' in headers.set_cookie[0] # output: False
-'domain' in headers.set_cookie[0] # output: True
-headers.set_cookie[0].domain # output: .google.fr
-
-# Hell, you can do this if you wish to remove all 'Set-Cookies' entries.
-headers -= 'Set-Cookies'
-# Or this, if you must !
-headers = headers - 'Set-Cookies'
+headers.content_type.charset  # output: ISO-8859-1
 ```
 
 Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple value within the same header.
@@ -130,6 +112,10 @@ headers.from_ # to access From, just add a single underscore to it
 # or..
 headers['from']
 ```
+
+## 📜 Documentation
+
+See the full documentation for advanced usages : [www.kiss-headers.tech](https://www.kiss-headers.tech/)
 
 ## 👤 Contributing
 
