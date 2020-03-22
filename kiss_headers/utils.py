@@ -13,7 +13,7 @@ from typing import (
     NoReturn,
 )
 from email.header import decode_header
-from re import findall
+from re import findall, IGNORECASE, escape
 from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
@@ -125,6 +125,91 @@ class Header(object):
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
         return Header(deepcopy(self.name), deepcopy(self.content))
+
+    def __setattr__(self, key: str, value: str) -> NoReturn:
+        if key in [
+            "_name",
+            "_normalized_name",
+            "_content",
+            "_members",
+            "_not_valued_attrs",
+            "_valued_attrs_normalized",
+            "_valued_attrs",
+        ]:
+            return super().__setattr__(key, value)
+
+        if key[0] == "_":
+            key = key[1:]
+
+        if key.lower() in RESERVED_KEYWORD:
+            key = key[:-1]
+
+        self[key] = value
+
+    def __setitem__(self, key: str, value: str) -> NoReturn:
+        key_normalized = Header.normalize_name(key)
+
+        if key in self:
+            del self[key]
+
+        self._valued_attrs[key] = value
+        self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
+
+        self._content += '; {key}="{value}"'.format(key=key, value=value)
+
+    def __delitem__(self, key: str) -> NoReturn:
+        key_normalized = Header.normalize_name(key)
+
+        if key_normalized not in self._valued_attrs_normalized:
+            raise KeyError(
+                "'{item}' attribute is not defined within '{header}' header.".format(
+                    item=key, header=self.name
+                )
+            )
+
+        del self._valued_attrs_normalized[key]
+        not_normalized_keys = self._valued_attrs.keys()
+
+        for key_ in not_normalized_keys:
+            if Header.normalize_name(key_) == key_normalized:
+                del self._valued_attrs[key_]
+                break
+
+        for elem in findall(
+            r"{key_name}=.*?(?=[;\n])".format(key_name=escape(key)),
+            self._content + "\n",
+            IGNORECASE,
+        ):
+
+            has_semicolon_at_the_end: bool = False
+
+            try:
+                self._content.index(elem + ";")
+                has_semicolon_at_the_end = True
+            except ValueError:
+                pass
+
+            self._content: str = self._content.replace(
+                elem + (";" if has_semicolon_at_the_end else ""), ""
+            ).rstrip(" ").lstrip(" ")
+
+            if self._content.startswith(";"):
+                self._content = self._content[1:]
+
+            if self._content.endswith(";"):
+                self._content = self._content[:-1]
+
+    def __delattr__(self, item: str) -> NoReturn:
+        item = Header.normalize_name(item)
+
+        if item not in self._valued_attrs_normalized:
+            raise AttributeError(
+                "'{item}' attribute is not defined within '{header}' header.".format(
+                    item=item, header=self.name
+                )
+            )
+
+        del self[item]
 
     def __iter__(self) -> Iterator[Tuple[str, Optional[str]]]:
         for key, value in self._valued_attrs.items():
