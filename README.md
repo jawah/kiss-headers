@@ -44,7 +44,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 ## 🔪 Features
 
-`kiss-headers` is a super-set on steroid that allow you to handle with great care headers. 
+`kiss-headers` is a library on steroid that allow you to handle with great care headers. 
 
 * A backward compatible syntax using bracket style.
 * Capable to alter headers using simple operator notation `+` and `-` like a human would do.
