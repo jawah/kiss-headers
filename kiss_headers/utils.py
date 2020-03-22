@@ -53,9 +53,10 @@ class Header(object):
     samesite: str
     domain: str
 
-    def __init__(self, head: str, content: str):
+    def __init__(self, name: str, content: str):
 
-        self._head: str = head
+        self._name: str = name
+        self._normalized_name: str = Header.normalize_name(self._name)
         self._content: str = content
 
         self._members: List[str] = [el.lstrip() for el in self._content.split(";")]
@@ -100,14 +101,14 @@ class Header(object):
         """
         Output the original header name as it was captured initially
         """
-        return self._head
+        return self._name
 
-    @cached_property
+    @property
     def normalized_name(self) -> str:
         """
         Output header name but normalized, lower case and '-' character become '_'.
         """
-        return Header.normalize_name(self.name)
+        return self._normalized_name
 
     @property
     def content(self) -> str:
@@ -157,7 +158,7 @@ class Header(object):
         """
         Unambiguous representation of a single header.
         """
-        return "{head}: {content}".format(head=self._head, content=self._content)
+        return "{head}: {content}".format(head=self._name, content=self._content)
 
     def __dir__(self) -> Iterable[str]:
         """
