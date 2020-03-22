@@ -128,13 +128,13 @@ class Header(object):
 
     def __setattr__(self, key: str, value: str) -> NoReturn:
         if key in [
-            '_name',
-            '_normalized_name',
-            '_content',
-            '_members',
-            '_not_valued_attrs',
-            '_valued_attrs_normalized',
-            '_valued_attrs'
+            "_name",
+            "_normalized_name",
+            "_content",
+            "_members",
+            "_not_valued_attrs",
+            "_valued_attrs_normalized",
+            "_valued_attrs",
         ]:
             return super().__setattr__(key, value)
 
@@ -155,10 +155,7 @@ class Header(object):
         self._valued_attrs[key] = value
         self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
 
-        self._content += "; {key}=\"{value}\"".format(
-            key=key,
-            value=value
-        )
+        self._content += '; {key}="{value}"'.format(key=key, value=value)
 
     def __delitem__(self, key: str) -> NoReturn:
         key_normalized = Header.normalize_name(key)
@@ -178,7 +175,11 @@ class Header(object):
                 del self._valued_attrs[key_]
                 break
 
-        for elem in findall(r'{key_name}=.*?(?=[;\n])'.format(key_name=escape(key)), self._content+'\n', IGNORECASE):
+        for elem in findall(
+            r"{key_name}=.*?(?=[;\n])".format(key_name=escape(key)),
+            self._content + "\n",
+            IGNORECASE,
+        ):
 
             has_semicolon_at_the_end: bool = False
 
@@ -189,18 +190,13 @@ class Header(object):
                 pass
 
             self._content: str = self._content.replace(
-                elem + (";" if has_semicolon_at_the_end else ""),
-                ""
-            ).rstrip(
-                " "
-            ).lstrip(
-                " "
-            )
+                elem + (";" if has_semicolon_at_the_end else ""), ""
+            ).rstrip(" ").lstrip(" ")
 
-            if self._content.startswith(';'):
+            if self._content.startswith(";"):
                 self._content = self._content[1:]
 
-            if self._content.endswith(';'):
+            if self._content.endswith(";"):
                 self._content = self._content[:-1]
 
     def __delattr__(self, item: str) -> NoReturn:
