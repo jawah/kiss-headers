@@ -23,10 +23,7 @@ AUTHOR = 'Ahmed TAHRI @Ousret'
 REQUIRES_PYTHON = '>=3.6.0'
 VERSION = get_version()
 
-REQUIRED = [
-    'cached_property',
-    'requests'
-]
+REQUIRED = []
 
 EXTRAS = {}
 

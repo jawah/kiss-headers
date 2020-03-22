@@ -9,12 +9,11 @@ from typing import (
     Iterator,
     Tuple,
     Iterable,
-    AbstractSet,
+    Any,
 )
 from email.header import decode_header
-from cached_property import cached_property
-from requests import Response
-from requests.structures import CaseInsensitiveDict
+from re import findall
+from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
 RESERVED_KEYWORD = [
@@ -54,9 +53,10 @@ class Header(object):
     samesite: str
     domain: str
 
-    def __init__(self, head: str, content: str):
+    def __init__(self, name: str, content: str):
 
-        self._head: str = head
+        self._name: str = name
+        self._normalized_name: str = Header.normalize_name(self._name)
         self._content: str = content
 
         self._members: List[str] = [el.lstrip() for el in self._content.split(";")]
@@ -101,14 +101,14 @@ class Header(object):
         """
         Output the original header name as it was captured initially
         """
-        return self._head
+        return self._name
 
-    @cached_property
+    @property
     def normalized_name(self) -> str:
         """
         Output header name but normalized, lower case and '-' character become '_'.
         """
-        return Header.normalize_name(self.name)
+        return self._normalized_name
 
     @property
     def content(self) -> str:
@@ -158,7 +158,7 @@ class Header(object):
         """
         Unambiguous representation of a single header.
         """
-        return "{head}: {content}".format(head=self._head, content=self._content)
+        return "{head}: {content}".format(head=self._name, content=self._content)
 
     def __dir__(self) -> Iterable[str]:
         """
@@ -554,19 +554,21 @@ class Headers:
         )
 
 
-def parse_it(
-    raw_headers: Union[bytes, str, Dict[str, str], IOBase, Response]
-) -> Headers:
+def parse_it(raw_headers: Any) -> Headers:
     """
     Just decode anything that could contain headers. That simple PERIOD.
     """
+
+    headers: Optional[List[Tuple[str, Any]]] = None
+
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
     elif isinstance(raw_headers, bytes) or isinstance(raw_headers, IOBase):
-        buf = (
+        buf: BytesIO = (
             BytesIO(raw_headers) if not hasattr(raw_headers, "closed") else raw_headers
         )
-        bytes_ = buf.read()
+
+        bytes_: bytes = buf.read()
 
         try:
             bytes_.decode("ascii")
@@ -586,12 +588,16 @@ def parse_it(
         headers = BytesHeaderParser().parse(buf, headersonly=True).items()
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
-    elif isinstance(raw_headers, Response):
-        headers = list()
-        for header_name in raw_headers.raw.headers:
-            for header_content in raw_headers.raw.headers.getlist(header_name):
-                headers.append((header_name, header_content))
     else:
+        r = findall(r"<class '([a-zA-Z0-9.]+)'>", str(type(raw_headers)))
+
+        if r and r[0] == "requests.models.Response":
+            headers = []
+            for header_name in raw_headers.raw.headers:
+                for header_content in raw_headers.raw.headers.getlist(header_name):
+                    headers.append((header_name, header_content))
+
+    if headers is None:
         raise TypeError(
             "Cannot parse type {type_} as it is not supported by kiss-header.".format(
                 type_=type(raw_headers)
