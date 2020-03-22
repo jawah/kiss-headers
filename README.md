@@ -42,7 +42,28 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
 **No more of that !** 🤮
 
-### Your support
+## 🔪 Features
+
+`kiss-headers` is a super-set on steroid that allow you to handle with great care headers. 
+
+* A backward compatible syntax using bracket style.
+* Capable to alter headers using simple operator notation `+` and `-` like a human would do.
+* Does not care if headers are from IMAP4 or HTTP, do as you need with one library.
+* Ability to parse any object and extract from it recognized headers.
+* Fully type annotated.
+* Provide great auto-completion in python interpreter or any capable IDE.
+* 90% test coverage.
+
+Plus all the features that you would expect from handling headers...
+
+* Properties syntax for headers and attribute in header.
+* Support headers and attributes OneToOne and OneToMany.
+* Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
+* Case insensible on header name and attribute key.
+* Character `-` equal `_` in addition of above feature.
+* Any syntax you like. We like.
+
+## Your support
 
 Please 🌟 this repository if this project helped you! ✨ That would be very much appreciated ✨
 
