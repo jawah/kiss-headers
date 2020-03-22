@@ -44,7 +44,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 ### Your support
 
-Please ⭐ this repository if this project helped you! ✨ That would be very much appreciated ✨
+Please 🌟 this repository if this project helped you! ✨ That would be very much appreciated ✨
 
 ### ✨ Installation
 
