@@ -331,6 +331,13 @@ class Headers:
         """
         return list(set([header.name for header in self]))
 
+    def items(self) -> Iterator[Tuple[str, str]]:
+        """
+        Provide an iterator witch each entry contain a tuple of header name and content.
+        """
+        for header in self:
+            yield header.name, header.content
+
     def to_dict(self) -> CaseInsensitiveDict:
         """
         Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
