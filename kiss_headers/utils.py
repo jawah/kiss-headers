@@ -10,6 +10,7 @@ from typing import (
     Tuple,
     Iterable,
     Any,
+    NoReturn,
 )
 from email.header import decode_header
 from re import findall
@@ -319,7 +320,7 @@ class Headers:
             return None
         return self[header]
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Header]:
         for header in self._headers:
             yield header
 
@@ -349,7 +350,7 @@ class Headers:
     def __deepcopy__(self, memodict: Dict) -> "Headers":
         return Headers(deepcopy(self._headers))
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> NoReturn:
         """
         Remove all matching header named after called key.
            >>> del headers['content-type']
@@ -369,7 +370,7 @@ class Headers:
         for header in to_be_removed:
             self._headers.remove(header)
 
-    def __setitem__(self, key: str, value: str):
+    def __setitem__(self, key: str, value: str) -> NoReturn:
         """
         Set header using the bracket syntax. This operation would remove any existing header named after the key.
         """
@@ -378,7 +379,7 @@ class Headers:
 
         self._headers.append(Header(key, value))
 
-    def __delattr__(self, item: str):
+    def __delattr__(self, item: str) -> NoReturn:
         """
         Remove header using the property notation.
            >>> del headers.content_type
@@ -390,7 +391,7 @@ class Headers:
 
         del self[item]
 
-    def __setattr__(self, key: str, value: str):
+    def __setattr__(self, key: str, value: str) -> NoReturn:
         """
         Set header like it is a property/member. This operation would remove any existing header named after the key.
         """
@@ -418,7 +419,7 @@ class Headers:
         """
         return len(self._headers)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Just calling __repr__ of self. see __repr__.
         """
