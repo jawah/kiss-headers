@@ -2,7 +2,7 @@
 
 <p align="center">
   <img alt="Temporary logo" src="https://user-images.githubusercontent.com/9326700/76708477-64a96600-66f7-11ea-9d4a-8cc07866e185.png"/><br>
-  <sup>Imagine you could combine advantages of many representations ! With auto-completion !</sup><br>
+  <sup>Imagine you could combine advantages of many representations, with auto-completion!</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
@@ -30,13 +30,13 @@
 
 ### ❓ Why
 
-No matters your religion, IMAP4 or HTTP, you should not worries about accessing easily header and associated attributes, adjectives or values.
+No matter your religion or choice of IMAP4 or HTTP, you should not worry about easily accessing header and associated attributes, adjectives or values.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/9326700/77257881-55866300-6c77-11ea-820c-7550e6bdeee7.gif" alt="using kiss-headers from python interpreter"/>
 </p>
 
-I have seen so much chunk of code trying to deal with them, often I saw this :
+I have seen so many chunks of code trying to deal with these headers; often I saw this implementation :
 ```python
 charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
@@ -44,40 +44,40 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 ## 🔪 Features
 
-`kiss-headers` is a library on steroid that allow you to handle with great care headers. 
+`kiss-headers` is a library on steroids that allow you to handle headers with great care. 
 
-* A backward compatible syntax using bracket style.
-* Capable to alter headers using simple operator notation `+` and `-` like a human would do.
-* Does not care if headers are from IMAP4 or HTTP, do as you need with one library.
-* Ability to parse any object and extract from it recognized headers.
-* Fully type annotated.
-* Provide great auto-completion in python interpreter or any capable IDE.
+* A backwards-compatible syntax using bracket style.
+* Capability to alter headers using simple, human-readable operator notation `+` and `-`.
+* Flexibility if headers are from IMAP4 or HTTP, use as you need with one library.
+* Ability to parse any object and extract recognized headers from it.
+* Fully type-annotated.
+* Provide great auto-completion in Python interpreter or any capable IDE.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
-* Support headers and attributes OneToOne and OneToMany.
+* Supports headers and attributes OneToOne and OneToMany.
 * Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
 * Automatically unquote value of an attribute when retrieving it.
-* Case insensible on header name and attribute key.
+* Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
-* Any syntax you like. We like.
+* Any syntax you like, we like.
 
 ## Your support
 
-Please 🌟 this repository if this project helped you! ✨ That would be very much appreciated ✨
+Please 🌟 this repository if this project helped you! ✨ That would be very much appreciated. ✨
 
 ### ✨ Installation
 
-Whatever you like, use `Pipenv` or `pip`, it simply work. We are expecting you to have python 3.6+ installed.
+Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.6+ installed.
 ```sh 
 pip install kiss-headers
 ```
 
 ### 🍰 Usage
 
-`parse_it()` method take `bytes`, `str`, `fp`, `dict` or even `requests.Response` itself and give you back a `Headers` object.
+`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` itself and returns a `Headers` object.
 
 ```python
 from requests import get
@@ -89,7 +89,7 @@ headers = parse_it(response)
 headers.content_type.charset  # output: ISO-8859-1
 ```
 
-Do not forget that headers are not 1 TO 1. One header can be repeated multiple time and attribute can have multiple value within the same header.
+Do not forget that headers are not 1 to 1. One header can be repeated multiple times and attributes can have multiple values within the same header.
 
 ```python
 from kiss_headers import parse_it
@@ -103,7 +103,7 @@ type(headers.set_cookie)  # output: list
 headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
 ```
 
-Just a note to inform you that accessing a header that have the same name as a reserved keyword must be done this way :
+Just a note: Accessing a header that has the same name as a reserved keyword must be done this way :
 ```python
 headers = parse_it('From: Ousret; origin=www.github.com\nIS: 1\nWhile: Not-True')
 

@@ -2,7 +2,7 @@
 
 <p align="center">
   <img alt="Temporary logo" src="https://user-images.githubusercontent.com/9326700/76708477-64a96600-66f7-11ea-9d4a-8cc07866e185.png"/><br>
-  <sup>Imagine you could combine advantages of many representations ! With auto-completion !</sup><br>
+  <sup>Imagine you could combine advantages of many representations, with auto-completion!</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
@@ -30,28 +30,29 @@
 
 ## 🔪 Features
 
-`kiss-headers` is a library on steroid that allow you to handle with great care headers. 
+`kiss-headers` is a library on steroids that allow you to handle headers with great care. 
 
-* A backward compatible syntax using bracket style.
-* Capable to alter headers using simple operator notation `+` and `-` like a human would do.
-* Does not care if headers are from IMAP4 or HTTP, do as you need with one library.
-* Ability to parse any object and extract from it recognized headers.
-* Fully type annotated.
-* Provide great auto-completion in python interpreter or any capable IDE.
+* A backwards-compatible syntax using bracket style.
+* Capability to alter headers using simple, human-readable operator notation `+` and `-`.
+* Flexibility if headers are from IMAP4 or HTTP, use as you need with one library.
+* Ability to parse any object and extract recognized headers from it.
+* Fully type-annotated.
+* Provide great auto-completion in Python interpreter or any capable IDE.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
-* Support headers and attributes OneToOne and OneToMany.
+* Supports headers and attributes OneToOne and OneToMany.
 * Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
 * Automatically unquote value of an attribute when retrieving it.
-* Case insensible on header name and attribute key.
+* Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
+* Any syntax you like, we like.
 
 ## ✨ Installation
 
-Whatever you like, use `Pipenv` or `pip`, it simply work. We are expecting you to have python 3.6+ installed.
+Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.6+ installed.
 ```sh 
 pip install kiss-headers
 ```
