@@ -30,7 +30,7 @@
 
 ### ❓ Why
 
-No matter your religion or choice of IMAP4 or HTTP, you should not worry about easily accessing header and associated attributes, adjectives or values.
+No matter if you are currently building software using HTTP or IMAP, you should not worry about easily accessing header and associated attributes, adjectives or values.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/9326700/77257881-55866300-6c77-11ea-820c-7550e6bdeee7.gif" alt="using kiss-headers from python interpreter"/>

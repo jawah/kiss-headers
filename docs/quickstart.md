@@ -15,7 +15,7 @@ headers.content_type.charset  # output: ISO-8859-1
 
 ### OneToOne, OneToMany
 
-Do not forget that headers are not 1 to 1. One header can be repeated multiple times and attributse can have multiple values within the same header.
+Do not forget that headers are not 1 to 1. One header can be repeated multiple times and attributes can have multiple values within the same header.
 
 ```python
 from kiss_headers import parse_it
