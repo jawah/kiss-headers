@@ -1,7 +1,7 @@
 # Contribution Guidelines
 
 If you’re reading this, you’re probably interested in contributing to **kiss-headers**. 
-Thank you very much! Open source projects live-and-die based on the support they receive from others, 
+Thank you very much! Open source projects thrive based on the support they receive from others, 
 and the fact that you’re even considering contributing to this project is very generous of you.
 
 ## Questions
