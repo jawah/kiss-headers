@@ -45,6 +45,10 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
+    project_urls={
+        "Documentation": "https://www.kiss-headers.tech",
+        "Source": "https://github.com/Ousret/kiss-headers",
+    },
     keywords=['headers', 'http', 'mail', 'text', 'imap', 'header', 'https', 'imap4'],
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     install_requires=REQUIRED,
