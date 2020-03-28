@@ -1,5 +1,5 @@
 import unittest
-from kiss_headers import Headers, parse_it
+from kiss_headers import Headers, parse_it, Header, lock_output_type
 
 RAW_HEADERS = """accept-ch: DPR
 accept-ch-lifetime: 2592000
@@ -137,6 +137,21 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         self.assertIn("accept_language", dir(headers))
 
         self.assertIn("q", dir(headers.accept))
+
+    def test_fixed_type_output(self):
+        headers = parse_it(RAW_HEADERS_MOZILLA)
+
+        self.assertEqual(Header, type(headers.accept))
+
+        lock_output_type()
+
+        self.assertEqual(list, type(headers.accept))
+
+        self.assertEqual(1, len(headers.accept))
+
+        lock_output_type(False)
+
+        self.assertEqual(Header, type(headers.accept))
 
 
 if __name__ == "__main__":
