@@ -157,11 +157,14 @@ class Header(object):
     def __setitem__(self, key: str, value: str):
         """
         Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
+        Any value that are not a str are casted to str.
         """
         key_normalized = Header.normalize_name(key)
 
         if key in self:
             del self[key]
+        if not isinstance(value, str):
+            value = str(value)
 
         self._valued_attrs[key] = value
         self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
