@@ -513,8 +513,7 @@ class Headers(object):
         if not isinstance(value, str):
             raise TypeError(
                 "Cannot assign header '{key}' using type {type_} to headers.".format(
-                    key=key,
-                    type_=type(value)
+                    key=key, type_=type(value)
                 )
             )
         if key in self:
