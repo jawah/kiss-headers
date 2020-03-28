@@ -687,13 +687,16 @@ def parse_it(raw_headers: Any) -> Headers:
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
     else:
-        r = findall(r"<class '([a-zA-Z0-9.]+)'>", str(type(raw_headers)))
+        r = findall(r"<class '([a-zA-Z0-9._]+)'>", str(type(raw_headers)))
 
-        if r and r[0] == "requests.models.Response":
-            headers = []
-            for header_name in raw_headers.raw.headers:
-                for header_content in raw_headers.raw.headers.getlist(header_name):
-                    headers.append((header_name, header_content))
+        if r:
+            if r[0] == "requests.models.Response":
+                headers = []
+                for header_name in raw_headers.raw.headers:
+                    for header_content in raw_headers.raw.headers.getlist(header_name):
+                        headers.append((header_name, header_content))
+            elif r[0] == "httpx._models.Response":
+                headers = raw_headers.headers.items()
 
     if headers is None:
         raise TypeError(

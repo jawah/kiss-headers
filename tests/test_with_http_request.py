@@ -2,6 +2,7 @@ import unittest
 from typing import Optional
 
 from requests import get, Response
+from httpx import get as _next_get
 
 from kiss_headers import parse_it
 
@@ -10,11 +11,12 @@ class MyHttpTestKissHeaders(unittest.TestCase):
 
     HTTPBIN_GET: Optional[Response] = None
     HTTPBIN_RESPONSE_HEADER: Optional[Response] = None
-    HTTPBIN_GET_STREAM: Optional[Response] = None
+    HTTPBIEN_GET_HTTPX: Optional[Response] = None
 
     def setUp(self) -> None:
 
         MyHttpTestKissHeaders.HTTPBIN_GET = get("https://httpbin.org/get")
+        MyHttpTestKissHeaders.HTTPBIEN_GET_HTTPX = _next_get("https://httpbin.org/get")
         MyHttpTestKissHeaders.HTTPBIN_RESPONSE_HEADER = get(
             "https://httpbin.org/response-headers",
             params={
@@ -97,6 +99,16 @@ Cache-Control: max-age=0""".encode(
         )
 
         self.assertIn("application/kiss", headers.freeform)
+
+    def test_httpx_requests_parse_it_eq(self):
+
+        headers = parse_it(MyHttpTestKissHeaders.HTTPBIN_GET)
+
+        for header in parse_it(MyHttpTestKissHeaders.HTTPBIEN_GET_HTTPX):
+            self.assertIn(
+                header.name,
+                headers
+            )
 
 
 if __name__ == "__main__":
