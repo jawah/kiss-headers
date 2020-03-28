@@ -3,6 +3,15 @@ from kiss_headers import Header
 
 
 class MyKissHeaderTest(unittest.TestCase):
+    def test_invalid_eq(self):
+
+        header = Header(
+            "Message-ID", "<455DADE4FB733C4C8F62EB4CEB36D8DE05037EA94F@johndoe>"
+        )
+
+        with self.assertRaises(TypeError):
+            k = header == 1
+
     def test_simple_eq(self):
 
         self.assertEqual(
