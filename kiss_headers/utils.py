@@ -240,7 +240,7 @@ class Header(object):
         del self[item]
 
     def __iter__(self) -> Iterator[Tuple[str, Optional[Union[str, List[str]]]]]:
-        for key, value in self._valued_attrs.items():
+        for key in self._valued_attrs:
             yield key, self[key]
         for adjective in self._not_valued_attrs:
             yield adjective, None
