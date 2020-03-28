@@ -428,8 +428,8 @@ class Headers(object):
 
     from_: Union[Header, List[Header]]
 
-    def __init__(self, headers: List[Header]):
-        self._headers: List[Header] = headers
+    def __init__(self, headers: Optional[List[Header]] = None):
+        self._headers: List[Header] = headers or []
 
     def has(self, header: str) -> bool:
         """
