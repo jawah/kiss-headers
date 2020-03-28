@@ -127,11 +127,7 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
     def test_headers_to_bytes(self):
         headers = parse_it(RAW_HEADERS_MOZILLA)
 
-        self.assertEqual(
-            headers,
-            parse_it(bytes(headers))
-        )
-
+        self.assertEqual(headers, parse_it(bytes(headers)))
 
 
 if __name__ == "__main__":
