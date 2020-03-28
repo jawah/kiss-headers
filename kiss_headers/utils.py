@@ -510,6 +510,13 @@ class Headers(object):
         """
         Set header using the bracket syntax. This operation would remove any existing header named after the key.
         """
+        if not isinstance(value, str):
+            raise TypeError(
+                "Cannot assign header '{key}' using type {type_} to headers.".format(
+                    key=key,
+                    type_=type(value)
+                )
+            )
         if key in self:
             del self[key]
 
