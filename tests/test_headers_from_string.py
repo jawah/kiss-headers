@@ -124,6 +124,15 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
         self.assertIn("Cache-Control", headers)
 
+    def test_headers_to_bytes(self):
+        headers = parse_it(RAW_HEADERS_MOZILLA)
+
+        self.assertEqual(
+            headers,
+            parse_it(bytes(headers))
+        )
+
+
 
 if __name__ == "__main__":
     unittest.main()
