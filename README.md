@@ -11,7 +11,7 @@
     <img alt="Download Count /Month" src="https://pepy.tech/badge/kiss-headers/month"/>
   </a>
   <a href="https://github.com/ousret/kiss-headers/blob/master/LICENSE">
-    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" target="_blank" />
+    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" />
   </a>
   <a href="https://www.codacy.com/manual/Ousret/kiss-headers?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ousret/kiss-headers&amp;utm_campaign=Badge_Grade">
     <img src="https://api.codacy.com/project/badge/Grade/0994a03546094b519601e33554c48535"/>
@@ -24,6 +24,9 @@
   </a>
   <a href="https://github.com/psf/black">
     <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
+  </a>
+  <a href="http://mypy-lang.org/">
+    <img alt="Checked with mypy" src="http://www.mypy-lang.org/static/mypy_badge.svg"/>
   </a>
   <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
 </p>
@@ -58,7 +61,7 @@ Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
 * Supports headers and attributes OneToOne and OneToMany.
-* Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `requests.Response` and `httpx._models.Response`.
 * Automatically unquote value of an attribute when retrieving it.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
@@ -77,7 +80,7 @@ pip install kiss-headers
 
 ### 🍰 Usage
 
-`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` itself and returns a `Headers` object.
+`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
 
 ```python
 from requests import get
@@ -89,7 +92,7 @@ headers = parse_it(response)
 headers.content_type.charset  # output: ISO-8859-1
 ```
 
-Do not forget that headers are not 1 to 1. One header can be repeated multiple times and attributes can have multiple values within the same header.
+Do not forget that headers are not OneToOne. One header can be repeated multiple times and attributes can have multiple values within the same header.
 
 ```python
 from kiss_headers import parse_it
@@ -102,6 +105,8 @@ headers = parse_it(my_cookies)
 type(headers.set_cookie)  # output: list
 headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
 ```
+
+If this behaviour does bother you, you can lock output to always be a list. Just call `lock_output_type()` method.
 
 Just a note: Accessing a header that has the same name as a reserved keyword must be done this way :
 ```python

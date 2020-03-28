@@ -1,5 +1,5 @@
 from collections import MutableMapping, OrderedDict, Mapping
-from typing import Any, NoReturn, Iterator, Tuple, Optional
+from typing import Any, Iterator, Tuple, Optional
 
 """
 Disclaimer : CaseInsensitiveDict has been borrowed from `psf/requests`.
@@ -40,7 +40,7 @@ class CaseInsensitiveDict(MutableMapping):
             data = {}
         self.update(data, **kwargs)
 
-    def __setitem__(self, key: str, value: Any) -> NoReturn:
+    def __setitem__(self, key: str, value: Any):
         # Use the lowercased key for lookups, but store the actual
         # key alongside the value.
         self._store[key.lower().replace("-", "_")] = (key, value)
@@ -48,7 +48,7 @@ class CaseInsensitiveDict(MutableMapping):
     def __getitem__(self, key: str) -> Any:
         return self._store[key.lower().replace("-", "_")][1]
 
-    def __delitem__(self, key: str) -> NoReturn:
+    def __delitem__(self, key: str):
         del self._store[key.lower().replace("-", "_")]
 
     def __iter__(self) -> Iterator[Tuple[str, Any]]:

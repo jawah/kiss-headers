@@ -1,5 +1,6 @@
 from email.parser import HeaderParser, BytesHeaderParser
 from io import BytesIO, IOBase
+from json import dumps
 from typing import (
     List,
     Optional,
@@ -10,14 +11,14 @@ from typing import (
     Tuple,
     Iterable,
     Any,
-    NoReturn,
+    MutableMapping,
 )
 from email.header import decode_header
 from re import findall, IGNORECASE, escape
 from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
-RESERVED_KEYWORD = [
+RESERVED_KEYWORD: List[str] = [
     "and_",
     "assert_",
     "in_",
@@ -36,6 +37,8 @@ RESERVED_KEYWORD = [
     "from_",
     "for_",
 ]
+
+OUTPUT_LOCK_TYPE: bool = False
 
 
 class Header(object):
@@ -64,8 +67,10 @@ class Header(object):
         self._members: List[str] = [el.lstrip() for el in self._content.split(";")]
 
         self._not_valued_attrs: List[str] = list()
-        self._valued_attrs: Dict[str, Union[str, List[str]]] = dict()
-        self._valued_attrs_normalized: Dict[str, Union[str, List[str]]] = dict()
+        self._valued_attrs: MutableMapping[str, Union[str, List[str]]] = dict()
+        self._valued_attrs_normalized: MutableMapping[
+            str, Union[str, List[str]]
+        ] = dict()
 
         for member in self._members:
             if "=" in member:
@@ -80,9 +85,9 @@ class Header(object):
                     self._valued_attrs[key] = value
                 else:
                     if isinstance(self._valued_attrs[key], str):
-                        self._valued_attrs[key] = [self._valued_attrs[key], value]
+                        self._valued_attrs[key] = [self._valued_attrs[key], value]  # type: ignore
                     else:
-                        self._valued_attrs[key].append(value)
+                        self._valued_attrs[key].append(value)  # type: ignore
 
                 self._valued_attrs_normalized[
                     Header.normalize_name(key)
@@ -126,7 +131,7 @@ class Header(object):
     def __deepcopy__(self, memodict: Dict) -> "Header":
         return Header(deepcopy(self.name), deepcopy(self.content))
 
-    def __setattr__(self, key: str, value: str) -> NoReturn:
+    def __setattr__(self, key: str, value: str):
         """
         Set attribute on header using the property notation.
         """
@@ -151,21 +156,24 @@ class Header(object):
 
         self[key] = value
 
-    def __setitem__(self, key: str, value: str) -> NoReturn:
+    def __setitem__(self, key: str, value: str):
         """
         Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
+        Any value that are not a str are casted to str.
         """
         key_normalized = Header.normalize_name(key)
 
         if key in self:
             del self[key]
+        if not isinstance(value, str):
+            value = str(value)
 
         self._valued_attrs[key] = value
         self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
 
         self._content += '; {key}="{value}"'.format(key=key, value=value)
 
-    def __delitem__(self, key: str) -> NoReturn:
+    def __delitem__(self, key: str):
         """
         Remove any attribute named after the key in header using the bracket syntax.
            >>> del headers.content_type['charset']
@@ -201,9 +209,13 @@ class Header(object):
             except ValueError:
                 pass
 
-            self._content: str = self._content.replace(
-                elem + (";" if has_semicolon_at_the_end else ""), ""
-            ).rstrip(" ").lstrip(" ")
+            self._content = (
+                self._content.replace(
+                    elem + (";" if has_semicolon_at_the_end else ""), ""
+                )
+                .rstrip(" ")
+                .lstrip(" ")
+            )
 
             if self._content.startswith(";"):
                 self._content = self._content[1:]
@@ -211,7 +223,7 @@ class Header(object):
             if self._content.endswith(";"):
                 self._content = self._content[:-1]
 
-    def __delattr__(self, item: str) -> NoReturn:
+    def __delattr__(self, item: str):
         """
         Remove any attribute named after the key in header using the property notation.
            >>> del headers.content_type.charset
@@ -227,13 +239,13 @@ class Header(object):
 
         del self[item]
 
-    def __iter__(self) -> Iterator[Tuple[str, Optional[str]]]:
-        for key, value in self._valued_attrs.items():
+    def __iter__(self) -> Iterator[Tuple[str, Optional[Union[str, List[str]]]]]:
+        for key in self._valued_attrs:
             yield key, self[key]
         for adjective in self._not_valued_attrs:
             yield adjective, None
 
-    def __eq__(self, other: Union[str, "Header"]) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Verify equality between a Header object and str or another Header object.
         If testing against str, the first thing is to match it to raw content, if not equal verify if not in members.
@@ -245,7 +257,7 @@ class Header(object):
                 self.normalized_name == other.normalized_name
                 and self.content == other.content
             )
-        raise TypeError(
+        raise NotImplemented(
             "Cannot compare type {type_} to an Header. Use str or Header.".format(
                 type_=type(other)
             )
@@ -263,12 +275,19 @@ class Header(object):
         """
         return "{head}: {content}".format(head=self._name, content=self._content)
 
+    def __bytes__(self) -> bytes:
+        """
+        Provide a bytes repr of header. Warning, this output does not have a RC at the end. Any error encountered
+        in encoder would be treated by 'surrogateescape' clause.
+        """
+        return repr(self).encode("utf-8", errors="surrogateescape")
+
     def __dir__(self) -> Iterable[str]:
         """
         Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other word, more precise auto-completion when not using IDE.
         """
-        return super().__dir__() + list(self._valued_attrs_normalized.keys())
+        return list(super().__dir__()) + list(self._valued_attrs_normalized.keys())
 
     @property
     def attrs(self) -> List[str]:
@@ -285,7 +304,7 @@ class Header(object):
         """
         return attr in self
 
-    def get(self, attr: str) -> Optional[str]:
+    def get(self, attr: str) -> Optional[Union[str, List[str]]]:
         """
         Retrieve associated value of an attribute.
         """
@@ -293,7 +312,7 @@ class Header(object):
             return None
         return self._valued_attrs[attr]
 
-    def __getitem__(self, item: Union[str, int]) -> Union[str, List[str]]:
+    def __getitem__(self, item: Union[str]) -> Union[str, List[str]]:
         """
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
         """
@@ -314,9 +333,12 @@ class Header(object):
         if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
             return value[1:-1]
 
+        if OUTPUT_LOCK_TYPE and not isinstance(value, list):
+            return [value]
+
         return value
 
-    def __getattr__(self, item: str) -> str:
+    def __getattr__(self, item: str) -> Union[str, List[str]]:
         """
         All the magic happen here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
@@ -349,7 +371,7 @@ class Header(object):
         return False
 
 
-class Headers:
+class Headers(object):
     """
     Object oriented representation for Headers. Contains a list of Header with some level of abstraction.
     Combine advantages of dict, CaseInsensibleDict and objects.
@@ -357,62 +379,62 @@ class Headers:
 
     # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
     # Lowercase only.
-    access_control_allow_origin: Header
+    access_control_allow_origin: Union[Header, List[Header]]
 
-    www_authenticate: Header
-    authorization: Header
-    proxy_authenticate: Header
-    proxy_authorization: Header
+    www_authenticate: Union[Header, List[Header]]
+    authorization: Union[Header, List[Header]]
+    proxy_authenticate: Union[Header, List[Header]]
+    proxy_authorization: Union[Header, List[Header]]
 
-    age: Header
-    cache_control: Header
-    clear_site_data: Header
-    expires: Header
-    pragma: Header
-    warning: Header
+    age: Union[Header, List[Header]]
+    cache_control: Union[Header, List[Header]]
+    clear_site_data: Union[Header, List[Header]]
+    expires: Union[Header, List[Header]]
+    pragma: Union[Header, List[Header]]
+    warning: Union[Header, List[Header]]
 
-    last_modified: Header
-    etag: Header
-    if_match: Header
-    if_none_match: Header
-    if_modified_since: Header
-    if_unmodified_since: Header
-    vary: Header
-    connection: Header
-    keep_alive: Header
+    last_modified: Union[Header, List[Header]]
+    etag: Union[Header, List[Header]]
+    if_match: Union[Header, List[Header]]
+    if_none_match: Union[Header, List[Header]]
+    if_modified_since: Union[Header, List[Header]]
+    if_unmodified_since: Union[Header, List[Header]]
+    vary: Union[Header, List[Header]]
+    connection: Union[Header, List[Header]]
+    keep_alive: Union[Header, List[Header]]
 
-    x_cache: Header
-    via: Header
+    x_cache: Union[Header, List[Header]]
+    via: Union[Header, List[Header]]
 
-    accept: Header
-    accept_charset: Header
-    accept_encoding: Header
-    accept_language: Header
+    accept: Union[Header, List[Header]]
+    accept_charset: Union[Header, List[Header]]
+    accept_encoding: Union[Header, List[Header]]
+    accept_language: Union[Header, List[Header]]
 
-    expect: Header
+    expect: Union[Header, List[Header]]
 
-    cookie: Header
-    set_cookie: Header
+    cookie: Union[Header, List[Header]]
+    set_cookie: Union[Header, List[Header]]
 
-    content_disposition: Header
+    content_disposition: Union[Header, List[Header]]
 
-    content_type: Header
+    content_type: Union[Header, List[Header]]
 
-    host: Header
-    referer: Header
-    referrer_policy: Header
-    user_agent: Header
+    host: Union[Header, List[Header]]
+    referer: Union[Header, List[Header]]
+    referrer_policy: Union[Header, List[Header]]
+    user_agent: Union[Header, List[Header]]
 
-    allow: Header
-    server: Header
+    allow: Union[Header, List[Header]]
+    server: Union[Header, List[Header]]
 
-    transfer_encoding: Header
-    date: Header
+    transfer_encoding: Union[Header, List[Header]]
+    date: Union[Header, List[Header]]
 
-    from_: Header
+    from_: Union[Header, List[Header]]
 
-    def __init__(self, headers: List[Header]):
-        self._headers: List[Header] = headers
+    def __init__(self, headers: Optional[List[Header]] = None):
+        self._headers: List[Header] = headers or []
 
     def has(self, header: str) -> bool:
         """
@@ -420,7 +442,7 @@ class Headers:
         """
         return header in self
 
-    def get(self, header: str) -> Optional[Header]:
+    def get(self, header: str) -> Optional[Union[Header, List[Header]]]:
         """
         Retrieve header from headers if exists
         """
@@ -438,12 +460,16 @@ class Headers:
         """
         return list(set([header.name for header in self]))
 
-    def items(self) -> Iterator[Tuple[str, str]]:
+    def items(self) -> List[Tuple[str, str]]:
         """
         Provide an iterator witch each entry contain a tuple of header name and content.
         """
+        items: List[Tuple[str, str]] = []
+
         for header in self:
-            yield header.name, header.content
+            items.append((header.name, header.content))
+
+        return items
 
     def to_dict(self) -> CaseInsensitiveDict:
         """
@@ -465,7 +491,7 @@ class Headers:
     def __deepcopy__(self, memodict: Dict) -> "Headers":
         return Headers(deepcopy(self._headers))
 
-    def __delitem__(self, key: str) -> NoReturn:
+    def __delitem__(self, key: str):
         """
         Remove all matching header named after called key.
            >>> del headers['content-type']
@@ -485,16 +511,22 @@ class Headers:
         for header in to_be_removed:
             self._headers.remove(header)
 
-    def __setitem__(self, key: str, value: str) -> NoReturn:
+    def __setitem__(self, key: str, value: str):
         """
         Set header using the bracket syntax. This operation would remove any existing header named after the key.
         """
+        if not isinstance(value, str):
+            raise TypeError(
+                "Cannot assign header '{key}' using type {type_} to headers.".format(
+                    key=key, type_=type(value)
+                )
+            )
         if key in self:
             del self[key]
 
         self._headers.append(Header(key, value))
 
-    def __delattr__(self, item: str) -> NoReturn:
+    def __delattr__(self, item: str):
         """
         Remove header using the property notation.
            >>> del headers.content_type
@@ -506,7 +538,7 @@ class Headers:
 
         del self[item]
 
-    def __setattr__(self, key: str, value: str) -> NoReturn:
+    def __setattr__(self, key: str, value: str):
         """
         Set header like it is a property/member. This operation would remove any existing header named after the key.
         """
@@ -515,10 +547,16 @@ class Headers:
 
         self[key] = value
 
-    def __eq__(self, other: "Headers") -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
         """
+        if not isinstance(other, Headers):
+            raise NotImplemented(
+                "Cannot compare type {type_} to an Header. Use str or Header.".format(
+                    type_=type(other)
+                )
+            )
         if len(other) != len(self):
             return False
 
@@ -610,6 +648,9 @@ class Headers:
         """
         Extract header using the bracket syntax, dict-like. The result is either a single Header or a list of Header.
         """
+        if isinstance(item, int):
+            return self._headers[item]
+
         item = Header.normalize_name(item)
 
         if item not in self:
@@ -623,7 +664,7 @@ class Headers:
             if header.normalized_name == item:
                 headers.append(header)
 
-        return headers if len(headers) > 1 else headers.pop()
+        return headers if len(headers) > 1 or OUTPUT_LOCK_TYPE else headers.pop()
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
         """
@@ -645,6 +686,20 @@ class Headers:
 
         return self[item]
 
+    def to_json(self) -> str:
+        """
+        Provide a JSON representation of Headers
+        """
+        return dumps(self.items())
+
+    def __bytes__(self) -> bytes:
+        """
+        Will encode your headers as bytes using utf-8 charset encoding. Any error encountered in encoder would be
+        treated by the 'surrogateescape' clause.
+           >>> bytes(headers)
+        """
+        return repr(self).encode("utf-8", errors="surrogateescape")
+
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
         This method will allow you to test if a header, based on it's string name, is present or not in headers.
@@ -665,7 +720,7 @@ class Headers:
         Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other word, more precise auto-completion when not using IDE.
         """
-        return super().__dir__() + list(
+        return list(super().__dir__()) + list(
             set([header.normalized_name for header in self])
         )
 
@@ -675,25 +730,32 @@ def parse_it(raw_headers: Any) -> Headers:
     Just decode anything that could contain headers. That simple PERIOD.
     """
 
-    headers: Optional[List[Tuple[str, Any]]] = None
+    headers: Optional[Iterable[Tuple[str, Any]]] = None
 
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
     elif isinstance(raw_headers, bytes) or isinstance(raw_headers, IOBase):
-        buf: BytesIO = (
-            BytesIO(raw_headers) if not hasattr(raw_headers, "closed") else raw_headers
+        headers = (
+            BytesHeaderParser()
+            .parse(
+                BytesIO(raw_headers) if isinstance(raw_headers, bytes) else raw_headers,  # type: ignore
+                headersonly=True,
+            )
+            .items()
         )
-        headers = BytesHeaderParser().parse(buf, headersonly=True).items()
     elif isinstance(raw_headers, Mapping):
         headers = raw_headers.items()
     else:
-        r = findall(r"<class '([a-zA-Z0-9.]+)'>", str(type(raw_headers)))
+        r = findall(r"<class '([a-zA-Z0-9._]+)'>", str(type(raw_headers)))
 
-        if r and r[0] == "requests.models.Response":
-            headers = []
-            for header_name in raw_headers.raw.headers:
-                for header_content in raw_headers.raw.headers.getlist(header_name):
-                    headers.append((header_name, header_content))
+        if r:
+            if r[0] == "requests.models.Response":
+                headers = []
+                for header_name in raw_headers.raw.headers:
+                    for header_content in raw_headers.raw.headers.getlist(header_name):
+                        headers.append((header_name, header_content))
+            elif r[0] == "httpx._models.Response":
+                headers = raw_headers.headers.items()
 
     if headers is None:
         raise TypeError(
@@ -725,10 +787,18 @@ def parse_it(raw_headers: Any) -> Headers:
         and (isinstance(raw_headers, bytes) or isinstance(raw_headers, str))
     ):
         next_iter = raw_headers.split(
-            b"\n" if isinstance(raw_headers, bytes) else "\n", maxsplit=1
+            b"\n" if isinstance(raw_headers, bytes) else "\n", maxsplit=1  # type: ignore
         )
 
         if len(next_iter) >= 2:
             return parse_it(next_iter[-1])
 
     return Headers([Header(head, content) for head, content in revised_headers])
+
+
+def lock_output_type(lock: bool = True):
+    """
+    This method will restrict type entropy by always return a List[Header] instead of Union[Header, List[Header]]
+    """
+    global OUTPUT_LOCK_TYPE
+    OUTPUT_LOCK_TYPE = lock
