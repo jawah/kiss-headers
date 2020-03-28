@@ -129,6 +129,15 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
         self.assertEqual(headers, parse_it(bytes(headers)))
 
+    def test_verify_autocompletion_capability(self):
+        headers = parse_it(RAW_HEADERS_MOZILLA)
+
+        self.assertIn("accept_encoding", dir(headers))
+
+        self.assertIn("accept_language", dir(headers))
+
+        self.assertIn("q", dir(headers.accept))
+
 
 if __name__ == "__main__":
     unittest.main()
