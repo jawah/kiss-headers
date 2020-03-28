@@ -105,10 +105,7 @@ Cache-Control: max-age=0""".encode(
         headers = parse_it(MyHttpTestKissHeaders.HTTPBIN_GET)
 
         for header in parse_it(MyHttpTestKissHeaders.HTTPBIEN_GET_HTTPX):
-            self.assertIn(
-                header.name,
-                headers
-            )
+            self.assertIn(header.name, headers)
 
 
 if __name__ == "__main__":
