@@ -80,7 +80,7 @@ pip install kiss-headers
 
 ### 🍰 Usage
 
-`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` itself and returns a `Headers` object.
+`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
 
 ```python
 from requests import get
@@ -92,7 +92,7 @@ headers = parse_it(response)
 headers.content_type.charset  # output: ISO-8859-1
 ```
 
-Do not forget that headers are not 1 to 1. One header can be repeated multiple times and attributes can have multiple values within the same header.
+Do not forget that headers are not OneToOne. One header can be repeated multiple times and attributes can have multiple values within the same header.
 
 ```python
 from kiss_headers import parse_it
@@ -105,6 +105,8 @@ headers = parse_it(my_cookies)
 type(headers.set_cookie)  # output: list
 headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
 ```
+
+If this behaviour does bother you, you can lock output to always be a list. Just call `lock_output_type()` method.
 
 Just a note: Accessing a header that has the same name as a reserved keyword must be done this way :
 ```python
