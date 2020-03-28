@@ -1,5 +1,6 @@
 from email.parser import HeaderParser, BytesHeaderParser
 from io import BytesIO, IOBase
+from json import dumps
 from typing import (
     List,
     Optional,
@@ -663,6 +664,12 @@ class Headers(object):
             )
 
         return self[item]
+
+    def to_json(self) -> str:
+        """
+        Provide a JSON representation of Headers
+        """
+        return dumps(self.items())
 
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
