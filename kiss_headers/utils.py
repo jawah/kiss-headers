@@ -38,6 +38,8 @@ RESERVED_KEYWORD: List[str] = [
     "for_",
 ]
 
+OUTPUT_LOCK_TYPE: bool = False
+
 
 class Header(object):
     """
@@ -330,6 +332,9 @@ class Header(object):
         # Unquote value if necessary
         if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
             return value[1:-1]
+
+        if OUTPUT_LOCK_TYPE and not isinstance(value, list):
+            return [value]
 
         return value
 
@@ -659,7 +664,7 @@ class Headers(object):
             if header.normalized_name == item:
                 headers.append(header)
 
-        return headers if len(headers) > 1 else headers.pop()
+        return headers if len(headers) > 1 or OUTPUT_LOCK_TYPE else headers.pop()
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
         """
@@ -789,3 +794,11 @@ def parse_it(raw_headers: Any) -> Headers:
             return parse_it(next_iter[-1])
 
     return Headers([Header(head, content) for head, content in revised_headers])
+
+
+def lock_output_type(lock: bool = True):
+    """
+    This method will restrict type entropy by always return a List[Header] instead of Union[Header, List[Header]]
+    """
+    global OUTPUT_LOCK_TYPE
+    OUTPUT_LOCK_TYPE = lock
