@@ -270,6 +270,13 @@ class Header(object):
         """
         return "{head}: {content}".format(head=self._name, content=self._content)
 
+    def __bytes__(self) -> bytes:
+        """
+        Provide a bytes repr of header. Warning, this output does not have a RC at the end. Any error encountered
+        in encoder would be treated by 'surrogateescape' clause.
+        """
+        return repr(self).encode('utf-8', errors="surrogateescape")
+
     def __dir__(self) -> Iterable[str]:
         """
         Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
@@ -670,6 +677,14 @@ class Headers(object):
         Provide a JSON representation of Headers
         """
         return dumps(self.items())
+
+    def __bytes__(self) -> bytes:
+        """
+        Will encode your headers as bytes using utf-8 charset encoding. Any error encountered in encoder would be
+        treated by the 'surrogateescape' clause.
+           >>> bytes(headers)
+        """
+        return repr(self).encode('utf-8', errors="surrogateescape")
 
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
