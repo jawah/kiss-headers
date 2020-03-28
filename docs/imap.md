@@ -1,4 +1,4 @@
-### Using email
+### Usage with email / IMAP
 
 Usage of `kiss-headers` is pretty much the same. You can do the following :
 

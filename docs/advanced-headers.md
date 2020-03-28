@@ -8,7 +8,7 @@ from requests import get
 headers = parse_it(get('https://www.python.org'))
 ```
 
-### Test existence of an header
+### Check for existence of a header
 
 ```python
 'Content-Type' in headers
@@ -20,7 +20,7 @@ hasattr(headers, 'content-type')
 headers.has('content-type')
 ```
 
-### Accessing it
+### Accessing a header
 
 ```python
 headers.content_type
@@ -30,10 +30,10 @@ headers['content-type']
 headers.get('content-type')
 ```
 
-### Removing
+### Removing the header
 
-It is possible to remove an header using multiple way. 
-eg. If you would like to remove `Content-Type` header.
+It is possible to remove an header in multiple ways. 
+*e.g.* If you would like to remove `Content-Type` header.
 
 #### Using del
 
@@ -51,12 +51,12 @@ headers -= 'Content-Type'
 headers = headers - 'Content-Type'
 ```
 
-### Adding
+### Adding a header
 
-It is possible to add an header using multiple way. 
+It is possible to add an header in multiple ways. 
 eg. If you would like to add `Content-Type` header.
 
-You will have to import like bellow `Header` class in addition of `parse_it`.
+You will have to import the `Header` class, in addition to `parse_it`, as done below.
 ```python
 from kiss_headers import Header
 ```
@@ -67,7 +67,7 @@ from kiss_headers import Header
 headers += Header('Content-Type', 'application/json')
 ```
 
-#### Using assignation
+#### Using assignments
 
 ```python
 headers['content-type'] = 'application/json'
