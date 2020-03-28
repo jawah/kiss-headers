@@ -11,7 +11,7 @@
     <img alt="Download Count /Month" src="https://pepy.tech/badge/kiss-headers/month"/>
   </a>
   <a href="https://github.com/ousret/kiss-headers/blob/master/LICENSE">
-    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" target="_blank" />
+    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" />
   </a>
   <a href="https://www.codacy.com/manual/Ousret/kiss-headers?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ousret/kiss-headers&amp;utm_campaign=Badge_Grade">
     <img src="https://api.codacy.com/project/badge/Grade/0994a03546094b519601e33554c48535"/>
@@ -61,7 +61,7 @@ Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
 * Supports headers and attributes OneToOne and OneToMany.
-* Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `requests.Response` and `httpx._models.Response`.
 * Automatically unquote value of an attribute when retrieving it.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
