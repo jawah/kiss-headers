@@ -11,7 +11,7 @@ from typing import (
     Tuple,
     Iterable,
     Any,
-    MutableMapping
+    MutableMapping,
 )
 from email.header import decode_header
 from re import findall, IGNORECASE, escape
@@ -275,7 +275,7 @@ class Header(object):
         Provide a bytes repr of header. Warning, this output does not have a RC at the end. Any error encountered
         in encoder would be treated by 'surrogateescape' clause.
         """
-        return repr(self).encode('utf-8', errors="surrogateescape")
+        return repr(self).encode("utf-8", errors="surrogateescape")
 
     def __dir__(self) -> Iterable[str]:
         """
@@ -684,7 +684,7 @@ class Headers(object):
         treated by the 'surrogateescape' clause.
            >>> bytes(headers)
         """
-        return repr(self).encode('utf-8', errors="surrogateescape")
+        return repr(self).encode("utf-8", errors="surrogateescape")
 
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
