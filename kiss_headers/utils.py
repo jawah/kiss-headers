@@ -171,7 +171,7 @@ class Header(object):
         self._valued_attrs[key] = value
         self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
 
-        self._content += '; {key}="{value}"'.format(key=key, value=value)
+        self._content += '{semi_colon_r}{key}="{value}"'.format(key=key, value=value, semi_colon_r="; " if self._content.lstrip() != "" else "")
 
     def __delitem__(self, key: str):
         """
