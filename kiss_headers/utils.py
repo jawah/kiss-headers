@@ -373,7 +373,8 @@ class Header(object):
             return True
         item = Header.normalize_name(item)
         for attr in self.attrs:
-            if item == Header.normalize_name(attr):
+            target = Header.normalize_name(attr)
+            if item == target or item in target.split(","):
                 return True
         return False
 
