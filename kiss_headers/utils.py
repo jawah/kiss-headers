@@ -135,6 +135,93 @@ class Header(object):
     def __deepcopy__(self, memodict: Dict) -> "Header":
         return Header(deepcopy(self.name), deepcopy(self.content))
 
+    def __iadd__(self, other: Union[str, "Header"]) -> "Header":
+        if not isinstance(other, str):
+            raise TypeError("Cannot assign-add with type {type_} to an Header.".format(type_=type(other)))
+
+        self._not_valued_attrs.append(other)
+
+        self._content += "; "+other if self._content.lstrip() != "" else other
+
+        return self
+
+    def __add__(self, other: Union[str, "Header"]) -> Union["Header", "Headers"]:
+        if not isinstance(other, str) and not isinstance(other, Header):
+            raise TypeError("Cannot make addition with type {type_} to an Header.".format(type_=type(other)))
+
+        if isinstance(other, Header):
+
+            headers = Headers()
+            headers += self
+            headers += other
+
+            return headers
+
+        header_ = deepcopy(self)
+        header_ += other
+
+        return header_
+
+    def __isub__(self, other: str) -> "Header":
+        """
+        This method should allow you to remove attribute or member from header.
+        """
+        if not isinstance(other, str):
+            raise TypeError
+
+        if other not in self:
+            raise ValueError
+
+        other = Header.normalize_name(other)
+
+        if other in self._valued_attrs_normalized:
+            del self[other]
+
+        if other in self._not_valued_attrs:
+            self._not_valued_attrs.remove(other)
+            while True:
+                try:
+                    self._not_valued_attrs.remove(other)
+                except ValueError:
+                    break
+            for elem in findall(
+                    r"{member_name}(?=[;\n])".format(member_name=escape(other)),
+                    self._content + "\n",
+                    IGNORECASE,
+            ):
+                has_semicolon_at_the_end: bool = False
+
+                try:
+                    self._content.index(elem + ";")
+                    has_semicolon_at_the_end = True
+                except ValueError:
+                    pass
+
+                self._content = (
+                    self._content.replace(
+                        elem + (";" if has_semicolon_at_the_end else ""), ""
+                    )
+                        .rstrip(" ")
+                        .lstrip(" ")
+                )
+
+                if self._content.startswith(";"):
+                    self._content = self._content[1:]
+
+                if self._content.endswith(";"):
+                    self._content = self._content[:-1]
+
+        return self
+
+    def __sub__(self, other: str) -> "Header":
+        """
+        This method should allow you to remove attribute or member from header.
+        """
+        header_ = deepcopy(self)
+        header_ -= other
+
+        return header_
+
     def __setattr__(self, key: str, value: str):
         """
         Set attribute on header using the property notation.
