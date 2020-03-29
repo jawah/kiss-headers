@@ -59,6 +59,10 @@ class Header(object):
     domain: str
 
     def __init__(self, name: str, content: str):
+        """
+        :param name: The name of the header, should contain only ASCII characters with no spaces in it.
+        :param content: Initial content associated with the header.
+        """
 
         self._name: str = name
         self._normalized_name: str = Header.normalize_name(self._name)
@@ -362,6 +366,9 @@ class Header(object):
         return self[item]
 
     def __contains__(self, item: str) -> bool:
+        """
+        Verify if a string match a member or an attribute name of an Header.
+        """
         if item in self.attrs:
             return True
         item = Header.normalize_name(item)
@@ -434,6 +441,9 @@ class Headers(object):
     from_: Union[Header, List[Header]]
 
     def __init__(self, headers: Optional[List[Header]] = None):
+        """
+        :param headers: Initial list of header. Can be empty.
+        """
         self._headers: List[Header] = headers or []
 
     def has(self, header: str) -> bool:
@@ -489,6 +499,9 @@ class Headers(object):
         return dict_headers
 
     def __deepcopy__(self, memodict: Dict) -> "Headers":
+        """
+        Just provide a deepcopy of current Headers object. Pointer linked free of current instance.
+        """
         return Headers(deepcopy(self._headers))
 
     def __delitem__(self, key: str):
