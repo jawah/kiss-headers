@@ -137,17 +137,25 @@ class Header(object):
 
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
         if not isinstance(other, str):
-            raise TypeError("Cannot assign-add with type {type_} to an Header.".format(type_=type(other)))
+            raise TypeError(
+                "Cannot assign-add with type {type_} to an Header.".format(
+                    type_=type(other)
+                )
+            )
 
         self._not_valued_attrs.append(other)
 
-        self._content += "; "+other if self._content.lstrip() != "" else other
+        self._content += "; " + other if self._content.lstrip() != "" else other
 
         return self
 
     def __add__(self, other: Union[str, "Header"]) -> Union["Header", "Headers"]:
         if not isinstance(other, str) and not isinstance(other, Header):
-            raise TypeError("Cannot make addition with type {type_} to an Header.".format(type_=type(other)))
+            raise TypeError(
+                "Cannot make addition with type {type_} to an Header.".format(
+                    type_=type(other)
+                )
+            )
 
         if isinstance(other, Header):
 
@@ -185,9 +193,9 @@ class Header(object):
                 except ValueError:
                     break
             for elem in findall(
-                    r"{member_name}(?=[;\n])".format(member_name=escape(other)),
-                    self._content + "\n",
-                    IGNORECASE,
+                r"{member_name}(?=[;\n])".format(member_name=escape(other)),
+                self._content + "\n",
+                IGNORECASE,
             ):
                 has_semicolon_at_the_end: bool = False
 
@@ -201,8 +209,8 @@ class Header(object):
                     self._content.replace(
                         elem + (";" if has_semicolon_at_the_end else ""), ""
                     )
-                        .rstrip(" ")
-                        .lstrip(" ")
+                    .rstrip(" ")
+                    .lstrip(" ")
                 )
 
                 if self._content.startswith(";"):
@@ -262,7 +270,11 @@ class Header(object):
         self._valued_attrs[key] = value
         self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
 
-        self._content += '{semi_colon_r}{key}="{value}"'.format(key=key, value=value, semi_colon_r="; " if self._content.lstrip() != "" else "")
+        self._content += '{semi_colon_r}{key}="{value}"'.format(
+            key=key,
+            value=value,
+            semi_colon_r="; " if self._content.lstrip() != "" else "",
+        )
 
     def __delitem__(self, key: str):
         """

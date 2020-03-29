@@ -14,6 +14,7 @@ class CustomHeader(Header):
     This class is a helper to create ready-to-use Header object with creation assistance.
     Should NOT be instantiated.
     """
+
     def __init__(self, initial_content: str = "", **kwargs):
         """
         :param initial_content: Initial content of the Header if any.
@@ -54,7 +55,7 @@ class ContentType(CustomHeader):
         charset: Optional[str] = None,
         format_: Optional[str] = None,
         boundary: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         """
         :param mime_type: The MIME type of the resource or the data. Format <MIME_type>/<MIME_subtype>.
@@ -64,18 +65,11 @@ class ContentType(CustomHeader):
         :param kwargs:
         """
 
-        args = {
-            "charset": charset,
-            "format": format_,
-            "boundary": boundary
-        }
+        args = {"charset": charset, "format": format_, "boundary": boundary}
 
         args.update(kwargs)
 
-        super().__init__(
-            mime_type,
-            **args
-        )
+        super().__init__(mime_type, **args)
 
 
 class ContentDisposition(CustomHeader):
@@ -84,6 +78,7 @@ class ContentDisposition(CustomHeader):
     if the content is expected to be displayed inline in the browser, that is, as a Web page or
     as part of a Web page, or as an attachment, that is downloaded and saved locally.
     """
+
     def __init__(
         self,
         is_form_data: bool = False,
@@ -93,7 +88,7 @@ class ContentDisposition(CustomHeader):
         filename: Optional[str] = None,
         fallback_filename: Optional[str] = None,
         boundary: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ):
         """
         :param is_form_data: Indicating it is a form-data.
@@ -106,20 +101,28 @@ class ContentDisposition(CustomHeader):
         :param kwargs:
         """
         if [is_inline, is_form_data, is_attachment].count(True) != 1:
-            raise ValueError("Content-Disposition should be either inline, form-data or attachment. Choose one.")
+            raise ValueError(
+                "Content-Disposition should be either inline, form-data or attachment. Choose one."
+            )
 
         args = {
             "name": name,
             "filename": filename,
             "filename*": fallback_filename,
-            "boundary": boundary
+            "boundary": boundary,
         }
 
         args.update(kwargs)
 
         super().__init__(
-            "form-data" if is_form_data else "inline" if is_inline else "attachment" if is_attachment else "",
-            **args
+            "form-data"
+            if is_form_data
+            else "inline"
+            if is_inline
+            else "attachment"
+            if is_attachment
+            else "",
+            **args,
         )
 
 
@@ -135,10 +138,26 @@ class Authorization(CustomHeader):
         :param type_: Authentication type. A common type is "Basic". See IANA registry of Authentication schemes for others.
         :param credentials: Associated credentials to use. Preferably Base-64 encoded.
         """
-        if type_.lower() not in ["basic", "bearer", "digest", "hoba", "mutual", "negotiate", "oauth", "scram-sha-1", "scram-sha-256", "vapid", "aws4-hmac-sha256"]:
-            raise ValueError("Authorization type should exist in IANA registry of Authentication schemes")
+        if type_.lower() not in [
+            "basic",
+            "bearer",
+            "digest",
+            "hoba",
+            "mutual",
+            "negotiate",
+            "oauth",
+            "scram-sha-1",
+            "scram-sha-256",
+            "vapid",
+            "aws4-hmac-sha256",
+        ]:
+            raise ValueError(
+                "Authorization type should exist in IANA registry of Authentication schemes"
+            )
 
-        super().__init__("{type_} {credentials}".format(type_=type_, credentials=credentials))
+        super().__init__(
+            "{type_} {credentials}".format(type_=type_, credentials=credentials)
+        )
 
 
 class Host(CustomHeader):
@@ -152,7 +171,7 @@ class Host(CustomHeader):
         :param host: The domain name of the server (for virtual hosting).
         :param port: TCP port number on which the server is listening.
         """
-        super().__init__(host + (":"+str(port) if port else ""), **kwargs)
+        super().__init__(host + (":" + str(port) if port else ""), **kwargs)
 
 
 class Connection(CustomHeader):
@@ -191,7 +210,10 @@ class Date(CustomHeader):
         :param my_date: Can either be a datetime that will be automatically converted or a raw string.
         :param kwargs:
         """
-        super().__init__(utils.format_datetime(my_date) if not isinstance(my_date, str) else my_date, **kwargs)
+        super().__init__(
+            utils.format_datetime(my_date) if not isinstance(my_date, str) else my_date,
+            **kwargs,
+        )
 
 
 class SetCookie(CustomHeader):
@@ -211,7 +233,7 @@ class SetCookie(CustomHeader):
         samesite: Optional[str] = None,
         is_secure: bool = False,
         is_httponly: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -229,18 +251,24 @@ class SetCookie(CustomHeader):
 
         for letter in cookie_name:
             if letter in {'<>@,;:\\"/[]?={}'}:
-                raise ValueError("The cookie name can not contains any of the following char: <>@,;:\"/[]?={}")
+                raise ValueError(
+                    'The cookie name can not contains any of the following char: <>@,;:"/[]?={}'
+                )
 
         if samesite and samesite.lower() not in ["strict", "lax", "none"]:
-            raise ValueError("Samesite attribute can only be one of the following: Strict, Lax or None.")
+            raise ValueError(
+                "Samesite attribute can only be one of the following: Strict, Lax or None."
+            )
 
         args = {
             cookie_name: cookie_value,
-            "expires": utils.format_datetime(expires) if isinstance(expires, datetime) else expires,
+            "expires": utils.format_datetime(expires)
+            if isinstance(expires, datetime)
+            else expires,
             "max-age": max_age,
             "domain": domain,
             "path": path,
-            "samesite": samesite
+            "samesite": samesite,
         }
 
         args.update(kwargs)
@@ -248,6 +276,6 @@ class SetCookie(CustomHeader):
         super().__init__("", **args)
 
         if is_secure:
-            self += 'Secure'  # type: ignore
+            self += "Secure"  # type: ignore
         if is_httponly:
-            self += 'HttpOnly'  # type: ignore
+            self += "HttpOnly"  # type: ignore
