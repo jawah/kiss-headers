@@ -6,12 +6,8 @@
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
-  <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
-  <a href="https://pepy.tech/project/kiss-headers/">
-    <img alt="Download Count /Month" src="https://pepy.tech/badge/kiss-headers/month"/>
-  </a>
-  <a href="https://github.com/ousret/kiss-headers/blob/master/LICENSE">
-    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" />
+  <a href='https://pypi.org/project/kiss-headers/'>
+     <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
   </a>
   <a href="https://www.codacy.com/manual/Ousret/kiss-headers?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ousret/kiss-headers&amp;utm_campaign=Badge_Grade">
     <img src="https://api.codacy.com/project/badge/Grade/0994a03546094b519601e33554c48535"/>
@@ -28,7 +24,9 @@
   <a href="http://mypy-lang.org/">
     <img alt="Checked with mypy" src="http://www.mypy-lang.org/static/mypy_badge.svg"/>
   </a>
-  <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
+  <a href="https://pepy.tech/project/kiss-headers/">
+     <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
+  </a>
 </p>
 
 ### ❓ Why
