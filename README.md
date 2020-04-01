@@ -45,7 +45,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 ## 🔪 Features
 
-`kiss-headers` is a library on steroids that allow you to handle headers with great care. 
+`kiss-headers` is a basic library that allow you to handle headers with great care. 
 
 * A backwards-compatible syntax using bracket style.
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
@@ -64,10 +64,6 @@ Plus all the features that you would expect from handling headers...
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.
-
-## Your support
-
-Please 🌟 this repository if this project helped you! ✨ That would be very much appreciated. ✨
 
 ### ✨ Installation
 
