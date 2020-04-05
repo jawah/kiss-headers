@@ -14,18 +14,20 @@ def flat_split(string: str, delimiter: str) -> List[str]:
     It will ignore delimiter if inside between double quote.
     The input string is considered perfect.
     """
-    if len(delimiter) != 1 or delimiter == "\"":
-        raise ValueError("Delimiter cannot be a double quote nor it can be longer than 1 char.")
+    if len(delimiter) != 1 or delimiter == '"':
+        raise ValueError(
+            "Delimiter cannot be a double quote nor it can be longer than 1 char."
+        )
 
     in_double_quote: bool = False
     result: List[str] = [""]
 
-    for letter in string+'\x00':
-        if letter == "\"":
+    for letter in string + "\x00":
+        if letter == '"':
             in_double_quote = not in_double_quote
         if in_double_quote:
             continue
-        if letter == delimiter or letter == '\x00':
+        if letter == delimiter or letter == "\x00":
             result[-1] = result[-1].lstrip().rstrip()
             result.append("")
             continue
