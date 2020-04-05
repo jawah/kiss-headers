@@ -78,8 +78,8 @@ def parse_it(raw_headers: Any) -> Headers:
         if len(next_iter) >= 2:
             return parse_it(next_iter[-1])
 
-    # Build the Headers object
-    headers: List[Header] = []
+    # Prepare Header objects
+    list_of_headers: List[Header] = []
 
     for head, content in revised_headers:
         entries: List[str] = flat_split(content, ",")
@@ -95,8 +95,8 @@ def parse_it(raw_headers: Any) -> Headers:
             "Sun",
         }:
             for entry in entries:
-                headers.append(Header(head, entry))
+                list_of_headers.append(Header(head, entry))
         else:
-            headers.append(Header(head, content))
+            list_of_headers.append(Header(head, content))
 
-    return Headers(headers)
+    return Headers(list_of_headers)

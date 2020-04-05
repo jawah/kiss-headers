@@ -102,8 +102,13 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
     normalized_name = normalize_str(name).replace("_", "")
 
     for subclass in root_type.__subclasses__():
+        class_name = extract_class_name(subclass)
+
+        if class_name is None:
+            continue
+
         if (
-            normalize_str(extract_class_name(subclass).split(".")[-1])
+            normalize_str(class_name.split(".")[-1])
             == normalized_name
         ):
             return subclass
