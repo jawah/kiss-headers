@@ -35,8 +35,8 @@ at <https://github.com/Ousret/kiss-headers>.
 :license: MIT, see LICENSE for more details.
 """
 
-from kiss_headers.models import Headers, Header
-from kiss_headers.api import parse_it, lock_output_type
+from kiss_headers.models import Headers, Header, lock_output_type
+from kiss_headers.api import parse_it
 from kiss_headers.builder import (
     CustomHeader,
     ContentType,
