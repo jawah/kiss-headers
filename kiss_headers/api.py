@@ -4,6 +4,7 @@ from typing import Optional, Iterable, Tuple, Any, Mapping
 from re import findall
 from email.header import decode_header
 from email.parser import HeaderParser, BytesHeaderParser
+from email.message import Message
 from io import BytesIO, IOBase
 
 
@@ -26,6 +27,8 @@ def parse_it(raw_headers: Any) -> Headers:
             .items()
         )
     elif isinstance(raw_headers, Mapping):
+        headers = raw_headers.items()
+    elif isinstance(raw_headers, Message):
         headers = raw_headers.items()
     else:
         r = findall(r"<class '([a-zA-Z0-9._]+)'>", str(type(raw_headers)))
