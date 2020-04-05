@@ -1,17 +1,13 @@
-<h1 align="center">Welcome to Headers for Human 👋 <a href="https://twitter.com/intent/tweet?text=So%20simple,%20you%20may%20fall%20in%20love%20at%20first%20sight%20!%20With%20auto-completion%20!&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
+<h1 align="center">Welcome to Headers for Humans 👋 <a href="https://twitter.com/intent/tweet?text=So%20simple,%20you%20may%20fall%20in%20love%20at%20first%20sight%20!%20With%20auto-completion%20!&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
 
 <p align="center">
   <img alt="Temporary logo" src="https://user-images.githubusercontent.com/9326700/76708477-64a96600-66f7-11ea-9d4a-8cc07866e185.png"/><br>
-  <sup>Imagine you could combine advantages of many representations, with auto-completion!</sup><br>
+  <sup>Combine advantages of many representations, with auto-completion!</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
-  <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
-  <a href="https://pepy.tech/project/kiss-headers/">
-    <img alt="Download Count /Month" src="https://pepy.tech/badge/kiss-headers/month"/>
-  </a>
-  <a href="https://github.com/ousret/kiss-headers/blob/master/LICENSE">
-    <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-purple.svg" />
+  <a href='https://pypi.org/project/kiss-headers/'>
+     <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
   </a>
   <a href="https://www.codacy.com/manual/Ousret/kiss-headers?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ousret/kiss-headers&amp;utm_campaign=Badge_Grade">
     <img src="https://api.codacy.com/project/badge/Grade/0994a03546094b519601e33554c48535"/>
@@ -28,7 +24,9 @@
   <a href="http://mypy-lang.org/">
     <img alt="Checked with mypy" src="http://www.mypy-lang.org/static/mypy_badge.svg"/>
   </a>
-  <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
+  <a href="https://pepy.tech/project/kiss-headers/">
+     <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
+  </a>
 </p>
 
 ### ❓ Why
@@ -43,11 +41,11 @@ I have seen so many chunks of code trying to deal with these headers; often I sa
 ```python
 charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
-**No more of that !** 🤮
+**No more of that !**
 
 ## 🔪 Features
 
-`kiss-headers` is a library on steroids that allow you to handle headers with great care. 
+`kiss-headers` is a basic library that allow you to handle headers with great care. 
 
 * A backwards-compatible syntax using bracket style.
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
@@ -66,10 +64,6 @@ Plus all the features that you would expect from handling headers...
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.
-
-## Your support
-
-Please 🌟 this repository if this project helped you! ✨ That would be very much appreciated. ✨
 
 ### ✨ Installation
 
