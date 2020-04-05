@@ -581,8 +581,7 @@ class AcceptLanguage(CustomHeader):
         args.update(kwargs)
 
         super().__init__(
-            language,
-            **args,
+            language, **args,
         )
 
 
