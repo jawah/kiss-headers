@@ -74,7 +74,7 @@ pip install kiss-headers
 
 ### 🍰 Usage
 
-`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
+`parse_it()` method takes `bytes`, `str`, `fp`, `dict`, `email.Message` or even a `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
 
 ```python
 from requests import get
