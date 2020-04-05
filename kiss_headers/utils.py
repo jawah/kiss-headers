@@ -47,7 +47,13 @@ def flat_split(string: str, delimiter: str) -> List[str]:
             elif letter == ";" and in_value:
                 in_value = False
 
-            if in_value and letter == delimiter and index > 3 and string[index-3:index] not in {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}:
+            if (
+                in_value
+                and letter == delimiter
+                and index > 3
+                and string[index - 3 : index]
+                not in {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
+            ):
                 in_value = False
 
         if letter == delimiter and ((in_value or in_double_quote) is False):
@@ -71,10 +77,10 @@ def class_to_header_name(type_: Type) -> str:
     """
     class_raw_name: str = str(type_).split("'")[-2].split(".")[-1]
 
-    if class_raw_name.endswith('_'):
+    if class_raw_name.endswith("_"):
         class_raw_name = class_raw_name[:-1]
 
-    if class_raw_name.startswith('_'):
+    if class_raw_name.startswith("_"):
         class_raw_name = class_raw_name[1:]
 
     header_name: str = str()
@@ -93,10 +99,15 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
     Do the opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
     """
 
-    normalized_name = normalize_str(name).replace('_', '')
+    normalized_name = normalize_str(name).replace("_", "")
 
     for subclass in root_type.__subclasses__():
-        if normalize_str(extract_class_name(subclass).split('.')[-1]) == normalized_name:
+        if (
+            normalize_str(extract_class_name(subclass).split(".")[-1])
+            == normalized_name
+        ):
             return subclass
 
-    raise TypeError("Cannot find a class matching header named '{name}'.".format(name=name))
+    raise TypeError(
+        "Cannot find a class matching header named '{name}'.".format(name=name)
+    )
