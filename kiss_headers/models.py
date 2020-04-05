@@ -67,7 +67,7 @@ class Header(object):
         self._normalized_name: str = normalize_str(self._name)
         self._content: str = content
 
-        self._members: List[str] = [el.lstrip() for el in self._content.split(";")]
+        self._members: List[str] = [el.lstrip() for el in flat_split(self._content, ";")]
 
         self._not_valued_attrs: List[str] = list()
         self._valued_attrs: MutableMapping[str, Union[str, List[str]]] = dict()
