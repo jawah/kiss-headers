@@ -78,4 +78,25 @@ def parse_it(raw_headers: Any) -> Headers:
         if len(next_iter) >= 2:
             return parse_it(next_iter[-1])
 
-    return Headers([Header(head, content) for head, content in revised_headers])
+    # Build the Headers object
+    headers: List[Header] = []
+
+    for head, content in revised_headers:
+        entries: List[str] = flat_split(content, ",")
+
+        # Multiple entries are detected in one content and its not a "RFC 7231, section 7.1.1.2: Date"
+        if len(entries) > 1 and entries[0] not in {
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat",
+            "Sun",
+        }:
+            for entry in entries:
+                headers.append(Header(head, entry))
+        else:
+            headers.append(Header(head, content))
+
+    return Headers(headers)
