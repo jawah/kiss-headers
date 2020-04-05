@@ -4,18 +4,16 @@ from typing import (
     Optional,
     Union,
     Dict,
-    Mapping,
     Iterator,
     Tuple,
     Iterable,
-    Any,
     MutableMapping,
 )
 from re import findall, IGNORECASE, escape
 from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
-from utils import flat_split, normalize_str
+from kiss_headers.utils import flat_split, normalize_str
 
 RESERVED_KEYWORD: List[str] = [
     "and_",
