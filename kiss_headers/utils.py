@@ -1,4 +1,5 @@
-from typing import List, Type
+from typing import List, Type, Optional
+from re import findall
 
 
 def normalize_str(string: str) -> str:
@@ -6,6 +7,14 @@ def normalize_str(string: str) -> str:
     Normalize a string by applying on it lowercase and replacing '-' to '_'.
     """
     return string.lower().replace("-", "_")
+
+
+def extract_class_name(type_: Type) -> Optional[str]:
+    """
+    Typically extract a class name from a Type.
+    """
+    r = findall(r"<class '([a-zA-Z0-9._]+)'>", str(type_))
+    return r[0] if r else None
 
 
 def flat_split(string: str, delimiter: str) -> List[str]:

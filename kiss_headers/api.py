@@ -1,7 +1,7 @@
 from kiss_headers.models import Headers, Header
+from kiss_headers.utils import flat_split, extract_class_name
 
-from typing import Optional, Iterable, Tuple, Any, Mapping
-from re import findall
+from typing import Optional, Iterable, Tuple, Any, Mapping, List
 from email.header import decode_header
 from email.parser import HeaderParser, BytesHeaderParser
 from email.message import Message
@@ -31,15 +31,15 @@ def parse_it(raw_headers: Any) -> Headers:
     elif isinstance(raw_headers, Message):
         headers = raw_headers.items()
     else:
-        r = findall(r"<class '([a-zA-Z0-9._]+)'>", str(type(raw_headers)))
+        r = extract_class_name(raw_headers)
 
         if r:
-            if r[0] == "requests.models.Response":
+            if r == "requests.models.Response":
                 headers = []
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
                         headers.append((header_name, header_content))
-            elif r[0] == "httpx._models.Response":
+            elif r == "httpx._models.Response":
                 headers = raw_headers.headers.items()
 
     if headers is None:
