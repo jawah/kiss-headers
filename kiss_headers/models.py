@@ -833,3 +833,11 @@ class Headers(object):
         return list(super().__dir__()) + list(
             set([header.normalized_name for header in self])
         )
+
+
+def lock_output_type(lock: bool = True):
+    """
+    This method will restrict type entropy by always returning a List[Header] instead of Union[Header, List[Header]]
+    """
+    global OUTPUT_LOCK_TYPE
+    OUTPUT_LOCK_TYPE = lock

@@ -1,4 +1,4 @@
-from kiss_headers.models import Headers, Header, OUTPUT_LOCK_TYPE
+from kiss_headers.models import Headers, Header
 
 from typing import Optional, Iterable, Tuple, Any, Mapping
 from re import findall
@@ -76,11 +76,3 @@ def parse_it(raw_headers: Any) -> Headers:
             return parse_it(next_iter[-1])
 
     return Headers([Header(head, content) for head, content in revised_headers])
-
-
-def lock_output_type(lock: bool = True):
-    """
-    This method will restrict type entropy by always return a List[Header] instead of Union[Header, List[Header]]
-    """
-    global OUTPUT_LOCK_TYPE
-    OUTPUT_LOCK_TYPE = lock
