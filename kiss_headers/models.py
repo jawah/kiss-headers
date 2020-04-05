@@ -485,6 +485,8 @@ class Headers(object):
     proxy_authenticate: Union[Header, List[Header]]
     proxy_authorization: Union[Header, List[Header]]
 
+    alt_svc: Union[Header, List[Header]]
+
     age: Union[Header, List[Header]]
     cache_control: Union[Header, List[Header]]
     clear_site_data: Union[Header, List[Header]]
