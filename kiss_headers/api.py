@@ -31,7 +31,7 @@ def parse_it(raw_headers: Any) -> Headers:
     elif isinstance(raw_headers, Message):
         headers = raw_headers.items()
     else:
-        r = extract_class_name(raw_headers)
+        r = extract_class_name(type(raw_headers))
 
         if r:
             if r == "requests.models.Response":
