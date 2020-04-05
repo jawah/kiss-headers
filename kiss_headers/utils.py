@@ -42,6 +42,13 @@ def class_to_header_name(type_: Type) -> str:
     Take a type and infer its header name.
     """
     class_raw_name: str = str(type_).split("'")[-2].split(".")[-1]
+
+    if class_raw_name.endswith('_'):
+        class_raw_name = class_raw_name[:-1]
+
+    if class_raw_name.startswith('_'):
+        class_raw_name = class_raw_name[1:]
+
     header_name: str = str()
 
     for letter in class_raw_name:
