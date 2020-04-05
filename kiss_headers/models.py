@@ -15,6 +15,8 @@ from re import findall, IGNORECASE, escape
 from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
+from utils import flat_split, normalize_str
+
 RESERVED_KEYWORD: List[str] = [
     "and_",
     "assert_",
@@ -62,7 +64,7 @@ class Header(object):
         """
 
         self._name: str = name
-        self._normalized_name: str = Header.normalize_name(self._name)
+        self._normalized_name: str = normalize_str(self._name)
         self._content: str = content
 
         self._members: List[str] = [el.lstrip() for el in self._content.split(";")]
@@ -91,18 +93,11 @@ class Header(object):
                         self._valued_attrs[key].append(value)  # type: ignore
 
                 self._valued_attrs_normalized[
-                    Header.normalize_name(key)
+                    normalize_str(key)
                 ] = self._valued_attrs[key]
                 continue
 
             self._not_valued_attrs.append(member)
-
-    @staticmethod
-    def normalize_name(name: str) -> str:
-        """
-        Normalize header name or attribute name by applying lowercase and replacing '-' to '_'.
-        """
-        return name.lower().replace("-", "_")
 
     @property
     def name(self) -> str:
@@ -177,7 +172,7 @@ class Header(object):
         if other not in self:
             raise ValueError
 
-        other = Header.normalize_name(other)
+        other = normalize_str(other)
 
         if other in self._valued_attrs_normalized:
             del self[other]
@@ -257,7 +252,7 @@ class Header(object):
         Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
         Any value that are not a str are casted to str.
         """
-        key_normalized = Header.normalize_name(key)
+        key_normalized = normalize_str(key)
 
         if key in self:
             del self[key]
@@ -278,7 +273,7 @@ class Header(object):
         Remove any attribute named after the key in header using the bracket syntax.
            >>> del headers.content_type['charset']
         """
-        key_normalized = Header.normalize_name(key)
+        key_normalized = normalize_str(key)
 
         if key_normalized not in self._valued_attrs_normalized:
             raise KeyError(
@@ -291,7 +286,7 @@ class Header(object):
         not_normalized_keys = self._valued_attrs.keys()
 
         for key_ in not_normalized_keys:
-            if Header.normalize_name(key_) == key_normalized:
+            if normalize_str(key_) == key_normalized:
                 del self._valued_attrs[key_]
                 break
 
@@ -328,7 +323,7 @@ class Header(object):
         Remove any attribute named after the key in header using the property notation.
            >>> del headers.content_type.charset
         """
-        item = Header.normalize_name(item)
+        item = normalize_str(item)
 
         if item not in self._valued_attrs_normalized:
             raise AttributeError(
@@ -416,7 +411,7 @@ class Header(object):
         """
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
         """
-        normalized_item = Header.normalize_name(item)
+        normalized_item = normalize_str(item)
 
         if item in self._valued_attrs:
             value = self._valued_attrs[item]
@@ -451,7 +446,7 @@ class Header(object):
 
         if (
             item not in self._valued_attrs
-            and Header.normalize_name(item) not in self._valued_attrs_normalized
+            and normalize_str(item) not in self._valued_attrs_normalized
         ):
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
@@ -467,9 +462,9 @@ class Header(object):
         """
         if item in self.attrs:
             return True
-        item = Header.normalize_name(item)
+        item = normalize_str(item)
         for attr in self.attrs:
-            target = Header.normalize_name(attr)
+            target = normalize_str(attr)
             if item == target or item in target.split(","):
                 return True
         return False
@@ -606,7 +601,7 @@ class Headers(object):
         Remove all matching header named after called key.
            >>> del headers['content-type']
         """
-        key = Header.normalize_name(key)
+        key = normalize_str(key)
         to_be_removed = []
 
         if key not in self:
@@ -733,7 +728,7 @@ class Headers(object):
         Would remove any entries named 'Set-Cookies'.
         """
         if isinstance(other, str):
-            other_normalized = Header.normalize_name(other)
+            other_normalized = normalize_str(other)
             to_be_removed = list()
 
             for header in self:
@@ -761,7 +756,7 @@ class Headers(object):
         if isinstance(item, int):
             return self._headers[item]
 
-        item = Header.normalize_name(item)
+        item = normalize_str(item)
 
         if item not in self:
             raise KeyError(
@@ -815,7 +810,7 @@ class Headers(object):
         This method will allow you to test if a header, based on it's string name, is present or not in headers.
         You could also use a Header object to verify it's presence.
         """
-        item = Header.normalize_name(item) if isinstance(item, str) else item
+        item = normalize_str(item) if isinstance(item, str) else item
 
         for header in self:
             if isinstance(item, str) and header.normalized_name == item:
