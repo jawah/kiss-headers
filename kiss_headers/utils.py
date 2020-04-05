@@ -20,8 +20,8 @@ def extract_class_name(type_: Type) -> Optional[str]:
 def flat_split(string: str, delimiter: str) -> List[str]:
     """
     Take a string and split it according to the passed delimiter.
-    It will ignore delimiter if inside between double quote.
-    The input string is considered perfect.
+    It will ignore delimiter if inside between double quote or inside a value.
+    The input string is considered perfectly formed.
     """
     if len(delimiter) != 1 or delimiter == '"':
         raise ValueError(
@@ -29,21 +29,40 @@ def flat_split(string: str, delimiter: str) -> List[str]:
         )
 
     in_double_quote: bool = False
+    in_value: bool = False
     result: List[str] = [""]
 
-    for letter in string + "\x00":
+    for letter, index in zip(string, range(0, len(string))):
+
         if letter == '"':
             in_double_quote = not in_double_quote
-        if in_double_quote:
-            continue
-        if letter == delimiter or letter == "\x00":
+
+            if in_value and not in_double_quote:
+                in_value = False
+
+        if not in_double_quote:
+
+            if not in_value and letter == "=":
+                in_value = True
+            elif letter == ";" and in_value:
+                in_value = False
+
+            if in_value and letter == delimiter and index > 3 and string[index-3:index] not in {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}:
+                in_value = False
+
+        if letter == delimiter and ((in_value or in_double_quote) is False):
+
             result[-1] = result[-1].lstrip().rstrip()
             result.append("")
+
             continue
 
         result[-1] += letter
 
-    return result[:-1]
+    if result:
+        result[-1] = result[-1].lstrip().rstrip()
+
+    return result
 
 
 def class_to_header_name(type_: Type) -> str:
