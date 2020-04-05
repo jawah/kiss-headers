@@ -57,5 +57,11 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
     """
     Do the opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
     """
-    # root_type.__subclasses__()
-    raise TypeError
+
+    normalized_name = normalize_str(name).replace('_', '')
+
+    for subclass in root_type.__subclasses__():
+        if normalize_str(extract_class_name(subclass).split('.')[-1]) == normalized_name:
+            return subclass
+
+    raise TypeError("Cannot find a class matching header named '{name}'.".format(name=name))
