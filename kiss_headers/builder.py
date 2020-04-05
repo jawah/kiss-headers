@@ -1,5 +1,6 @@
-from kiss_headers.utils import Header
-from typing import Optional, Union
+from kiss_headers.models import Header
+from kiss_headers.utils import class_to_header_name
+from typing import Optional, Union, Dict, List
 
 from datetime import datetime
 from email import utils
@@ -23,16 +24,7 @@ class CustomHeader(Header):
         if self.__class__ == CustomHeader:
             raise NotImplementedError
 
-        class_raw_name = str(self.__class__).split("'")[-2].split(".")[-1]
-        header_name = str()
-
-        for letter in class_raw_name:
-            if letter.isupper() and header_name != "":
-                header_name += "-" + letter
-                continue
-            header_name += letter
-
-        super().__init__(header_name, initial_content)
+        super().__init__(class_to_header_name(self.__class__), initial_content)
 
         for attribute, value in kwargs.items():
             if value is None:
