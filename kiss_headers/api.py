@@ -1,8 +1,8 @@
 from kiss_headers.models import Headers, Header
-from kiss_headers.utils import flat_split, extract_class_name
+from kiss_headers.structures import CaseInsensitiveDict
+from kiss_headers.utils import flat_split, extract_class_name, header_name_to_class, decode_partials
 
 from typing import Optional, Iterable, Tuple, Any, Mapping, List
-from email.header import decode_header
 from email.parser import HeaderParser, BytesHeaderParser
 from email.message import Message
 from io import BytesIO, IOBase
@@ -49,21 +49,7 @@ def parse_it(raw_headers: Any) -> Headers:
             )
         )
 
-    revised_headers = list()
-
-    for head, content in headers:
-        revised_content: str = str()
-
-        for partial, partial_encoding in decode_header(content):
-            if isinstance(partial, str):
-                revised_content += partial
-            if isinstance(partial, bytes):
-                revised_content += partial.decode(
-                    partial_encoding if partial_encoding is not None else "utf-8",
-                    errors="ignore",
-                )
-
-        revised_headers.append((head, revised_content))
+    revised_headers: List[Tuple[str, str]] = decode_partials(headers)
 
     # Sometime raw content does not begin with headers. If that is the case, search for the next line.
     if (
