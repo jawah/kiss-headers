@@ -8,12 +8,18 @@ from typing import (
     Tuple,
     Iterable,
     MutableMapping,
+    Type,
 )
 from re import findall, IGNORECASE, escape
 from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
-from kiss_headers.utils import flat_split, normalize_str
+from kiss_headers.utils import (
+    flat_split,
+    normalize_str,
+    header_name_to_class,
+    prettify_header_name,
+    unquote)
 
 RESERVED_KEYWORD: List[str] = [
     "and_",
@@ -699,7 +705,47 @@ class Headers(object):
         """
         Non-ambiguous representation of an Headers instance.
         """
-        return "\n".join([header.__repr__() for header in self])
+        result: List[str] = []
+
+        for header_name in self.keys():
+
+            r = self.get(header_name)
+
+            if not r:
+                raise LookupError(
+                    f"This should not happen. Cannot get '{header_name}' from headers when keys() said its there."
+                )
+
+            target_subclass: Optional[Type] = None
+
+            try:
+                target_subclass = (
+                    header_name_to_class(header_name, Header.__subclasses__()[0])
+                    if Header.__subclasses__()
+                    else None
+                )
+            except TypeError:
+                pass
+
+            if (
+                isinstance(r, list)
+                and len(r) > 1
+                and target_subclass
+                and hasattr(target_subclass, "__squash__")
+                and target_subclass.__squash__ is True
+            ):
+                result.append(
+                    "{name}: {content}".format(
+                        name=header_name, content=", ".join([el.content for el in r])
+                    )
+                )
+            elif isinstance(r, list):
+                for el in r:
+                    result.append(repr(el))
+            else:
+                result.append(repr(r))
+
+        return "\n".join(result)
 
     def __add__(self, other: Header) -> "Headers":
         """
