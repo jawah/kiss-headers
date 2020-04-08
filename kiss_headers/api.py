@@ -84,3 +84,33 @@ def parse_it(raw_headers: Any) -> Headers:
             list_of_headers.append(Header(head, content))
 
     return Headers(list_of_headers)
+
+
+def explain(headers: Headers) -> CaseInsensitiveDict:
+    """
+    Return an brief explanation of each header present in headers if available.
+    """
+    if not Header.__subclasses__():
+        raise LookupError(
+            "You cannot use explain() function without properly importing the public package."
+        )
+
+    explanations: CaseInsensitiveDict = CaseInsensitiveDict()
+
+    for header in headers:
+        if header.name in explanations:
+            continue
+
+        try:
+            target_class = header_name_to_class(header.name, Header.__subclasses__()[0])
+        except TypeError:
+            explanations[header.name] = "Unknown explanation."
+            continue
+
+        explanations[header.name] = (
+            target_class.__doc__.replace("\n", "").lstrip().replace("  ", " ").rstrip()
+            if target_class.__doc__
+            else "Missing docstring."
+        )
+
+    return explanations
