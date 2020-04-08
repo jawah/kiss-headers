@@ -693,7 +693,7 @@ class Headers(object):
         Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
         """
         if not isinstance(other, Headers):
-            raise NotImplemented(
+            raise NotImplementedError(
                 "Cannot compare type {type_} to an Header. Use str or Header.".format(
                     type_=type(other)
                 )
