@@ -582,6 +582,9 @@ class Headers(object):
         return self[header]
 
     def __iter__(self) -> Iterator[Header]:
+        """
+        Act like a list by yielding one element at a time. Each element is a Header object.
+        """
         for header in self._headers:
             yield header
 
