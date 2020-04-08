@@ -142,7 +142,7 @@ def decode_partials(items: Iterable[Tuple[str, Any]]) -> List[Tuple[str, str]]:
     """
     This function takes a list of tuple, representing headers by key, value. Where value is bytes or string containing
     (RFC 2047 encoded) partials fragments like the following :
-       >>> decode_partials([("Subject", b"=?iso-8859-1?q?p=F6stal?=")])
+       >>> decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
        [("Subject", "pöstal")]
     """
     revised_items: List[Tuple[str, str]] = list()
