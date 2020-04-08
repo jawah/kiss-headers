@@ -1,5 +1,6 @@
-from typing import List, Type, Optional
+from typing import List, Type, Optional, Iterable, Tuple, Any
 from re import findall
+from email.header import decode_header
 
 
 def normalize_str(string: str) -> str:
@@ -120,3 +121,62 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
     raise TypeError(
         "Cannot find a class matching header named '{name}'.".format(name=name)
     )
+
+
+def prettify_header_name(name: str) -> str:
+    """
+    Take a header name and prettify it.
+       >>> prettify_header_name("x-hEllo-wORLD")
+       X-Hello-World
+       >>> prettify_header_name("server")
+       Server
+       >>> prettify_header_name("contEnt-TYPE")
+       Content-Type
+       >>> prettify_header_name("content_type")
+       Content-Type
+    """
+    return "-".join([el.capitalize() for el in name.replace("_", "-").split("-")])
+
+
+def decode_partials(items: Iterable[Tuple[str, Any]]) -> List[Tuple[str, str]]:
+    """
+    This function takes a list of tuple, representing headers by key, value. Where value is bytes or string containing
+    (RFC 2047 encoded) partials fragments like the following :
+       >>> decode_partials([("Subject", b"=?iso-8859-1?q?p=F6stal?=")])
+       [("Subject", "pöstal")]
+    """
+    revised_items: List[Tuple[str, str]] = list()
+
+    for head, content in items:
+        revised_content: str = str()
+
+        for partial, partial_encoding in decode_header(content):
+            if isinstance(partial, str):
+                revised_content += partial
+            if isinstance(partial, bytes):
+                revised_content += partial.decode(
+                    partial_encoding if partial_encoding is not None else "utf-8",
+                    errors="ignore",
+                )
+
+        revised_items.append((head, revised_content))
+
+    return revised_items
+
+
+def unquote(string: str) -> str:
+    """
+    Remove simple quote or double quote around a string if any.
+       >>> unquote('"hello"')
+       'hello'
+       >>> unquote('"hello')
+       '"hello'
+       >>> unquote('"a"')
+       ''
+       >>> unquote('""')
+       ''
+    """
+    if len(string) >= 2 and (string.startswith('"') and string.endswith('"')) or (string.startswith("'") and string.endswith("'")):
+        return string[1:-1]
+
+    return string
