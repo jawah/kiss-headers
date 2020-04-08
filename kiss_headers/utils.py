@@ -18,7 +18,7 @@ def extract_class_name(type_: Type) -> Optional[str]:
     return r[0] if r else None
 
 
-def flat_split(string: str, delimiter: str) -> List[str]:
+def header_content_split(string: str, delimiter: str) -> List[str]:
     """
     Take a string and split it according to the passed delimiter.
     It will ignore delimiter if inside between double quote or inside a value.

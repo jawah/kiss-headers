@@ -1,7 +1,7 @@
 from kiss_headers.models import Headers, Header
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
-    flat_split,
+    header_content_split,
     extract_class_name,
     header_name_to_class,
     decode_partials,
@@ -71,7 +71,7 @@ def parse_it(raw_headers: Any) -> Headers:
     list_of_headers: List[Header] = []
 
     for head, content in revised_headers:
-        entries: List[str] = flat_split(content, ",")
+        entries: List[str] = header_content_split(content, ",")
 
         # Multiple entries are detected in one content and its not a "RFC 7231, section 7.1.1.2: Date"
         if len(entries) > 1 and entries[0] not in {

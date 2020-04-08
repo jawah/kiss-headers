@@ -15,7 +15,7 @@ from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
 from kiss_headers.utils import (
-    flat_split,
+    header_content_split,
     normalize_str,
     header_name_to_class,
     prettify_header_name,
@@ -74,7 +74,7 @@ class Header(object):
         self._content: str = content
 
         self._members: List[str] = [
-            el.lstrip() for el in flat_split(self._content, ";")
+            el.lstrip() for el in header_content_split(self._content, ";")
         ]
 
         self._not_valued_attrs: List[str] = list()
