@@ -366,11 +366,20 @@ class Header(object):
         if isinstance(other, str):
             return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
-            return (
+            if (
                 self.normalized_name == other.normalized_name
-                and self.content == other.content
-            )
-        raise NotImplemented(
+                and len(self._not_valued_attrs) == len(other._not_valued_attrs)
+                and len(self._valued_attrs) == len(other._valued_attrs)
+            ):
+                for adjective in self._not_valued_attrs:
+                    if adjective not in other._not_valued_attrs:
+                        return False
+                for key in self._valued_attrs:
+                    if key not in other or self[key] != other[key]:
+                        return False
+                return True
+            return False
+        raise NotImplementedError(
             "Cannot compare type {type_} to an Header. Use str or Header.".format(
                 type_=type(other)
             )
