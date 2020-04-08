@@ -96,7 +96,8 @@ def class_to_header_name(type_: Type) -> str:
 
 def header_name_to_class(name: str, root_type: Type) -> Type:
     """
-    Do the opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
+    The opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
+    Do it recursively from the root type.
     """
 
     normalized_name = normalize_str(name).replace("_", "")
@@ -107,11 +108,14 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
         if class_name is None:
             continue
 
-        if (
-            normalize_str(class_name.split(".")[-1])
-            == normalized_name
-        ):
+        if normalize_str(class_name.split(".")[-1]) == normalized_name:
             return subclass
+
+        if subclass.__subclasses__():
+            try:
+                return header_name_to_class(name, subclass)
+            except TypeError:
+                continue
 
     raise TypeError(
         "Cannot find a class matching header named '{name}'.".format(name=name)
