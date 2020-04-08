@@ -76,6 +76,9 @@ class Header(object):
         ] = dict()
 
         for member in self._members:
+            if member == "":
+                continue
+
             if "=" in member:
                 key, value = tuple(member.split("=", maxsplit=1))
 
