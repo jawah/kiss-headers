@@ -451,14 +451,10 @@ class Header(object):
                 )
             )
 
-        # Unquote value if necessary
-        if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
-            return value[1:-1]
-
         if OUTPUT_LOCK_TYPE and not isinstance(value, list):
-            return [value]
+            value = [value]
 
-        return value
+        return unquote(value) if not isinstance(value, list) else [unquote(v) for v in value]
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:
         """
