@@ -91,7 +91,7 @@ class Header(object):
 
                 # avoid confusing base64 look alike single value for (key, value)
                 if value.count("=") == len(value) or len(value) == 0 or " " in key:
-                    self._not_valued_attrs.append(member)
+                    self._not_valued_attrs.append(unquote(member))
                     continue
 
                 if key not in self._valued_attrs:
@@ -107,7 +107,7 @@ class Header(object):
                 ]
                 continue
 
-            self._not_valued_attrs.append(member)
+            self._not_valued_attrs.append(unquote(member))
 
     @property
     def name(self) -> str:
