@@ -565,7 +565,14 @@ class Headers(object):
         """
         Return a list of distinct header name set in headers.
         """
-        return list(set([header.name for header in self]))
+        keys = list()
+
+        # I decided to go with this to conserve order of appearance in list.
+        for header in self:
+            if header.name not in keys:
+                keys.append(header.name)
+
+        return keys
 
     def items(self) -> List[Tuple[str, str]]:
         """
