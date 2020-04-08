@@ -46,9 +46,8 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
         self.assertEqual(
             [("Subject", "pöstal")],
-            decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
+            decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")]),
         )
-
 
     def test_two_headers_eq(self):
 

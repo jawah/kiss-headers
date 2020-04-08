@@ -4,7 +4,6 @@ from kiss_headers import *
 
 
 class MyExplainTestCase(unittest.TestCase):
-
     def test_explain_from_objects(self):
 
         headers = (
@@ -62,30 +61,15 @@ class MyExplainTestCase(unittest.TestCase):
 
         explanations = explain(headers)
 
-        self.assertNotEqual(
-            "Unknown explanation.",
-            explanations["Set-Cookie"]
-        )
+        self.assertNotEqual("Unknown explanation.", explanations["Set-Cookie"])
 
-        self.assertNotEqual(
-            "Missing docstring.",
-            explanations["Set-Cookie"]
-        )
+        self.assertNotEqual("Missing docstring.", explanations["Set-Cookie"])
 
-        self.assertEqual(
-            "Unknown explanation.",
-            explanations["Accept-Ch"]
-        )
+        self.assertEqual("Unknown explanation.", explanations["Accept-Ch"])
 
-        self.assertEqual(
-            "Unknown explanation.",
-            explanations["Accept_Ch"]
-        )
+        self.assertEqual("Unknown explanation.", explanations["Accept_Ch"])
 
-        self.assertEqual(
-            "Unknown explanation.",
-            explanations["aCCept_Ch"]
-        )
+        self.assertEqual("Unknown explanation.", explanations["aCCept_Ch"])
 
 
 if __name__ == "__main__":

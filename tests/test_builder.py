@@ -55,9 +55,7 @@ class MyBuilderTestCase(unittest.TestCase):
 
     def test_verify_always_gmt(self):
 
-        self.assertTrue(
-            repr(Date(datetime.now())).endswith("GMT")
-        )
+        self.assertTrue(repr(Date(datetime.now())).endswith("GMT"))
 
 
 if __name__ == "__main__":
