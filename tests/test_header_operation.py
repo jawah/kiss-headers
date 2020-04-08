@@ -3,6 +3,30 @@ from kiss_headers import Header
 
 
 class MyKissHeaderOperation(unittest.TestCase):
+
+    def test_subtract_adjective(self):
+        content_type = Header("Content-Type", 'text/html; charset="utf-8"')
+
+        self.assertIn("text/html", content_type)
+
+        content_type -= 'text/html'
+
+        self.assertNotIn("text/html", content_type)
+
+        self.assertEqual("charset=\"utf-8\"", str(content_type))
+
+    def test_add_adjective(self):
+
+        content_type = Header("Content-Type", 'charset="utf-8"')
+
+        self.assertNotIn("text/html", content_type)
+
+        content_type += 'text/html'
+
+        self.assertIn("text/html", content_type)
+
+        self.assertEqual("charset=\"utf-8\"; text/html", str(content_type))
+
     def test_simple_attr_removal(self):
         content_type = Header("Content-Type", 'text/html; charset="utf-8"')
 
