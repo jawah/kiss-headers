@@ -1,5 +1,6 @@
 import unittest
 from kiss_headers import Headers, parse_it, Header, lock_output_type
+from kiss_headers.utils import decode_partials
 
 RAW_HEADERS = """accept-ch: DPR
 accept-ch-lifetime: 2592000
@@ -40,6 +41,14 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
     def setUp(self) -> None:
         MyKissHeadersFromStringTest.headers = parse_it(RAW_HEADERS)
+
+    def test_decode_partials(self):
+
+        self.assertEqual(
+            [("Subject", "pöstal")],
+            decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
+        )
+
 
     def test_two_headers_eq(self):
 

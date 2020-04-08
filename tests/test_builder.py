@@ -39,6 +39,26 @@ class MyBuilderTestCase(unittest.TestCase):
             'Content-Disposition: attachment; filename="test-file.json"',
         )
 
+    def test_value_error_builder(self):
+
+        with self.assertRaises(ValueError):
+            CrossOriginResourcePolicy("policy-not-known-yet")
+
+        with self.assertRaises(ValueError):
+            ReferrerPolicy("hello-world")
+
+        with self.assertRaises(ValueError):
+            From("not-a-valid-email.com")
+
+        with self.assertRaises(ValueError):
+            Allow("DOES-NOT-EXIST-HTTP-VERB")
+
+    def test_verify_always_gmt(self):
+
+        self.assertTrue(
+            repr(Date(datetime.now())).endswith("GMT")
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
