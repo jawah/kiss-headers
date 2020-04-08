@@ -19,7 +19,8 @@ from kiss_headers.utils import (
     normalize_str,
     header_name_to_class,
     prettify_header_name,
-    unquote)
+    unquote,
+)
 
 RESERVED_KEYWORD: List[str] = [
     "and_",
@@ -454,7 +455,11 @@ class Header(object):
         if OUTPUT_LOCK_TYPE and not isinstance(value, list):
             value = [value]
 
-        return unquote(value) if not isinstance(value, list) else [unquote(v) for v in value]
+        return (
+            unquote(value)
+            if not isinstance(value, list)
+            else [unquote(v) for v in value]
+        )
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:
         """

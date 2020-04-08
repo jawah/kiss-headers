@@ -1,6 +1,11 @@
 from kiss_headers.models import Headers, Header
 from kiss_headers.structures import CaseInsensitiveDict
-from kiss_headers.utils import flat_split, extract_class_name, header_name_to_class, decode_partials
+from kiss_headers.utils import (
+    flat_split,
+    extract_class_name,
+    header_name_to_class,
+    decode_partials,
+)
 
 from typing import Optional, Iterable, Tuple, Any, Mapping, List
 from email.parser import HeaderParser, BytesHeaderParser

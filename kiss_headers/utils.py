@@ -176,7 +176,11 @@ def unquote(string: str) -> str:
        >>> unquote('""')
        ''
     """
-    if len(string) >= 2 and (string.startswith('"') and string.endswith('"')) or (string.startswith("'") and string.endswith("'")):
+    if (
+        len(string) >= 2
+        and (string.startswith('"') and string.endswith('"'))
+        or (string.startswith("'") and string.endswith("'"))
+    ):
         return string[1:-1]
 
     return string

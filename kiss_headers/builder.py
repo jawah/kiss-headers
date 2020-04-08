@@ -52,26 +52,24 @@ class Accept(CustomHeader):
     __tags__: List[str] = ["request"]
 
     def __init__(
-        self,
-        mime: str = "*/*",
-        qualifier: float = 1.0,
-        **kwargs,
+        self, mime: str = "*/*", qualifier: float = 1.0, **kwargs,
     ):
         """
         :param mime: Describe the MIME using this syntax <MIME_type/MIME_subtype>
         :param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
         :param kwargs:
         """
-        if len(mime.split('/')) != 2:
-            raise ValueError(f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'")
+        if len(mime.split("/")) != 2:
+            raise ValueError(
+                f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'"
+            )
 
         args: Dict = {"q": qualifier if qualifier < 1.0 else None}
 
         args.update(kwargs)
 
         super().__init__(
-            mime,
-            **args,
+            mime, **args,
         )
 
 
@@ -102,8 +100,10 @@ class ContentType(CustomHeader):
         :param kwargs:
         """
 
-        if len(mime.split('/')) != 2:
-            raise ValueError(f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'")
+        if len(mime.split("/")) != 2:
+            raise ValueError(
+                f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'"
+            )
 
         args: Dict = {
             "charset": charset.upper() if charset else None,

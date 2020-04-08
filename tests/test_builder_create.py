@@ -36,27 +36,28 @@ Cache-Control: max-age=0"""
 
 
 class MyBuilderCreationTestCase(unittest.TestCase):
-
     def test_replicate_raw_from_objects_request(self):
 
         headers = (
-            Host("developer.mozilla.org") +
-            UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0") +
-            Accept("text/html") +
-            Accept("application/xhtml+xml") +
-            Accept("application/xml", qualifier=0.9) +
-            Accept(qualifier=0.8) +
-            AcceptLanguage("en-US") +
-            AcceptLanguage("en", qualifier=0.5) +
-            AcceptEncoding("gzip") +
-            AcceptEncoding("deflate") +
-            AcceptEncoding("br") +
-            Referer("https://developer.mozilla.org/testpage.html") +
-            Connection(True) +
-            UpgradeInsecureRequests() +
-            IfModifiedSince("Mon, 18 Jul 2016 02:36:04 GMT") +
-            IfNoneMatch("c561c68d0ba92bbeb8b0fff2a9199f722e3a621a") +
-            CacheControl(max_age=0)
+            Host("developer.mozilla.org")
+            + UserAgent(
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0"
+            )
+            + Accept("text/html")
+            + Accept("application/xhtml+xml")
+            + Accept("application/xml", qualifier=0.9)
+            + Accept(qualifier=0.8)
+            + AcceptLanguage("en-US")
+            + AcceptLanguage("en", qualifier=0.5)
+            + AcceptEncoding("gzip")
+            + AcceptEncoding("deflate")
+            + AcceptEncoding("br")
+            + Referer("https://developer.mozilla.org/testpage.html")
+            + Connection(True)
+            + UpgradeInsecureRequests()
+            + IfModifiedSince("Mon, 18 Jul 2016 02:36:04 GMT")
+            + IfNoneMatch("c561c68d0ba92bbeb8b0fff2a9199f722e3a621a")
+            + CacheControl(max_age=0)
         )
 
         self.assertEqual(parse_it(RAW_HEADERS_MOZILLA), headers)
