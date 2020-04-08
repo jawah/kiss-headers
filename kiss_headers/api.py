@@ -26,9 +26,7 @@ def parse_it(raw_headers: Any) -> Headers:
             )
             .items()
         )
-    elif isinstance(raw_headers, Mapping):
-        headers = raw_headers.items()
-    elif isinstance(raw_headers, Message):
+    elif isinstance(raw_headers, Mapping) or isinstance(raw_headers, Message):
         headers = raw_headers.items()
     else:
         r = extract_class_name(type(raw_headers))
