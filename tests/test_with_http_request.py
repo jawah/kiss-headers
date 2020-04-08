@@ -43,15 +43,17 @@ Cache-Control: max-age=0""".encode(
             )
         )
 
-        self.assertEqual(11, len(headers))
+        self.assertEqual(17, len(headers))
 
         self.assertEqual(
             "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a", headers.if_none_match
         )
 
-        self.assertIn("text/html,application/xhtml+xml,application/xml", headers.accept)
+        self.assertIn("text/html", headers.accept[0])
 
-        self.assertIn("q", headers.accept)
+        self.assertNotIn("text/htm", headers.accept[0])
+
+        self.assertIn("q", headers.accept[-1])
 
         self.assertEqual("0", headers.cache_control.max_age)
 

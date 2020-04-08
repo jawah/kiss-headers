@@ -3,7 +3,7 @@ from kiss_headers import Headers, parse_it, Header, lock_output_type
 
 RAW_HEADERS = """accept-ch: DPR
 accept-ch-lifetime: 2592000
-alt-svc: quic=":443"; ma=2592000; v="46,43",h3-Q050=":443"; ma=2592000,h3-Q049=":443"; ma=2592000,h3-Q048=":443"; ma=2592000,h3-Q046=":443"; ma=2592000,h3-Q043=":443"; ma=2592000
+alt-svc: quic=":443"; ma=2592000; v="46,43", h3-Q050=":443"; ma=2592000, h3-Q049=":443"; ma=2592000, h3-Q048=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000
 cache-control: private, max-age=0
 content-encoding: br
 content-length: 64032
@@ -118,7 +118,7 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
         headers = parse_it(RAW_HEADERS_MOZILLA)
 
-        self.assertEqual(11, len(headers))
+        self.assertEqual(17, len(headers))
 
         self.assertIn("host", headers)
 
@@ -136,22 +136,24 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
         self.assertIn("accept_language", dir(headers))
 
-        self.assertIn("q", dir(headers.accept))
+        self.assertTrue(headers.accept)
+
+        self.assertIn("q", dir(headers.accept[-1]))
 
     def test_fixed_type_output(self):
         headers = parse_it(RAW_HEADERS_MOZILLA)
 
-        self.assertEqual(Header, type(headers.accept))
+        self.assertEqual(Header, type(headers.host))
 
         lock_output_type()
 
-        self.assertEqual(list, type(headers.accept))
+        self.assertEqual(list, type(headers.host))
 
-        self.assertEqual(1, len(headers.accept))
+        self.assertEqual(1, len(headers.host))
 
         lock_output_type(False)
 
-        self.assertEqual(Header, type(headers.accept))
+        self.assertEqual(Header, type(headers.host))
 
 
 if __name__ == "__main__":
