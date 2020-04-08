@@ -69,6 +69,7 @@ class Header(object):
 
         self._name: str = name
         self._normalized_name: str = normalize_str(self._name)
+        self._pretty_name: str = prettify_header_name(self._name)
         self._content: str = content
 
         self._members: List[str] = [
@@ -121,6 +122,13 @@ class Header(object):
         Output header name but normalized, lower case and '-' character become '_'.
         """
         return self._normalized_name
+
+    @property
+    def pretty_name(self) -> str:
+        """
+        Output a prettified name of the header. First letter capitalized of each word.
+        """
+        return self._pretty_name
 
     @property
     def content(self) -> str:
@@ -240,6 +248,7 @@ class Header(object):
         if key in [
             "_name",
             "_normalized_name",
+            "_pretty_name",
             "_content",
             "_members",
             "_not_valued_attrs",
