@@ -1,7 +1,7 @@
 from re import fullmatch
 
 from kiss_headers.models import Header
-from kiss_headers.utils import class_to_header_name
+from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
 from typing import Optional, Union, Dict, List
 
 from datetime import datetime, timezone
@@ -785,9 +785,9 @@ class Etag(CustomHeader):
         :param kwargs:
         """
         super().__init__(
-            '{weak_validation_cond}"{etag}"'.format(
+            '{weak_validation_cond}{etag}'.format(
                 weak_validation_cond="W/" if is_a_weak_validator else "",
-                etag=etag_value,
+                etag=quote(etag_value),
             ),
             **kwargs,
         )
@@ -1080,7 +1080,7 @@ class IfMatch(CustomHeader):
         :param etag_value: Entity tags uniquely representing the requested resources. They are a string of ASCII characters placed between double quotes (like "675af34563dc-tr34").
         :param kwargs:
         """
-        super().__init__(etag_value, **kwargs)
+        super().__init__(quote(etag_value), **kwargs)
 
 
 class IfNoneMatch(IfMatch):
