@@ -22,15 +22,19 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     """
     Take a string and split it according to the passed delimiter.
     It will ignore delimiter if inside between double quote or inside a value.
-    The input string is considered perfectly formed.
+    The input string is considered perfectly formed. This function do not split coma on a day
+    when attached, see "RFC 7231, section 7.1.1.2: Date".
     """
-    if len(delimiter) != 1 or delimiter == '"':
+    if len(delimiter) != 1 or delimiter not in [";", ","]:
         raise ValueError(
-            "Delimiter cannot be a double quote nor it can be longer than 1 char."
+            "Delimiter should be either semi-colon or a coma."
         )
 
     in_double_quote: bool = False
+    in_parenthesis: bool = False
     in_value: bool = False
+    is_on_a_day: bool = False
+
     result: List[str] = [""]
 
     for letter, index in zip(string, range(0, len(string))):
@@ -40,6 +44,13 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
 
             if in_value and not in_double_quote:
                 in_value = False
+
+        elif letter == "(" and not in_parenthesis:
+            in_parenthesis = True
+        elif letter == ")" and in_parenthesis:
+            in_parenthesis = False
+        else:
+            is_on_a_day = index >= 3 and string[index - 3 : index] in {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
 
         if not in_double_quote:
 
@@ -51,13 +62,11 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
             if (
                 in_value
                 and letter == delimiter
-                and index > 3
-                and string[index - 3 : index]
-                not in {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
+                and not is_on_a_day
             ):
                 in_value = False
 
-        if letter == delimiter and ((in_value or in_double_quote) is False):
+        if letter == delimiter and ((in_value or in_double_quote or in_parenthesis or is_on_a_day) is False):
 
             result[-1] = result[-1].lstrip().rstrip()
             result.append("")

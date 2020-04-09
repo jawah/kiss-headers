@@ -73,16 +73,8 @@ def parse_it(raw_headers: Any) -> Headers:
     for head, content in revised_headers:
         entries: List[str] = header_content_split(content, ",")
 
-        # Multiple entries are detected in one content and its not a "RFC 7231, section 7.1.1.2: Date"
-        if len(entries) > 1 and entries[0] not in {
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat",
-            "Sun",
-        }:
+        # Multiple entries are detected in one content
+        if len(entries) > 1:
             for entry in entries:
                 list_of_headers.append(Header(head, entry))
         else:
