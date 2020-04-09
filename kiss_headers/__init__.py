@@ -2,7 +2,7 @@
 Kiss-Headers
 ~~~~~~~~~~~~~~
 
-Kiss-Headers is a headers, HTTP or IMAP4 flavour, utility, written in Python, for human beings.
+Kiss-Headers is a headers, HTTP or IMAP4 flavour, utility, written in Python, for humans.
 Basic usage:
 
    >>> import requests
@@ -35,5 +35,53 @@ at <https://github.com/Ousret/kiss-headers>.
 :license: MIT, see LICENSE for more details.
 """
 
-from kiss_headers.utils import Headers, Header, parse_it, lock_output_type
+from kiss_headers.models import Headers, Header, lock_output_type
+from kiss_headers.api import parse_it, explain
+from kiss_headers.builder import (
+    CustomHeader,
+    Accept,
+    ContentType,
+    XContentTypeOptions,
+    ContentDisposition,
+    Authorization,
+    ProxyAuthorization,
+    Host,
+    Connection,
+    ContentLength,
+    Date,
+    CrossOriginResourcePolicy,
+    Allow,
+    Digest,
+    SetCookie,
+    StrictTransportSecurity,
+    UpgradeInsecureRequests,
+    TransferEncoding,
+    ContentEncoding,
+    AcceptEncoding,
+    Dnt,
+    UserAgent,
+    AltSvc,
+    Forwarded,
+    LastModified,
+    Referer,
+    ReferrerPolicy,
+    RetryAfter,
+    AcceptLanguage,
+    Etag,
+    XFrameOptions,
+    XXssProtection,
+    WwwAuthenticate,
+    XDnsPrefetchControl,
+    Location,
+    From,
+    ContentRange,
+    CacheControl,
+    Expires,
+    IfModifiedSince,
+    IfUnmodifiedSince,
+    KeepAlive,
+    IfMatch,
+    IfNoneMatch,
+    Server,
+)
 from kiss_headers.version import __version__, VERSION

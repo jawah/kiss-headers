@@ -53,13 +53,14 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 * Ability to parse any object and extract recognized headers from it.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
+* Absolutely no dependencies.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
-* Supports headers and attributes OneToOne and OneToMany.
-* Capable of parsing `bytes`, `fp`, `str`, `dict`, `requests.Response` and `httpx._models.Response`.
+* Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response` and `httpx._models.Response`.
 * Automatically unquote value of an attribute when retrieving it.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
@@ -74,7 +75,7 @@ pip install kiss-headers
 
 ### 🍰 Usage
 
-`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
+`parse_it()` method takes `bytes`, `str`, `fp`, `dict`, `email.Message` or even a `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
 
 ```python
 from requests import get

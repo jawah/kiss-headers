@@ -9,7 +9,7 @@ class MyKissHeaderTest(unittest.TestCase):
             "Message-ID", "<455DADE4FB733C4C8F62EB4CEB36D8DE05037EA94F@johndoe>"
         )
 
-        with self.assertRaises(TypeError):
+        with self.assertRaises(NotImplementedError):
             k = header == 1
 
     def test_simple_eq(self):
