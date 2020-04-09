@@ -1,6 +1,21 @@
 import unittest
 
-from kiss_headers import *
+from kiss_headers import (
+    Header,
+    AltSvc,
+    CacheControl,
+    ContentEncoding,
+    ContentLength,
+    ContentType,
+    Date,
+    Expires,
+    Server,
+    SetCookie,
+    StrictTransportSecurity,
+    XFrameOptions,
+    XXssProtection,
+    explain,
+)
 
 
 class MyExplainTestCase(unittest.TestCase):
