@@ -1,5 +1,5 @@
 site_name: Kiss-Headers
-site_description: A stupidly simple way to handle headers from HTTP or IMAP !
+site_description: A stupidly simple way to handle headers, object oriented, HTTP or IMAP !
 site_url: https://kiss-headers.tech/
 
 theme:
@@ -17,11 +17,36 @@ edit_uri: ""
 nav:
     - Introduction: 'index.md'
     - Basic Usage: 'quickstart.md'
+    - The Theory: 'the-theory.md'
     - Headers: 'advanced-headers.md'
     - Header: 'advanced-header.md'
+    - The Builder: 'the-builder.md'
+    - Explain Headers: 'explain-headers.md'
     - Email: 'imap.md'
+    - API: 'api.md'
     - Contributing: 'contributing.md'
 
 markdown_extensions:
-  - admonition
-  - codehilite
+    - toc:
+        toc_depth: 3
+        permalink: True
+    - extra
+    - smarty
+    - codehilite
+    - admonition
+    - pymdownx.details
+    - pymdownx.superfences
+    - pymdownx.emoji
+    - pymdownx.inlinehilite
+    - pymdownx.magiclink
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          rendering:
+            show_source: true
+      watch:
+        - ../kiss_headers
