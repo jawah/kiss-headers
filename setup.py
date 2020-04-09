@@ -27,8 +27,6 @@ AUTHOR = "Ahmed TAHRI @Ousret"
 REQUIRES_PYTHON = ">=3.6.0"
 VERSION = get_version()
 
-REQUIRED = []
-
 EXTRAS = {}
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -52,10 +50,11 @@ setup(
     project_urls={
         "Documentation": "https://www.kiss-headers.tech",
         "Source": "https://github.com/Ousret/kiss-headers",
+        "Issue tracker": "https://github.com/Ousret/kiss-headers/issues",
     },
     keywords=["headers", "http", "mail", "text", "imap", "header", "https", "imap4"],
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
-    install_requires=REQUIRED,
+    install_requires=[],  # We shall not require anything. This will remain the same.
     extras_require=EXTRAS,
     include_package_data=True,
     license="MIT",

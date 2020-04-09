@@ -1,8 +1,13 @@
 from kiss_headers.models import Headers, Header
-from kiss_headers.utils import flat_split, extract_class_name
+from kiss_headers.structures import CaseInsensitiveDict
+from kiss_headers.utils import (
+    header_content_split,
+    extract_class_name,
+    header_name_to_class,
+    decode_partials,
+)
 
 from typing import Optional, Iterable, Tuple, Any, Mapping, List
-from email.header import decode_header
 from email.parser import HeaderParser, BytesHeaderParser
 from email.message import Message
 from io import BytesIO, IOBase
@@ -26,12 +31,10 @@ def parse_it(raw_headers: Any) -> Headers:
             )
             .items()
         )
-    elif isinstance(raw_headers, Mapping):
-        headers = raw_headers.items()
-    elif isinstance(raw_headers, Message):
+    elif isinstance(raw_headers, Mapping) or isinstance(raw_headers, Message):
         headers = raw_headers.items()
     else:
-        r = extract_class_name(raw_headers)
+        r = extract_class_name(type(raw_headers))
 
         if r:
             if r == "requests.models.Response":
@@ -49,21 +52,7 @@ def parse_it(raw_headers: Any) -> Headers:
             )
         )
 
-    revised_headers = list()
-
-    for head, content in headers:
-        revised_content: str = str()
-
-        for partial, partial_encoding in decode_header(content):
-            if isinstance(partial, str):
-                revised_content += partial
-            if isinstance(partial, bytes):
-                revised_content += partial.decode(
-                    partial_encoding if partial_encoding is not None else "utf-8",
-                    errors="ignore",
-                )
-
-        revised_headers.append((head, revised_content))
+    revised_headers: List[Tuple[str, str]] = decode_partials(headers)
 
     # Sometime raw content does not begin with headers. If that is the case, search for the next line.
     if (
@@ -78,25 +67,47 @@ def parse_it(raw_headers: Any) -> Headers:
         if len(next_iter) >= 2:
             return parse_it(next_iter[-1])
 
-    # Build the Headers object
-    headers: List[Header] = []
+    # Prepare Header objects
+    list_of_headers: List[Header] = []
 
     for head, content in revised_headers:
-        entries: List[str] = flat_split(content, ",")
+        entries: List[str] = header_content_split(content, ",")
 
-        # Multiple entries are detected in one content and its not a "RFC 7231, section 7.1.1.2: Date"
-        if len(entries) > 1 and entries[0] not in {
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat",
-            "Sun",
-        }:
+        # Multiple entries are detected in one content
+        if len(entries) > 1:
             for entry in entries:
-                headers.append(Header(head, entry))
+                list_of_headers.append(Header(head, entry))
         else:
-            headers.append(Header(head, content))
+            list_of_headers.append(Header(head, content))
 
-    return Headers(headers)
+    return Headers(list_of_headers)
+
+
+def explain(headers: Headers) -> CaseInsensitiveDict:
+    """
+    Return an brief explanation of each header present in headers if available.
+    """
+    if not Header.__subclasses__():
+        raise LookupError(
+            "You cannot use explain() function without properly importing the public package."
+        )
+
+    explanations: CaseInsensitiveDict = CaseInsensitiveDict()
+
+    for header in headers:
+        if header.name in explanations:
+            continue
+
+        try:
+            target_class = header_name_to_class(header.name, Header.__subclasses__()[0])
+        except TypeError:
+            explanations[header.name] = "Unknown explanation."
+            continue
+
+        explanations[header.name] = (
+            target_class.__doc__.replace("\n", "").lstrip().replace("  ", " ").rstrip()
+            if target_class.__doc__
+            else "Missing docstring."
+        )
+
+    return explanations

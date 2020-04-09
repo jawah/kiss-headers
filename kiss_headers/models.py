@@ -8,12 +8,19 @@ from typing import (
     Tuple,
     Iterable,
     MutableMapping,
+    Type,
 )
 from re import findall, IGNORECASE, escape
 from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
 
-from kiss_headers.utils import flat_split, normalize_str
+from kiss_headers.utils import (
+    header_content_split,
+    normalize_str,
+    header_name_to_class,
+    prettify_header_name,
+    unquote,
+)
 
 RESERVED_KEYWORD: List[str] = [
     "and_",
@@ -63,10 +70,11 @@ class Header(object):
 
         self._name: str = name
         self._normalized_name: str = normalize_str(self._name)
+        self._pretty_name: str = prettify_header_name(self._name)
         self._content: str = content
 
         self._members: List[str] = [
-            el.lstrip() for el in flat_split(self._content, ";")
+            el.lstrip() for el in header_content_split(self._content, ";")
         ]
 
         self._not_valued_attrs: List[str] = list()
@@ -76,12 +84,15 @@ class Header(object):
         ] = dict()
 
         for member in self._members:
+            if member == "":
+                continue
+
             if "=" in member:
                 key, value = tuple(member.split("=", maxsplit=1))
 
                 # avoid confusing base64 look alike single value for (key, value)
                 if value.count("=") == len(value) or len(value) == 0 or " " in key:
-                    self._not_valued_attrs.append(member)
+                    self._not_valued_attrs.append(unquote(member))
                     continue
 
                 if key not in self._valued_attrs:
@@ -97,7 +108,7 @@ class Header(object):
                 ]
                 continue
 
-            self._not_valued_attrs.append(member)
+            self._not_valued_attrs.append(unquote(member))
 
     @property
     def name(self) -> str:
@@ -112,6 +123,13 @@ class Header(object):
         Output header name but normalized, lower case and '-' character become '_'.
         """
         return self._normalized_name
+
+    @property
+    def pretty_name(self) -> str:
+        """
+        Output a prettified name of the header. First letter capitalized of each word.
+        """
+        return self._pretty_name
 
     @property
     def content(self) -> str:
@@ -231,6 +249,7 @@ class Header(object):
         if key in [
             "_name",
             "_normalized_name",
+            "_pretty_name",
             "_content",
             "_members",
             "_not_valued_attrs",
@@ -348,11 +367,20 @@ class Header(object):
         if isinstance(other, str):
             return self.content == other or other in self._not_valued_attrs
         if isinstance(other, Header):
-            return (
+            if (
                 self.normalized_name == other.normalized_name
-                and self.content == other.content
-            )
-        raise NotImplemented(
+                and len(self._not_valued_attrs) == len(other._not_valued_attrs)
+                and len(self._valued_attrs) == len(other._valued_attrs)
+            ):
+                for adjective in self._not_valued_attrs:
+                    if adjective not in other._not_valued_attrs:
+                        return False
+                for key in self._valued_attrs:
+                    if key not in other or self[key] != other[key]:
+                        return False
+                return True
+            return False
+        raise NotImplementedError(
             "Cannot compare type {type_} to an Header. Use str or Header.".format(
                 type_=type(other)
             )
@@ -424,14 +452,14 @@ class Header(object):
                 )
             )
 
-        # Unquote value if necessary
-        if isinstance(value, str) and value.startswith('"') and value.endswith('"'):
-            return value[1:-1]
-
         if OUTPUT_LOCK_TYPE and not isinstance(value, list):
-            return [value]
+            value = [value]
 
-        return value
+        return (
+            unquote(value)
+            if not isinstance(value, list)
+            else [unquote(v) for v in value]
+        )
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:
         """
@@ -555,6 +583,9 @@ class Headers(object):
         return self[header]
 
     def __iter__(self) -> Iterator[Header]:
+        """
+        Act like a list by yielding one element at a time. Each element is a Header object.
+        """
         for header in self._headers:
             yield header
 
@@ -562,7 +593,14 @@ class Headers(object):
         """
         Return a list of distinct header name set in headers.
         """
-        return list(set([header.name for header in self]))
+        keys = list()
+
+        # I decided to go with this to conserve order of appearance in list.
+        for header in self:
+            if header.name not in keys:
+                keys.append(header.name)
+
+        return keys
 
     def items(self) -> List[Tuple[str, str]]:
         """
@@ -659,7 +697,7 @@ class Headers(object):
         Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
         """
         if not isinstance(other, Headers):
-            raise NotImplemented(
+            raise NotImplementedError(
                 "Cannot compare type {type_} to an Header. Use str or Header.".format(
                     type_=type(other)
                 )
@@ -689,7 +727,47 @@ class Headers(object):
         """
         Non-ambiguous representation of an Headers instance.
         """
-        return "\n".join([header.__repr__() for header in self])
+        result: List[str] = []
+
+        for header_name in self.keys():
+
+            r = self.get(header_name)
+
+            if not r:
+                raise LookupError(
+                    f"This should not happen. Cannot get '{header_name}' from headers when keys() said its there."
+                )
+
+            target_subclass: Optional[Type] = None
+
+            try:
+                target_subclass = (
+                    header_name_to_class(header_name, Header.__subclasses__()[0])
+                    if Header.__subclasses__()
+                    else None
+                )
+            except TypeError:
+                pass
+
+            if (
+                isinstance(r, list)
+                and len(r) > 1
+                and target_subclass
+                and hasattr(target_subclass, "__squash__")
+                and target_subclass.__squash__ is True
+            ):
+                result.append(
+                    "{name}: {content}".format(
+                        name=header_name, content=", ".join([el.content for el in r])
+                    )
+                )
+            elif isinstance(r, list):
+                for el in r:
+                    result.append(repr(el))
+            else:
+                result.append(repr(r))
+
+        return "\n".join(result)
 
     def __add__(self, other: Header) -> "Headers":
         """
