@@ -135,6 +135,9 @@ class Header(object):
     def content(self) -> str:
         """
         Output associated content to header as it was captured initially.
+           >>> header = Header("ETag", '"33a64df551425fcc55e4d42a148795d9f25f89d4"')
+           >>> header.content
+           '33a64df551425fcc55e4d42a148795d9f25f89d4'
         """
         # Unquote content if their is only one value/attribute in it. Like the ETag header.
         if len(self.attrs) == 1:
@@ -143,6 +146,7 @@ class Header(object):
         return self._content
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
+        """Simply provide a deepcopy of an Header object. Pointer/Reference free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
 
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
@@ -354,6 +358,8 @@ class Header(object):
         del self[item]
 
     def __iter__(self) -> Iterator[Tuple[str, Optional[Union[str, List[str]]]]]:
+        """Provide a way to iter over an Header object. This will yield a Tuple of key, value.
+        Value would be None if the key is a member without associated value."""
         for key in self._valued_attrs:
             yield key, self[key]
         for adjective in self._not_valued_attrs:
@@ -501,7 +507,7 @@ class Header(object):
 class Headers(object):
     """
     Object oriented representation for Headers. Contains a list of Header with some level of abstraction.
-    Combine advantages of dict, CaseInsensibleDict and objects.
+    Combine advantages of dict, CaseInsensibleDict and native objects.
     """
 
     # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
@@ -632,7 +638,7 @@ class Headers(object):
 
     def __deepcopy__(self, memodict: Dict) -> "Headers":
         """
-        Just provide a deepcopy of current Headers object. Pointer linked free of current instance.
+        Just provide a deepcopy of current Headers object. Pointer/reference free of the current instance.
         """
         return Headers(deepcopy(self._headers))
 

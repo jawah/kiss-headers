@@ -3,6 +3,7 @@ Kiss-Headers
 ~~~~~~~~~~~~~~
 
 Kiss-Headers is a headers, HTTP or IMAP4 flavour, utility, written in Python, for humans.
+Object oriented headers. Keep it simple and stupid.
 Basic usage:
 
    >>> import requests

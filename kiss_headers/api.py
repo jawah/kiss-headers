@@ -85,7 +85,7 @@ def parse_it(raw_headers: Any) -> Headers:
 
 def explain(headers: Headers) -> CaseInsensitiveDict:
     """
-    Return an brief explanation of each header present in headers if available.
+    Return a brief explanation of each header present in headers if available.
     """
     if not Header.__subclasses__():
         raise LookupError(
