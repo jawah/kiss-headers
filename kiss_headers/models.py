@@ -136,9 +136,9 @@ class Header(object):
         """
         Output associated content to header as it was captured initially.
         """
+        # Unquote content if their is only one value/attribute in it. Like the ETag header.
         if len(self.attrs) == 1:
-            if self._content.startswith('"') and self._content.endswith('"'):
-                return self._content[1:-1]
+            return unquote(self._content)
 
         return self._content
 
