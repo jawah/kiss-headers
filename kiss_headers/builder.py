@@ -517,7 +517,7 @@ class TransferEncoding(CustomHeader):
 
         method = method.lower()
 
-        if method not in ["chunked", "compress", "deflate", "gzip", "identity", "br"]:
+        if method not in ["chunked", "compress", "deflate", "gzip", "identity", "br", "*"]:
             raise ValueError(
                 "You should choose between 'chunked', 'compress', 'deflate', 'gzip', 'identity' or 'br' for the encoding method."
             )
@@ -554,12 +554,19 @@ class AcceptEncoding(TransferEncoding):
 
     __tags__ = ["request"]
 
-    def __init__(self, method: str, **kwargs):
+    def __init__(self, method: str, qualifier=1.0, **kwargs):
         """
-        :param method:
+        :param method: Either chunked, compress, deflate, gzip, identity, br or a wildcard.
+        :param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
         :param kwargs:
         """
-        super().__init__(method, **kwargs)
+        args: Dict = {
+            "q": qualifier if qualifier != 1.0 else None
+        }
+
+        args.update(kwargs)
+
+        super().__init__(method, **args)
 
 
 class Dnt(CustomHeader):
