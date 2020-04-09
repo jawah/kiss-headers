@@ -1,4 +1,5 @@
 import unittest
+
 from kiss_headers import Headers, parse_it, Header, lock_output_type
 from kiss_headers.utils import decode_partials
 
