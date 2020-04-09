@@ -26,9 +26,7 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     when attached, see "RFC 7231, section 7.1.1.2: Date".
     """
     if len(delimiter) != 1 or delimiter not in [";", ","]:
-        raise ValueError(
-            "Delimiter should be either semi-colon or a coma."
-        )
+        raise ValueError("Delimiter should be either semi-colon or a coma.")
 
     in_double_quote: bool = False
     in_parenthesis: bool = False
@@ -50,7 +48,15 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
         elif letter == ")" and in_parenthesis:
             in_parenthesis = False
         else:
-            is_on_a_day = index >= 3 and string[index - 3 : index] in {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
+            is_on_a_day = index >= 3 and string[index - 3 : index] in {
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+                "Sun",
+            }
 
         if not in_double_quote:
 
@@ -59,14 +65,12 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
             elif letter == ";" and in_value:
                 in_value = False
 
-            if (
-                in_value
-                and letter == delimiter
-                and not is_on_a_day
-            ):
+            if in_value and letter == delimiter and not is_on_a_day:
                 in_value = False
 
-        if letter == delimiter and ((in_value or in_double_quote or in_parenthesis or is_on_a_day) is False):
+        if letter == delimiter and (
+            (in_value or in_double_quote or in_parenthesis or is_on_a_day) is False
+        ):
 
             result[-1] = result[-1].lstrip().rstrip()
             result.append("")
