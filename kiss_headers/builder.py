@@ -517,7 +517,15 @@ class TransferEncoding(CustomHeader):
 
         method = method.lower()
 
-        if method not in ["chunked", "compress", "deflate", "gzip", "identity", "br", "*"]:
+        if method not in [
+            "chunked",
+            "compress",
+            "deflate",
+            "gzip",
+            "identity",
+            "br",
+            "*",
+        ]:
             raise ValueError(
                 "You should choose between 'chunked', 'compress', 'deflate', 'gzip', 'identity' or 'br' for the encoding method."
             )
@@ -560,9 +568,7 @@ class AcceptEncoding(TransferEncoding):
         :param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
         :param kwargs:
         """
-        args: Dict = {
-            "q": qualifier if qualifier != 1.0 else None
-        }
+        args: Dict = {"q": qualifier if qualifier != 1.0 else None}
 
         args.update(kwargs)
 
@@ -785,7 +791,7 @@ class Etag(CustomHeader):
         :param kwargs:
         """
         super().__init__(
-            '{weak_validation_cond}{etag}'.format(
+            "{weak_validation_cond}{etag}".format(
                 weak_validation_cond="W/" if is_a_weak_validator else "",
                 etag=quote(etag_value),
             ),
