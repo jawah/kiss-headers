@@ -1096,10 +1096,8 @@ class IfNoneMatch(IfMatch):
 
 
 class Server(CustomHeader):
-    """
-    The Server header describes the software used by the origin server that handled the request —
-    that is, the server that generated the response.
-    """
+    """The Server header describes the software used by the origin server that handled the request —
+    that is, the server that generated the response."""
 
     __tags__ = ["response"]
 
@@ -1109,3 +1107,18 @@ class Server(CustomHeader):
         :param kwargs:
         """
         super().__init__(product, **kwargs)
+
+
+class Vary(CustomHeader):
+    """The Vary HTTP response header determines how to match future request headers to decide whether a cached response
+    can be used rather than requesting a fresh one from the origin server."""
+
+    __squash__ = True
+    __tags__ = ["response"]
+
+    def __init__(self, header_name, **kwargs):
+        """
+        :param header_name: An header name to take into account when deciding whether or not a cached response can be used.
+        :param kwargs:
+        """
+        super().__init__(prettify_header_name(header_name), **kwargs)

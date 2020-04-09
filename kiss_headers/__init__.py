@@ -84,5 +84,6 @@ from kiss_headers.builder import (
     IfMatch,
     IfNoneMatch,
     Server,
+    Vary,
 )
 from kiss_headers.version import __version__, VERSION
