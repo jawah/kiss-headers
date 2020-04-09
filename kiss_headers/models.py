@@ -185,10 +185,10 @@ class Header(object):
         This method should allow you to remove attribute or member from header.
         """
         if not isinstance(other, str):
-            raise TypeError
+            raise TypeError("You cannot subtract {type_} to an Header.".format(type_=str(type(other))))
 
         if other not in self:
-            raise ValueError
+            raise ValueError("You cannot subtract '{element}' from '{header_name}' Header because its not there.".format(element=other, header_name=self.pretty_name))
 
         other = normalize_str(other)
 
