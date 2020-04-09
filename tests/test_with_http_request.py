@@ -1,8 +1,8 @@
 import unittest
 from typing import Optional
 
-from requests import get, Response
 from httpx import get as _next_get
+from requests import get, Response
 
 from kiss_headers import parse_it
 

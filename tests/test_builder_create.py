@@ -1,6 +1,31 @@
 import unittest
 
-from kiss_headers import *
+from kiss_headers import (
+    Host,
+    UserAgent,
+    Accept,
+    AcceptLanguage,
+    AcceptEncoding,
+    Referer,
+    Connection,
+    UpgradeInsecureRequests,
+    IfModifiedSince,
+    IfNoneMatch,
+    CacheControl,
+    parse_it,
+    Header,
+    AltSvc,
+    ContentEncoding,
+    ContentLength,
+    ContentType,
+    Date,
+    Expires,
+    Server,
+    SetCookie,
+    StrictTransportSecurity,
+    XFrameOptions,
+    XXssProtection,
+)
 
 RAW_HEADERS = """accept-ch: DPR
 accept-ch-lifetime: 2592000

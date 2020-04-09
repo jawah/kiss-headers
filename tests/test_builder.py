@@ -1,7 +1,20 @@
 import unittest
-
-from kiss_headers.builder import *
+from datetime import datetime
+from datetime import timezone
 from email import utils
+
+from kiss_headers import (
+    CustomHeader,
+    ContentType,
+    SetCookie,
+    ContentLength,
+    ContentDisposition,
+    CrossOriginResourcePolicy,
+    ReferrerPolicy,
+    From,
+    Allow,
+    Date,
+)
 
 
 class MyBuilderTestCase(unittest.TestCase):
