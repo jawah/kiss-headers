@@ -197,3 +197,16 @@ def unquote(string: str) -> str:
         return string[1:-1]
 
     return string
+
+
+def quote(string: str) -> str:
+    """
+    Surround string by double quote.
+       >>> quote("hello")
+       '"hello"'
+       >>> quote('"hello')
+       '""hello"'
+       >>> quote('"hello"')
+       '"hello"'
+    """
+    return '"' + unquote(string) + '"'

@@ -2,7 +2,7 @@
 
 <p align="center">
   <img alt="Temporary logo" src="https://user-images.githubusercontent.com/9326700/76708477-64a96600-66f7-11ea-9d4a-8cc07866e185.png"/><br>
-  <sup>Combine advantages of many representations, with auto-completion!</sup><br>
+  <sup>Object oriented headers, pythonic, with auto-completion!</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
@@ -45,7 +45,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 ## 🔪 Features
 
-`kiss-headers` is a basic library that allow you to handle headers with great care. 
+`kiss-headers` is a basic library that allow you to handle headers as objects.
 
 * A backwards-compatible syntax using bracket style.
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
@@ -70,7 +70,7 @@ Plus all the features that you would expect from handling headers...
 
 Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.6+ installed.
 ```sh 
-pip install kiss-headers
+pip install kiss-headers --upgrade
 ```
 
 ### 🍰 Usage
@@ -85,6 +85,8 @@ response = get('https://www.google.fr')
 headers = parse_it(response)
 
 headers.content_type.charset  # output: ISO-8859-1
+# Its the same as
+headers["content-type"]["charset"]  # output: ISO-8859-1
 ```
 
 Do not forget that headers are not OneToOne. One header can be repeated multiple times and attributes can have multiple values within the same header.
@@ -109,9 +111,60 @@ headers = parse_it('From: Ousret; origin=www.github.com\nIS: 1\nWhile: Not-True'
 
 # this flavour
 headers.from_ # to access From, just add a single underscore to it
-# or..
+# or.. just using :
 headers['from']
 ```
+
+## 🛠️ The builder
+
+Introduced in the version 2.0, kiss-headers now allow you to create headers with more than 40+ ready-to-use, fully documented, header objects.
+
+```python
+from kiss_headers import *
+
+headers = (
+    Host("developer.mozilla.org")
+    + UserAgent(
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0"
+    )
+    + Accept("text/html")
+    + Accept("application/xhtml+xml")
+    + Accept("application/xml", qualifier=0.9)
+    + Accept(qualifier=0.8)
+    + AcceptLanguage("en-US")
+    + AcceptLanguage("en", qualifier=0.5)
+    + AcceptEncoding("gzip")
+    + AcceptEncoding("deflate")
+    + AcceptEncoding("br")
+    + Referer("https://developer.mozilla.org/testpage.html")
+    + Connection(should_keep_alive=True)
+    + UpgradeInsecureRequests()
+    + IfModifiedSince("Mon, 18 Jul 2016 02:36:04 GMT")
+    + IfNoneMatch("c561c68d0ba92bbeb8b0fff2a9199f722e3a621a")
+    + CacheControl(max_age=0)
+)
+
+raw_headers = str(headers)
+```
+
+`raw_headers` now retain the following :
+
+```
+Host: developer.mozilla.org
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html, application/xhtml+xml, application/xml; q="0.9", */*; q="0.8"
+Accept-Language: en-US, en; q="0.5"
+Accept-Encoding: gzip, deflate, br
+Referer: https://developer.mozilla.org/testpage.html
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
+If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
+Cache-Control: max-age="0"
+```
+
+See the complete list of available header class in the full documentation. 
+Also, you can create your own custom header object using the class `kiss_headers.CustomHeader`.
 
 ## 📜 Documentation
 

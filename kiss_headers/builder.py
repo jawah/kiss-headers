@@ -1,7 +1,7 @@
 from re import fullmatch
 
 from kiss_headers.models import Header
-from kiss_headers.utils import class_to_header_name
+from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
 from typing import Optional, Union, Dict, List
 
 from datetime import datetime, timezone
@@ -517,7 +517,15 @@ class TransferEncoding(CustomHeader):
 
         method = method.lower()
 
-        if method not in ["chunked", "compress", "deflate", "gzip", "identity", "br"]:
+        if method not in [
+            "chunked",
+            "compress",
+            "deflate",
+            "gzip",
+            "identity",
+            "br",
+            "*",
+        ]:
             raise ValueError(
                 "You should choose between 'chunked', 'compress', 'deflate', 'gzip', 'identity' or 'br' for the encoding method."
             )
@@ -554,12 +562,17 @@ class AcceptEncoding(TransferEncoding):
 
     __tags__ = ["request"]
 
-    def __init__(self, method: str, **kwargs):
+    def __init__(self, method: str, qualifier=1.0, **kwargs):
         """
-        :param method:
+        :param method: Either chunked, compress, deflate, gzip, identity, br or a wildcard.
+        :param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
         :param kwargs:
         """
-        super().__init__(method, **kwargs)
+        args: Dict = {"q": qualifier if qualifier != 1.0 else None}
+
+        args.update(kwargs)
+
+        super().__init__(method, **args)
 
 
 class Dnt(CustomHeader):
@@ -778,9 +791,9 @@ class Etag(CustomHeader):
         :param kwargs:
         """
         super().__init__(
-            '{weak_validation_cond}"{etag}"'.format(
+            "{weak_validation_cond}{etag}".format(
                 weak_validation_cond="W/" if is_a_weak_validator else "",
-                etag=etag_value,
+                etag=quote(etag_value),
             ),
             **kwargs,
         )
@@ -1073,7 +1086,7 @@ class IfMatch(CustomHeader):
         :param etag_value: Entity tags uniquely representing the requested resources. They are a string of ASCII characters placed between double quotes (like "675af34563dc-tr34").
         :param kwargs:
         """
-        super().__init__(etag_value, **kwargs)
+        super().__init__(quote(etag_value), **kwargs)
 
 
 class IfNoneMatch(IfMatch):
@@ -1089,10 +1102,8 @@ class IfNoneMatch(IfMatch):
 
 
 class Server(CustomHeader):
-    """
-    The Server header describes the software used by the origin server that handled the request —
-    that is, the server that generated the response.
-    """
+    """The Server header describes the software used by the origin server that handled the request —
+    that is, the server that generated the response."""
 
     __tags__ = ["response"]
 
@@ -1102,3 +1113,18 @@ class Server(CustomHeader):
         :param kwargs:
         """
         super().__init__(product, **kwargs)
+
+
+class Vary(CustomHeader):
+    """The Vary HTTP response header determines how to match future request headers to decide whether a cached response
+    can be used rather than requesting a fresh one from the origin server."""
+
+    __squash__ = True
+    __tags__ = ["response"]
+
+    def __init__(self, header_name, **kwargs):
+        """
+        :param header_name: An header name to take into account when deciding whether or not a cached response can be used.
+        :param kwargs:
+        """
+        super().__init__(prettify_header_name(header_name), **kwargs)

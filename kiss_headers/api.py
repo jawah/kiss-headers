@@ -42,7 +42,7 @@ def parse_it(raw_headers: Any) -> Headers:
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
                         headers.append((header_name, header_content))
-            elif r == "httpx._models.Response":
+            elif r in ["httpx._models.Response", "urllib3.response.HTTPResponse"]:
                 headers = raw_headers.headers.items()
 
     if headers is None:
@@ -85,7 +85,7 @@ def parse_it(raw_headers: Any) -> Headers:
 
 def explain(headers: Headers) -> CaseInsensitiveDict:
     """
-    Return an brief explanation of each header present in headers if available.
+    Return a brief explanation of each header present in headers if available.
     """
     if not Header.__subclasses__():
         raise LookupError(
