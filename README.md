@@ -1,7 +1,6 @@
 <h1 align="center">Welcome to Headers for Humans 👋 <a href="https://twitter.com/intent/tweet?text=So%20simple,%20you%20may%20fall%20in%20love%20at%20first%20sight%20!%20With%20auto-completion%20!&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
 
 <p align="center">
-  <img alt="Temporary logo" src="https://user-images.githubusercontent.com/9326700/76708477-64a96600-66f7-11ea-9d4a-8cc07866e185.png"/><br>
   <sup>Object oriented headers, pythonic, with auto-completion!</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
