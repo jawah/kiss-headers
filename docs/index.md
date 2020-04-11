@@ -53,7 +53,7 @@ Plus all the features that you would expect from handling headers...
 
 !!! note
     Even if this library offer a wide support to handle headers as they were objects you should know that headers are not obligated to follow any syntax.
-    But we are pretty confident that this library cover at least 99 % use cases you could encounter. Feel free to address any issue you may encounter.
+    But we are pretty confident that this library cover at least 99 % of the use cases you could encounter. Feel free to address any issue you may encounter.
 
 ## ✨ Installation
 

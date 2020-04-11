@@ -16,8 +16,8 @@ edit_uri: ""
 
 nav:
     - Introduction: 'index.md'
-    - Basic Usage: 'quickstart.md'
     - The Theory: 'the-theory.md'
+    - Basic Usage: 'quickstart.md'
     - Headers: 'advanced-headers.md'
     - Header: 'advanced-header.md'
     - The Builder: 'the-builder.md'
@@ -27,26 +27,11 @@ nav:
     - Contributing: 'contributing.md'
 
 markdown_extensions:
-    - toc:
-        toc_depth: 3
-        permalink: True
     - extra
     - smarty
     - codehilite
     - admonition
-    - pymdownx.details
-    - pymdownx.superfences
-    - pymdownx.emoji
-    - pymdownx.inlinehilite
-    - pymdownx.magiclink
+    - mkautodoc
 
-plugins:
-  - search
-  - mkdocstrings:
-      default_handler: python
-      handlers:
-        python:
-          rendering:
-            show_source: true
-      watch:
-        - ../kiss_headers
+extra_css:
+  - custom.css
