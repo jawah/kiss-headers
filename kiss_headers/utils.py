@@ -212,20 +212,46 @@ def quote(string: str) -> str:
     return '"' + unquote(string) + '"'
 
 
+def count_leftover_space(content: str) -> int:
+    """
+    Recursive function that count trailing white space at the end of given string.
+    """
+    if content.endswith(" "):
+        return count_leftover_space(content[:-1]) + 1
+    return 0
+
+
 def header_strip(content: str, elem: str) -> str:
     """
     Remove a member for a given header content and take care of the unneeded leftover semi-colon.
     """
-    has_semicolon_at_the_end: bool = False
+    next_semi_colon_index: Optional[int] = None
 
     try:
-        content.index(elem + ";")
-        has_semicolon_at_the_end = True
+        elem_index: int = content.index(elem)
+    except ValueError:
+        # If the target element in not found within the content, just return the unmodified content.
+        return content
+
+    elem_end_index: int = elem_index + len(elem)
+
+    elem = (" " * count_leftover_space(content[:elem_index])) + elem
+
+    try:
+        next_semi_colon_index = elem_end_index + content[elem_end_index:].index(";")
     except ValueError:
         pass
 
     content = (
-        content.replace(elem + (";" if has_semicolon_at_the_end else ""), "")
+        content.replace(
+            elem
+            + (
+                content[elem_end_index:next_semi_colon_index] + ";"
+                if next_semi_colon_index is not None
+                else ""
+            ),
+            "",
+        )
         .rstrip(" ")
         .lstrip(" ")
     )

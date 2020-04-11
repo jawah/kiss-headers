@@ -58,7 +58,7 @@ class MyKissHeaderOperation(unittest.TestCase):
 
         del content_type.format
 
-        self.assertEqual('text/html;  charset="utf-8"', str(content_type))
+        self.assertEqual('text/html; charset="utf-8"', str(content_type))
 
     def test_simple_attr_add(self):
 
