@@ -739,7 +739,8 @@ class Headers(object):
 
     def __repr__(self) -> str:
         """
-        Non-ambiguous representation of an Headers instance.
+        Non-ambiguous representation of an Headers instance. Using CRLF as described in rfc2616.
+        The repr of Headers will not end with blank(s) line(s). You have to add it yourself, depending on your needs.
         """
         result: List[str] = []
 
