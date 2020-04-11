@@ -20,7 +20,9 @@ set-cookie: CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; do
 status: 200
 strict-transport-security: max-age=31536000
 x-frame-options: SAMEORIGIN
-x-xss-protection: 0""".replace("\n", "\r\n")
+x-xss-protection: 0""".replace(
+    "\n", "\r\n"
+)
 
 RAW_HEADERS_MOZILLA = """GET /home.html HTTP/1.1
 Host: developer.mozilla.org
@@ -33,7 +35,9 @@ Connection: keep-alive
 Upgrade-Insecure-Requests: 1
 If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
 If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
-Cache-Control: max-age=0""".replace("\n", "\r\n")
+Cache-Control: max-age=0""".replace(
+    "\n", "\r\n"
+)
 
 
 class MyKissHeadersFromStringTest(unittest.TestCase):
