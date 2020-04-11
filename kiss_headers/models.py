@@ -20,6 +20,7 @@ from kiss_headers.utils import (
     header_name_to_class,
     prettify_header_name,
     unquote,
+    header_strip,
 )
 
 RESERVED_KEYWORD: List[str] = [
@@ -219,27 +220,7 @@ class Header(object):
                 self._content + "\n",
                 IGNORECASE,
             ):
-                has_semicolon_at_the_end: bool = False
-
-                try:
-                    self._content.index(elem + ";")
-                    has_semicolon_at_the_end = True
-                except ValueError:
-                    pass
-
-                self._content = (
-                    self._content.replace(
-                        elem + (";" if has_semicolon_at_the_end else ""), ""
-                    )
-                    .rstrip(" ")
-                    .lstrip(" ")
-                )
-
-                if self._content.startswith(";"):
-                    self._content = self._content[1:]
-
-                if self._content.endswith(";"):
-                    self._content = self._content[:-1]
+                self._content = header_strip(self._content, elem)
 
         return self
 
@@ -326,28 +307,7 @@ class Header(object):
             self._content + "\n",
             IGNORECASE,
         ):
-
-            has_semicolon_at_the_end: bool = False
-
-            try:
-                self._content.index(elem + ";")
-                has_semicolon_at_the_end = True
-            except ValueError:
-                pass
-
-            self._content = (
-                self._content.replace(
-                    elem + (";" if has_semicolon_at_the_end else ""), ""
-                )
-                .rstrip(" ")
-                .lstrip(" ")
-            )
-
-            if self._content.startswith(";"):
-                self._content = self._content[1:]
-
-            if self._content.endswith(";"):
-                self._content = self._content[:-1]
+            self._content = header_strip(self._content, elem)
 
     def __delattr__(self, item: str):
         """
