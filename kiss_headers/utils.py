@@ -225,9 +225,7 @@ def header_strip(content: str, elem: str) -> str:
         pass
 
     content = (
-        content.replace(
-            elem + (";" if has_semicolon_at_the_end else ""), ""
-        )
+        content.replace(elem + (";" if has_semicolon_at_the_end else ""), "")
         .rstrip(" ")
         .lstrip(" ")
     )

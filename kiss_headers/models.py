@@ -20,7 +20,8 @@ from kiss_headers.utils import (
     header_name_to_class,
     prettify_header_name,
     unquote,
-    header_strip)
+    header_strip,
+)
 
 RESERVED_KEYWORD: List[str] = [
     "and_",
