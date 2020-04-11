@@ -781,7 +781,7 @@ class Headers(object):
             else:
                 result.append(repr(r))
 
-        return "\n".join(result)
+        return "\r\n".join(result)
 
     def __add__(self, other: Header) -> "Headers":
         """
