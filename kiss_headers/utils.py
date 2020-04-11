@@ -210,3 +210,32 @@ def quote(string: str) -> str:
        '"hello"'
     """
     return '"' + unquote(string) + '"'
+
+
+def header_strip(content: str, elem: str) -> str:
+    """
+    Remove a member for a given header content and take care of the unneeded leftover semi-colon.
+    """
+    has_semicolon_at_the_end: bool = False
+
+    try:
+        content.index(elem + ";")
+        has_semicolon_at_the_end = True
+    except ValueError:
+        pass
+
+    content = (
+        content.replace(
+            elem + (";" if has_semicolon_at_the_end else ""), ""
+        )
+        .rstrip(" ")
+        .lstrip(" ")
+    )
+
+    if content.startswith(";"):
+        content = content[1:]
+
+    if content.endswith(";"):
+        content = content[:-1]
+
+    return content
