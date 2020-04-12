@@ -650,7 +650,12 @@ class Forwarded(CustomHeader):
     __tags__: List[str] = ["request", "response"]
 
     def __init__(
-        self, by: str, for_: str, using_proto: str, host: Optional[str] = None, **kwargs: Optional[str]
+        self,
+        by: str,
+        for_: str,
+        using_proto: str,
+        host: Optional[str] = None,
+        **kwargs: Optional[str],
     ):
         """
         :param by: The interface where the request came in to the proxy server. Could be an IP address, an obfuscated identifier or "unknown".
@@ -760,7 +765,9 @@ class AcceptLanguage(CustomHeader):
     __squash__: bool = True
     __tags__: List[str] = ["request"]
 
-    def __init__(self, language: str = "*", qualifier: float = 1.0, **kwargs: Optional[str]):
+    def __init__(
+        self, language: str = "*", qualifier: float = 1.0, **kwargs: Optional[str]
+    ):
         """
         :param language: A language tag (which is sometimes referred to as a "locale identifier"). This consists of a 2-3 letter base language tag representing the language.
         :param qualifier: Any value placed in an order of preference expressed using a relative quality value called weight.
@@ -784,7 +791,12 @@ class Etag(CustomHeader):
 
     __tags__: List[str] = ["response"]
 
-    def __init__(self, etag_value: str, is_a_weak_validator: bool = False, **kwargs: Optional[str]):
+    def __init__(
+        self,
+        etag_value: str,
+        is_a_weak_validator: bool = False,
+        **kwargs: Optional[str],
+    ):
         """
         :param etag_value: Entity tag uniquely representing the requested resource. ASCII string only. Not quoted.
         :param is_a_weak_validator: Indicates that a weak validator is used. Weak etags are easy to generate, but are far less useful for comparisons.
@@ -869,7 +881,11 @@ class WwwAuthenticate(CustomHeader):
     __tags__: List[str] = ["response"]
 
     def __init__(
-        self, auth_type: str, realm: str, charset: Optional[str] = None, **kwargs: Optional[str]
+        self,
+        auth_type: str,
+        realm: str,
+        charset: Optional[str] = None,
+        **kwargs: Optional[str],
     ):
         args: Dict = {"realm": realm, charset: charset.upper() if charset else None}
         args.update(kwargs)
@@ -940,7 +956,9 @@ class ContentRange(CustomHeader):
 
     __tags__ = ["response"]
 
-    def __init__(self, unit: str, start: int, end: int, size: int, **kwargs: Optional[str]):
+    def __init__(
+        self, unit: str, start: int, end: int, size: int, **kwargs: Optional[str]
+    ):
         """
         :param unit: The unit in which ranges are specified. This is usually bytes.
         :param start: An integer in the given unit indicating the beginning of the request range.
@@ -1010,7 +1028,9 @@ class Expires(Date):
 
     __tags__ = ["response"]
 
-    def __init__(self, datetime_or_custom: Union[datetime, str], **kwargs: Optional[str]):
+    def __init__(
+        self, datetime_or_custom: Union[datetime, str], **kwargs: Optional[str]
+    ):
         super().__init__(datetime_or_custom, **kwargs)
 
 
@@ -1052,7 +1072,10 @@ class KeepAlive(CustomHeader):
     __tags__ = ["request", "response"]
 
     def __init__(
-        self, timeout: Optional[int] = None, max_: Optional[int] = None, **kwargs: Optional[str]
+        self,
+        timeout: Optional[int] = None,
+        max_: Optional[int] = None,
+        **kwargs: Optional[str],
     ):
         """
         :param timeout: indicating the minimum amount of time an idle connection has to be kept opened (in seconds).
