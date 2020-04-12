@@ -24,9 +24,9 @@ Basic usage:
 
 ... or from a raw IMAP4 message:
 
-   >>> message = open('my-email.eml', 'rb').read()
+   >>> message = requests.get("https://gist.githubusercontent.com/Ousret/8b84b736c375bb6aa3d389e86b5116ec/raw/21cb2f7af865e401c37d9b053fb6fe1abf63165b/sample-message.eml").content
    >>> headers = parse_it(message)
-   >>> 'Received' in headers
+   >>> 'Sender' in headers
    True
 
 Others methods and usages are available - see the full documentation

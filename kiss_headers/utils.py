@@ -139,14 +139,14 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
 def prettify_header_name(name: str) -> str:
     """
     Take a header name and prettify it.
-       >>> prettify_header_name("x-hEllo-wORLD")
-       X-Hello-World
-       >>> prettify_header_name("server")
-       Server
-       >>> prettify_header_name("contEnt-TYPE")
-       Content-Type
-       >>> prettify_header_name("content_type")
-       Content-Type
+    >>> prettify_header_name("x-hEllo-wORLD")
+    'X-Hello-World'
+    >>> prettify_header_name("server")
+    'Server'
+    >>> prettify_header_name("contEnt-TYPE")
+    'Content-Type'
+    >>> prettify_header_name("content_type")
+    'Content-Type'
     """
     return "-".join([el.capitalize() for el in name.replace("_", "-").split("-")])
 
@@ -155,8 +155,8 @@ def decode_partials(items: Iterable[Tuple[str, Any]]) -> List[Tuple[str, str]]:
     """
     This function takes a list of tuple, representing headers by key, value. Where value is bytes or string containing
     (RFC 2047 encoded) partials fragments like the following :
-       >>> decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
-       [("Subject", "pöstal")]
+    >>> decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
+    [('Subject', 'pöstal')]
     """
     revised_items: List[Tuple[str, str]] = list()
 
@@ -180,14 +180,14 @@ def decode_partials(items: Iterable[Tuple[str, Any]]) -> List[Tuple[str, str]]:
 def unquote(string: str) -> str:
     """
     Remove simple quote or double quote around a string if any.
-       >>> unquote('"hello"')
-       'hello'
-       >>> unquote('"hello')
-       '"hello'
-       >>> unquote('"a"')
-       ''
-       >>> unquote('""')
-       ''
+    >>> unquote('"hello"')
+    'hello'
+    >>> unquote('"hello')
+    '"hello'
+    >>> unquote('"a"')
+    'a'
+    >>> unquote('""')
+    ''
     """
     if (
         len(string) >= 2
@@ -202,12 +202,12 @@ def unquote(string: str) -> str:
 def quote(string: str) -> str:
     """
     Surround string by double quote.
-       >>> quote("hello")
-       '"hello"'
-       >>> quote('"hello')
-       '""hello"'
-       >>> quote('"hello"')
-       '"hello"'
+    >>> quote("hello")
+    '"hello"'
+    >>> quote('"hello')
+    '""hello"'
+    >>> quote('"hello"')
+    '"hello"'
     """
     return '"' + unquote(string) + '"'
 
@@ -268,11 +268,11 @@ def header_strip(content: str, elem: str) -> str:
 def is_legal_header_name(name: str) -> bool:
     """
     Verify if a provided header name is valid.
-       >>> is_legal_header_name(":hello")
-       False
-       >>> is_legal_header_name("hello")
-       True
-       >>> is_legal_header_name("Content-Type")
-       True
+    >>> is_legal_header_name(":hello")
+    False
+    >>> is_legal_header_name("hello")
+    True
+    >>> is_legal_header_name("Content-Type")
+    True
     """
     return fullmatch(r'[^:\s][^:\r\n]*', name) is not None
