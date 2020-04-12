@@ -24,9 +24,9 @@ Basic usage:
 
 ... or from a raw IMAP4 message:
 
-   >>> message = open('my-email.eml', 'rb').read()
+   >>> message = requests.get("https://gist.githubusercontent.com/Ousret/8b84b736c375bb6aa3d389e86b5116ec/raw/21cb2f7af865e401c37d9b053fb6fe1abf63165b/sample-message.eml").content
    >>> headers = parse_it(message)
-   >>> 'Received' in headers
+   >>> 'Sender' in headers
    True
 
 Others methods and usages are available - see the full documentation
@@ -36,54 +36,54 @@ at <https://github.com/Ousret/kiss-headers>.
 :license: MIT, see LICENSE for more details.
 """
 
-from kiss_headers.models import Headers, Header, lock_output_type
-from kiss_headers.api import parse_it, explain
+from kiss_headers.api import explain, parse_it
 from kiss_headers.builder import (
-    CustomHeader,
     Accept,
-    ContentType,
-    XContentTypeOptions,
-    ContentDisposition,
-    Authorization,
-    ProxyAuthorization,
-    Host,
-    Connection,
-    ContentLength,
-    Date,
-    CrossOriginResourcePolicy,
-    Allow,
-    Digest,
-    SetCookie,
-    StrictTransportSecurity,
-    UpgradeInsecureRequests,
-    TransferEncoding,
-    ContentEncoding,
     AcceptEncoding,
-    Dnt,
-    UserAgent,
+    AcceptLanguage,
+    Allow,
     AltSvc,
+    Authorization,
+    CacheControl,
+    Connection,
+    ContentDisposition,
+    ContentEncoding,
+    ContentLength,
+    ContentRange,
+    ContentType,
+    CrossOriginResourcePolicy,
+    CustomHeader,
+    Date,
+    Digest,
+    Dnt,
+    Etag,
+    Expires,
     Forwarded,
+    From,
+    Host,
+    IfMatch,
+    IfModifiedSince,
+    IfNoneMatch,
+    IfUnmodifiedSince,
+    KeepAlive,
     LastModified,
+    Location,
+    ProxyAuthorization,
     Referer,
     ReferrerPolicy,
     RetryAfter,
-    AcceptLanguage,
-    Etag,
+    Server,
+    SetCookie,
+    StrictTransportSecurity,
+    TransferEncoding,
+    UpgradeInsecureRequests,
+    UserAgent,
+    Vary,
+    WwwAuthenticate,
+    XContentTypeOptions,
+    XDnsPrefetchControl,
     XFrameOptions,
     XXssProtection,
-    WwwAuthenticate,
-    XDnsPrefetchControl,
-    Location,
-    From,
-    ContentRange,
-    CacheControl,
-    Expires,
-    IfModifiedSince,
-    IfUnmodifiedSince,
-    KeepAlive,
-    IfMatch,
-    IfNoneMatch,
-    Server,
-    Vary,
 )
-from kiss_headers.version import __version__, VERSION
+from kiss_headers.models import Header, Headers, lock_output_type
+from kiss_headers.version import VERSION, __version__

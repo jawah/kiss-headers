@@ -174,6 +174,9 @@ See the full documentation for advanced usages : [www.kiss-headers.tech](https:/
 Contributions, issues and feature requests are very much welcome.<br />
 Feel free to check [issues page](https://github.com/Ousret/kiss-headers/issues) if you want to contribute.
 
+Do not forget to run `pip install pytest pytest-cov codecov isort black requests mypy` before you start working on your fork.
+Also check `.travis.yml` file to see what command is expected to return OK (Code 0).
+
 ## 📝 License
 
 Copyright © 2020 [Ahmed TAHRI @Ousret](https://github.com/Ousret).<br />

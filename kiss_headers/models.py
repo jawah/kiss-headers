@@ -1,26 +1,27 @@
-from json import dumps
-from typing import (
-    List,
-    Optional,
-    Union,
-    Dict,
-    Iterator,
-    Tuple,
-    Iterable,
-    MutableMapping,
-    Type,
-)
-from re import findall, IGNORECASE, escape
-from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
+from json import dumps
+from re import IGNORECASE, escape, findall
+from typing import (
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    MutableMapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+)
 
+from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
     header_content_split,
-    normalize_str,
     header_name_to_class,
+    header_strip,
+    is_legal_header_name,
+    normalize_str,
     prettify_header_name,
     unquote,
-    header_strip,
 )
 
 RESERVED_KEYWORD: List[str] = [
@@ -62,12 +63,17 @@ class Header(object):
     path: str
     samesite: str
     domain: str
+    filename: str
 
     def __init__(self, name: str, content: str):
         """
         :param name: The name of the header, should contain only ASCII characters with no spaces in it.
         :param content: Initial content associated with the header.
         """
+        if not is_legal_header_name(name):
+            raise ValueError(
+                f"'{name}' is not a valid header name. Cannot proceed with it."
+            )
 
         self._name: str = name
         self._normalized_name: str = normalize_str(self._name)
@@ -136,9 +142,9 @@ class Header(object):
     def content(self) -> str:
         """
         Output associated content to header as it was captured initially.
-           >>> header = Header("ETag", '"33a64df551425fcc55e4d42a148795d9f25f89d4"')
-           >>> header.content
-           '33a64df551425fcc55e4d42a148795d9f25f89d4'
+        >>> header = Header("ETag", '"33a64df551425fcc55e4d42a148795d9f25f89d4"')
+        >>> header.content
+        '33a64df551425fcc55e4d42a148795d9f25f89d4'
         """
         # Unquote content if their is only one value/attribute in it. Like the ETag header.
         if len(self.attrs) == 1:
@@ -233,7 +239,7 @@ class Header(object):
 
         return header_
 
-    def __setattr__(self, key: str, value: str):
+    def __setattr__(self, key: str, value: str) -> None:
         """
         Set attribute on header using the property notation.
         """
@@ -259,7 +265,7 @@ class Header(object):
 
         self[key] = value
 
-    def __setitem__(self, key: str, value: str):
+    def __setitem__(self, key: str, value: str) -> None:
         """
         Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
         Any value that are not a str are casted to str.
@@ -280,15 +286,15 @@ class Header(object):
             semi_colon_r="; " if self._content.lstrip() != "" else "",
         )
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> None:
         """
         Remove any attribute named after the key in header using the bracket syntax.
-           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
-           >>> str(headers.content_type)
-           'text/html; charset=UTF-8'
-           >>> del headers.content_type['charset']
-           >>> str(headers.content_type)
-           'text/html'
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
+        >>> str(headers.content_type)
+        'text/html; charset=UTF-8'
+        >>> del headers.content_type['charset']
+        >>> str(headers.content_type)
+        'text/html'
         """
         key_normalized = normalize_str(key)
 
@@ -314,10 +320,15 @@ class Header(object):
         ):
             self._content = header_strip(self._content, elem)
 
-    def __delattr__(self, item: str):
+    def __delattr__(self, item: str) -> None:
         """
         Remove any attribute named after the key in header using the property notation.
-           >>> del headers.content_type.charset
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
+        >>> repr(headers.content_type)
+        'Content-Type: text/html; charset=UTF-8'
+        >>> del headers.content_type.charset
+        >>> repr(headers.content_type)
+        'Content-Type: text/html'
         """
         item = normalize_str(item)
 
@@ -615,15 +626,15 @@ class Headers(object):
         """
         return Headers(deepcopy(self._headers))
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> None:
         """
         Remove all matching header named after called key.
-           >>> headers = Header("Content-Type", "text/html") + Header("Allow", "POST")
-           >>> headers.has("Content-Type")
-           True
-           >>> del headers['content-type']
-           >>> headers.has("Content-Type")
-           False
+        >>> headers = Header("Content-Type", "text/html") + Header("Allow", "POST")
+        >>> headers.has("Content-Type")
+        True
+        >>> del headers['content-type']
+        >>> headers.has("Content-Type")
+        False
         """
         key = normalize_str(key)
         to_be_removed = []
@@ -640,7 +651,7 @@ class Headers(object):
         for header in to_be_removed:
             self._headers.remove(header)
 
-    def __setitem__(self, key: str, value: str):
+    def __setitem__(self, key: str, value: str) -> None:
         """
         Set header using the bracket syntax. This operation would remove any existing header named after the key.
         """
@@ -655,10 +666,15 @@ class Headers(object):
 
         self._headers.append(Header(key, value))
 
-    def __delattr__(self, item: str):
+    def __delattr__(self, item: str) -> None:
         """
         Remove header using the property notation.
-           >>> del headers.content_type
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
+        >>> headers.has("Content-Type")
+        True
+        >>> del headers.content_type
+        >>> headers.has("Content-Type")
+        False
         """
         if item not in self:
             raise AttributeError(
@@ -667,7 +683,7 @@ class Headers(object):
 
         del self[item]
 
-    def __setattr__(self, key: str, value: str):
+    def __setattr__(self, key: str, value: str) -> None:
         """
         Set header like it is a property/member. This operation would remove any existing header named after the key.
         """
@@ -788,14 +804,13 @@ class Headers(object):
         """
         Inline subtract, using operator '-'. If a str is subtracted to it,
         would be looking for header named like provided str.
-        eg.
-           >>> headers = Header("Set-Cookies", "HELLO=WORLD") + Header("Allow", "POST")
-           >>> headers.has("Set-Cookies")
-           True
-           >>> headers -= 'Set-Cookies'
-           >>> headers.has("Set-Cookies")
-           False
-        Would remove any entries named 'Set-Cookies'.
+        Would remove any entries named 'Set-Cookies'. eg :
+        >>> headers = Header("Set-Cookies", "HELLO=WORLD") + Header("Allow", "POST")
+        >>> headers.has("Set-Cookies")
+        True
+        >>> headers -= 'Set-Cookies'
+        >>> headers.has("Set-Cookies")
+        False
         """
         if isinstance(other, str):
             other_normalized = normalize_str(other)
@@ -846,7 +861,9 @@ class Headers(object):
         Where the magic happen, every header are accessible via the property notation.
         The result is either a single Header or a list of Header.
         eg.
-           >>> headers.content_type
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
+        >>> headers.content_type
+        Content-Type: text/html; charset=UTF-8
         """
         if item[0] == "_":
             item = item[1:]
@@ -871,9 +888,9 @@ class Headers(object):
         """
         Will encode your headers as bytes using utf-8 charset encoding. Any error encountered in encoder would be
         treated by the 'surrogateescape' clause.
-           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
-           >>> bytes(headers)
-           b'Content-Type: text/html; charset=UTF-8;\\r\\nAllow: POST\\r\\n'
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
+        >>> bytes(headers)
+        b'Content-Type: text/html; charset=UTF-8\\r\\nAllow: POST'
         """
         return repr(self).encode("utf-8", errors="surrogateescape")
 
@@ -902,7 +919,7 @@ class Headers(object):
         )
 
 
-def lock_output_type(lock: bool = True):
+def lock_output_type(lock: bool = True) -> None:
     """
     This method will restrict type entropy by always returning a List[Header] instead of Union[Header, List[Header]]
     """

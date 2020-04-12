@@ -1,5 +1,5 @@
 site_name: Kiss-Headers
-site_description: A stupidly simple way to handle headers from HTTP or IMAP !
+site_description: A stupidly simple way to handle headers, object oriented, HTTP or IMAP !
 site_url: https://kiss-headers.tech/
 
 theme:
@@ -16,12 +16,22 @@ edit_uri: ""
 
 nav:
     - Introduction: 'index.md'
+    - The Theory: 'the-theory.md'
     - Basic Usage: 'quickstart.md'
     - Headers: 'advanced-headers.md'
     - Header: 'advanced-header.md'
+    - The Builder: 'the-builder.md'
+    - Explain Headers: 'explain-headers.md'
     - Email: 'imap.md'
+    - API: 'api.md'
     - Contributing: 'contributing.md'
 
 markdown_extensions:
-  - admonition
-  - codehilite
+    - extra
+    - smarty
+    - codehilite
+    - admonition
+    - mkautodoc
+
+extra_css:
+  - custom.css

@@ -38,17 +38,22 @@
 * Ability to parse any object and extract recognized headers from it.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
+* Absolutely no dependencies.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
-* Supports headers and attributes OneToOne and OneToMany.
-* Capable of parsing `bytes`, `fp`, `str`, `dict` and `requests.Response`.
+* Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response` and `httpx._models.Response`.
 * Automatically unquote value of an attribute when retrieving it.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.
+
+!!! note
+    Even if this library offer a wide support to handle headers as they were objects you should know that headers are not obligated to follow any syntax.
+    But we are pretty confident that this library cover at least 99 % of the use cases you could encounter. Feel free to address any issue you may encounter.
 
 ## ✨ Installation
 
