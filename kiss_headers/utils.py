@@ -1,5 +1,5 @@
 from typing import List, Type, Optional, Iterable, Tuple, Any
-from re import findall
+from re import findall, fullmatch
 from email.header import decode_header
 
 
@@ -263,3 +263,16 @@ def header_strip(content: str, elem: str) -> str:
         content = content[:-1]
 
     return content
+
+
+def is_legal_header_name(name: str) -> bool:
+    """
+    Verify if a provided header name is valid.
+       >>> is_legal_header_name(":hello")
+       False
+       >>> is_legal_header_name("hello")
+       True
+       >>> is_legal_header_name("Content-Type")
+       True
+    """
+    return fullmatch(r'[^:\s][^:\r\n]*', name) is not None

@@ -21,6 +21,7 @@ from kiss_headers.utils import (
     prettify_header_name,
     unquote,
     header_strip,
+    is_legal_header_name,
 )
 
 RESERVED_KEYWORD: List[str] = [
@@ -68,6 +69,8 @@ class Header(object):
         :param name: The name of the header, should contain only ASCII characters with no spaces in it.
         :param content: Initial content associated with the header.
         """
+        if not is_legal_header_name(name):
+            raise ValueError(f"'{name}' is not a valid header name. Cannot proceed with it.")
 
         self._name: str = name
         self._normalized_name: str = normalize_str(self._name)
