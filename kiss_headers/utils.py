@@ -275,4 +275,4 @@ def is_legal_header_name(name: str) -> bool:
     >>> is_legal_header_name("Content-Type")
     True
     """
-    return fullmatch(r'[^:\s][^:\r\n]*', name) is not None
+    return fullmatch(r"[^:\s][^:\r\n]*", name) is not None

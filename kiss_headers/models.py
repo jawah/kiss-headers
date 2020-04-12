@@ -71,7 +71,9 @@ class Header(object):
         :param content: Initial content associated with the header.
         """
         if not is_legal_header_name(name):
-            raise ValueError(f"'{name}' is not a valid header name. Cannot proceed with it.")
+            raise ValueError(
+                f"'{name}' is not a valid header name. Cannot proceed with it."
+            )
 
         self._name: str = name
         self._normalized_name: str = normalize_str(self._name)
