@@ -5,14 +5,14 @@ python:
   - "3.8"
 
 install:
-  - pip install nose codecov black requests httpx mypy
+  - pip install pytest pytest-cov codecov black requests httpx mypy
   - python setup.py install
 
 script:
   - "black --check --diff --target-version=py36 kiss_headers/"
   - "black --check --diff --target-version=py36 tests/"
   - "mypy kiss_headers"
-  - "nosetests --with-coverage --cover-package=kiss_headers tests/*.py"
+  - "pytest"
 
 after_success:
   - codecov
