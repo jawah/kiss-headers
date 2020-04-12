@@ -320,7 +320,12 @@ class Header(object):
     def __delattr__(self, item: str):
         """
         Remove any attribute named after the key in header using the property notation.
+           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
+           >>> repr(headers.content_type)
+           'Content-Type: text/html; charset=UTF-8'
            >>> del headers.content_type.charset
+           >>> repr(headers.content_type)
+           'Content-Type: text/html'
         """
         item = normalize_str(item)
 
@@ -661,7 +666,12 @@ class Headers(object):
     def __delattr__(self, item: str):
         """
         Remove header using the property notation.
+           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
+           >>> headers.has("Content-Type")
+           True
            >>> del headers.content_type
+           >>> headers.has("Content-Type")
+           False
         """
         if item not in self:
             raise AttributeError(
@@ -849,7 +859,9 @@ class Headers(object):
         Where the magic happen, every header are accessible via the property notation.
         The result is either a single Header or a list of Header.
         eg.
+           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
            >>> headers.content_type
+           'Content-Type: text/html; charset=UTF-8'
         """
         if item[0] == "_":
             item = item[1:]
