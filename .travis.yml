@@ -17,6 +17,7 @@ script:
   - "black --check --diff --target-version=py36 kiss_headers/"
   - "black --check --diff --target-version=py36 tests/"
   - "mypy kiss_headers"
+  - "isort --check-only kiss_headers/*.py"
   - "pytest"
 
 after_success:

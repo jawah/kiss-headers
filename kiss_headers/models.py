@@ -1,27 +1,27 @@
-from json import dumps
-from typing import (
-    List,
-    Optional,
-    Union,
-    Dict,
-    Iterator,
-    Tuple,
-    Iterable,
-    MutableMapping,
-    Type,
-)
-from re import findall, IGNORECASE, escape
-from kiss_headers.structures import CaseInsensitiveDict
 from copy import deepcopy
+from json import dumps
+from re import IGNORECASE, escape, findall
+from typing import (
+    Dict,
+    Iterable,
+    Iterator,
+    List,
+    MutableMapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+)
 
+from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
     header_content_split,
-    normalize_str,
     header_name_to_class,
-    prettify_header_name,
-    unquote,
     header_strip,
     is_legal_header_name,
+    normalize_str,
+    prettify_header_name,
+    unquote,
 )
 
 RESERVED_KEYWORD: List[str] = [

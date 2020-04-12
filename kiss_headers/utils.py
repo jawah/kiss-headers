@@ -1,6 +1,6 @@
-from typing import List, Type, Optional, Iterable, Tuple, Any
-from re import findall, fullmatch
 from email.header import decode_header
+from re import findall, fullmatch
+from typing import Any, Iterable, List, Optional, Tuple, Type
 
 
 def normalize_str(string: str) -> str:

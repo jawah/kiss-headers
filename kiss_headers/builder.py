@@ -1,11 +1,11 @@
+from datetime import datetime, timezone
+from email import utils
 from re import fullmatch
+from typing import Dict, List, Optional, Union
 
 from kiss_headers.models import Header
 from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
-from typing import Optional, Union, Dict, List
 
-from datetime import datetime, timezone
-from email import utils
 
 """
 Use https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ to create subclasses of CustomHeader.

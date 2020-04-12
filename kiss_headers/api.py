@@ -1,16 +1,16 @@
-from kiss_headers.models import Headers, Header
+from email.message import Message
+from email.parser import BytesHeaderParser, HeaderParser
+from io import BytesIO, IOBase
+from typing import Any, Iterable, List, Mapping, Optional, Tuple
+
+from kiss_headers.models import Header, Headers
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
-    header_content_split,
-    extract_class_name,
-    header_name_to_class,
     decode_partials,
+    extract_class_name,
+    header_content_split,
+    header_name_to_class,
 )
-
-from typing import Optional, Iterable, Tuple, Any, Mapping, List
-from email.parser import HeaderParser, BytesHeaderParser
-from email.message import Message
-from io import BytesIO, IOBase
 
 
 def parse_it(raw_headers: Any) -> Headers:

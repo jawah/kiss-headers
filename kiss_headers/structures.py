@@ -1,6 +1,7 @@
-from collections.abc import MutableMapping, Mapping
 from collections import OrderedDict
-from typing import Any, Iterator, Tuple, Optional, Dict
+from collections.abc import Mapping, MutableMapping
+from typing import Any, Iterator, Optional, Tuple
+
 
 """
 Disclaimer : CaseInsensitiveDict has been borrowed from `psf/requests`.
