@@ -64,7 +64,6 @@ class Header(object):
     samesite: str
     domain: str
     filename: str
-    name: str
 
     def __init__(self, name: str, content: str):
         """
