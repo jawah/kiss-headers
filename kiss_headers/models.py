@@ -876,7 +876,7 @@ class Headers(object):
         treated by the 'surrogateescape' clause.
            >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
            >>> bytes(headers)
-           b'Content-Type: text/html; charset=UTF-8;\\r\\nAllow: POST\\r\\n'
+           b'Content-Type: text/html; charset=UTF-8\\r\\nAllow: POST\\r\\n'
         """
         return repr(self).encode("utf-8", errors="surrogateescape")
 
