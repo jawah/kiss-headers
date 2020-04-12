@@ -239,7 +239,7 @@ class Header(object):
 
         return header_
 
-    def __setattr__(self, key: str, value: str):
+    def __setattr__(self, key: str, value: str) -> None:
         """
         Set attribute on header using the property notation.
         """
@@ -265,7 +265,7 @@ class Header(object):
 
         self[key] = value
 
-    def __setitem__(self, key: str, value: str):
+    def __setitem__(self, key: str, value: str) -> None:
         """
         Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
         Any value that are not a str are casted to str.
@@ -286,7 +286,7 @@ class Header(object):
             semi_colon_r="; " if self._content.lstrip() != "" else "",
         )
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> None:
         """
         Remove any attribute named after the key in header using the bracket syntax.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
@@ -320,7 +320,7 @@ class Header(object):
         ):
             self._content = header_strip(self._content, elem)
 
-    def __delattr__(self, item: str):
+    def __delattr__(self, item: str) -> None:
         """
         Remove any attribute named after the key in header using the property notation.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
@@ -626,7 +626,7 @@ class Headers(object):
         """
         return Headers(deepcopy(self._headers))
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> None:
         """
         Remove all matching header named after called key.
         >>> headers = Header("Content-Type", "text/html") + Header("Allow", "POST")
@@ -651,7 +651,7 @@ class Headers(object):
         for header in to_be_removed:
             self._headers.remove(header)
 
-    def __setitem__(self, key: str, value: str):
+    def __setitem__(self, key: str, value: str) -> None:
         """
         Set header using the bracket syntax. This operation would remove any existing header named after the key.
         """
@@ -666,7 +666,7 @@ class Headers(object):
 
         self._headers.append(Header(key, value))
 
-    def __delattr__(self, item: str):
+    def __delattr__(self, item: str) -> None:
         """
         Remove header using the property notation.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
@@ -683,7 +683,7 @@ class Headers(object):
 
         del self[item]
 
-    def __setattr__(self, key: str, value: str):
+    def __setattr__(self, key: str, value: str) -> None:
         """
         Set header like it is a property/member. This operation would remove any existing header named after the key.
         """
@@ -919,7 +919,7 @@ class Headers(object):
         )
 
 
-def lock_output_type(lock: bool = True):
+def lock_output_type(lock: bool = True) -> None:
     """
     This method will restrict type entropy by always returning a List[Header] instead of Union[Header, List[Header]]
     """
