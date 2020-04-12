@@ -1,4 +1,5 @@
-from collections import MutableMapping, OrderedDict, Mapping
+from collections.abc import MutableMapping, Mapping
+from collections import OrderedDict
 from typing import Any, Iterator, Tuple, Optional
 
 """
