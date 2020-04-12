@@ -20,6 +20,7 @@ from kiss_headers.utils import (
     header_name_to_class,
     prettify_header_name,
     unquote,
+    header_strip,
 )
 
 RESERVED_KEYWORD: List[str] = [
@@ -219,27 +220,7 @@ class Header(object):
                 self._content + "\n",
                 IGNORECASE,
             ):
-                has_semicolon_at_the_end: bool = False
-
-                try:
-                    self._content.index(elem + ";")
-                    has_semicolon_at_the_end = True
-                except ValueError:
-                    pass
-
-                self._content = (
-                    self._content.replace(
-                        elem + (";" if has_semicolon_at_the_end else ""), ""
-                    )
-                    .rstrip(" ")
-                    .lstrip(" ")
-                )
-
-                if self._content.startswith(";"):
-                    self._content = self._content[1:]
-
-                if self._content.endswith(";"):
-                    self._content = self._content[:-1]
+                self._content = header_strip(self._content, elem)
 
         return self
 
@@ -302,7 +283,12 @@ class Header(object):
     def __delitem__(self, key: str):
         """
         Remove any attribute named after the key in header using the bracket syntax.
+           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
+           >>> str(headers.content_type)
+           'text/html; charset=UTF-8'
            >>> del headers.content_type['charset']
+           >>> str(headers.content_type)
+           'text/html'
         """
         key_normalized = normalize_str(key)
 
@@ -326,28 +312,7 @@ class Header(object):
             self._content + "\n",
             IGNORECASE,
         ):
-
-            has_semicolon_at_the_end: bool = False
-
-            try:
-                self._content.index(elem + ";")
-                has_semicolon_at_the_end = True
-            except ValueError:
-                pass
-
-            self._content = (
-                self._content.replace(
-                    elem + (";" if has_semicolon_at_the_end else ""), ""
-                )
-                .rstrip(" ")
-                .lstrip(" ")
-            )
-
-            if self._content.startswith(";"):
-                self._content = self._content[1:]
-
-            if self._content.endswith(";"):
-                self._content = self._content[:-1]
+            self._content = header_strip(self._content, elem)
 
     def __delattr__(self, item: str):
         """
@@ -653,7 +618,12 @@ class Headers(object):
     def __delitem__(self, key: str):
         """
         Remove all matching header named after called key.
+           >>> headers = Header("Content-Type", "text/html") + Header("Allow", "POST")
+           >>> headers.has("Content-Type")
+           True
            >>> del headers['content-type']
+           >>> headers.has("Content-Type")
+           False
         """
         key = normalize_str(key)
         to_be_removed = []
@@ -819,7 +789,12 @@ class Headers(object):
         Inline subtract, using operator '-'. If a str is subtracted to it,
         would be looking for header named like provided str.
         eg.
+           >>> headers = Header("Set-Cookies", "HELLO=WORLD") + Header("Allow", "POST")
+           >>> headers.has("Set-Cookies")
+           True
            >>> headers -= 'Set-Cookies'
+           >>> headers.has("Set-Cookies")
+           False
         Would remove any entries named 'Set-Cookies'.
         """
         if isinstance(other, str):
@@ -896,7 +871,9 @@ class Headers(object):
         """
         Will encode your headers as bytes using utf-8 charset encoding. Any error encountered in encoder would be
         treated by the 'surrogateescape' clause.
+           >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
            >>> bytes(headers)
+           b'Content-Type: text/html; charset=UTF-8;\\r\\nAllow: POST\\r\\n'
         """
         return repr(self).encode("utf-8", errors="surrogateescape")
 
