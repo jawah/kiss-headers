@@ -3,6 +3,12 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
+  - "3.9-dev"
+  - "nightly"
+
+jobs:
+  allow_failures:
+  - python: "nightly"
 
 install:
   - pip install pytest pytest-cov codecov black requests httpx mypy
