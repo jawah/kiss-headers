@@ -6,6 +6,10 @@ from typing import Any, Iterable, List, Optional, Tuple, Type
 def normalize_str(string: str) -> str:
     """
     Normalize a string by applying on it lowercase and replacing '-' to '_'.
+    >>> normalize_str("Content-Type")
+    'content_type'
+    >>> normalize_str("X-content-type")
+    'x_content_type'
     """
     return string.lower().replace("-", "_")
 
@@ -21,9 +25,17 @@ def extract_class_name(type_: Type) -> Optional[str]:
 def header_content_split(string: str, delimiter: str) -> List[str]:
     """
     Take a string and split it according to the passed delimiter.
-    It will ignore delimiter if inside between double quote or inside a value.
+    It will ignore delimiter if inside between double quote, inside a value or in parenthesis.
     The input string is considered perfectly formed. This function do not split coma on a day
     when attached, see "RFC 7231, section 7.1.1.2: Date".
+    >>> header_content_split("Wed, 15-Apr-2020 21:27:31 GMT, Fri, 01-Jan-2038 00:00:00 GMT", ",")
+    ['Wed, 15-Apr-2020 21:27:31 GMT', 'Fri, 01-Jan-2038 00:00:00 GMT']
+    >>> header_content_split('quic=":443"; ma=2592000; v="46,43", h3-Q050=":443"; ma=2592000, h3-Q049=":443"; ma=2592000', ",")
+    ['quic=":443"; ma=2592000; v="46,43"', 'h3-Q050=":443"; ma=2592000', 'h3-Q049=":443"; ma=2592000']
+    >>> header_content_split("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0", ";")
+    ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0']
+    >>> header_content_split("text/html; charset=UTF-8", ";")
+    ['text/html', 'charset=UTF-8']
     """
     if len(delimiter) != 1 or delimiter not in [";", ","]:
         raise ValueError("Delimiter should be either semi-colon or a coma.")
@@ -88,6 +100,11 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
 def class_to_header_name(type_: Type) -> str:
     """
     Take a type and infer its header name.
+    >>> from kiss_headers.builder import ContentType, XContentTypeOptions
+    >>> class_to_header_name(ContentType)
+    'Content-Type'
+    >>> class_to_header_name(XContentTypeOptions)
+    'X-Content-Type-Options'
     """
     class_raw_name: str = str(type_).split("'")[-2].split(".")[-1]
 
@@ -112,6 +129,11 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
     """
     The opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
     Do it recursively from the root type.
+    >>> from kiss_headers.builder import CustomHeader, ContentType, XContentTypeOptions, LastModified, Date
+    >>> header_name_to_class("Content-Type", CustomHeader)
+    <class 'kiss_headers.builder.ContentType'>
+    >>> header_name_to_class("Last-Modified", CustomHeader)
+    <class 'kiss_headers.builder.LastModified'>
     """
 
     normalized_name = normalize_str(name).replace("_", "")
@@ -215,6 +237,14 @@ def quote(string: str) -> str:
 def count_leftover_space(content: str) -> int:
     """
     Recursive function that count trailing white space at the end of given string.
+    >>> count_leftover_space("hello   ")
+    3
+    >>> count_leftover_space("byebye ")
+    1
+    >>> count_leftover_space("  hello ")
+    1
+    >>> count_leftover_space("  hello    ")
+    4
     """
     if content.endswith(" "):
         return count_leftover_space(content[:-1]) + 1
@@ -224,6 +254,10 @@ def count_leftover_space(content: str) -> int:
 def header_strip(content: str, elem: str) -> str:
     """
     Remove a member for a given header content and take care of the unneeded leftover semi-colon.
+    >>> header_strip("text/html; charset=UTF-8; format=flowed", "charset=UTF-8")
+    'text/html; format=flowed'
+    >>> header_strip("text/html; charset=UTF-8;    format=flowed", "charset=UTF-8")
+    'text/html; format=flowed'
     """
     next_semi_colon_index: Optional[int] = None
 

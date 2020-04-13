@@ -16,6 +16,9 @@ from kiss_headers.utils import (
 def parse_it(raw_headers: Any) -> Headers:
     """
     Just decode anything that could contain headers. That simple PERIOD.
+    :param raw_headers: Accept bytes, str, fp, dict, email.Message, requests.Response, urllib3.HTTPResponse and httpx.Response.
+    :raises:
+        TypeError: If passed argument cannot be parsed to extract headers from it.
     """
 
     headers: Optional[Iterable[Tuple[str, Any]]] = None
