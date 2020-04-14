@@ -1,5 +1,5 @@
 from email.header import decode_header
-from re import findall, fullmatch
+from re import findall, fullmatch, search
 from typing import Any, Iterable, List, Optional, Tuple, Type
 
 
@@ -308,5 +308,11 @@ def is_legal_header_name(name: str) -> bool:
     True
     >>> is_legal_header_name("Content-Type")
     True
+    >>> is_legal_header_name("Hello;")
+    False
+    >>> is_legal_header_name("Hello\\rWorld")
+    False
+    >>> is_legal_header_name("Hello \\tWorld")
+    False
     """
-    return fullmatch(r"[^:\s][^:\r\n]*", name) is not None
+    return search(r"[^\x00-\x7F]|[:;(),<>=@?\[\]\r\n\t &{}\\]", name) is None
