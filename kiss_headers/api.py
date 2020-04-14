@@ -10,6 +10,7 @@ from kiss_headers.utils import (
     extract_class_name,
     header_content_split,
     header_name_to_class,
+    is_legal_header_name,
 )
 
 
@@ -74,6 +75,11 @@ def parse_it(raw_headers: Any) -> Headers:
     list_of_headers: List[Header] = []
 
     for head, content in revised_headers:
+
+        # We should ignore when a illegal name is considered as an header. We avoid ValueError (in __init__ of Header)
+        if is_legal_header_name(head) is False:
+            continue
+
         entries: List[str] = header_content_split(content, ",")
 
         # Multiple entries are detected in one content
