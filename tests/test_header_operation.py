@@ -4,7 +4,6 @@ from kiss_headers import Header
 
 
 class MyKissHeaderOperation(unittest.TestCase):
-
     def test_isub_adjective_error(self):
         content_type = Header("Content-Type", 'text/html; charset="utf-8"')
 
@@ -90,7 +89,7 @@ class MyKissHeaderOperation(unittest.TestCase):
 
         del content_type["charset"]
 
-        self.assertEqual('text/html', str(content_type))
+        self.assertEqual("text/html", str(content_type))
 
         with self.assertRaises(KeyError):
             del content_type["charset"]
