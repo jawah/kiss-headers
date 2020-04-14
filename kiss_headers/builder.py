@@ -213,6 +213,9 @@ class Authorization(CustomHeader):
         """
         :param type_: Authentication type. A common type is "Basic". See IANA registry of Authentication schemes for others.
         :param credentials: Associated credentials to use. Preferably Base-64 encoded.
+        >>> header = Authorization("Bearer", "base64encoded")
+        >>> repr(header)
+        'Authorization: Bearer base64encoded'
         """
         if type_.lower() not in [
             "basic",
@@ -266,6 +269,12 @@ class Host(CustomHeader):
         """
         :param host: The domain name of the server (for virtual hosting).
         :param port: TCP port number on which the server is listening.
+        >>> header = Host("www.python.org")
+        >>> repr(header)
+        'Host: www.python.org'
+        >>> header = Host("www.python.org", port=8000)
+        >>> repr(header)
+        'Host: www.python.org:8000'
         """
         super().__init__(host + (":" + str(port) if port else ""), **kwargs)
 
@@ -355,6 +364,9 @@ class Allow(CustomHeader):
         """
         :param supported_verb: Choose exactly one of "HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "PURGE", "CONNECT" or "TRACE" HTTP verbs.
         :param kwargs:
+        >>> header = Allow("POST")
+        >>> repr(header)
+        'Allow: POST'
         """
         supported_verb = supported_verb.upper()
 
