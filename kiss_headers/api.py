@@ -10,12 +10,16 @@ from kiss_headers.utils import (
     extract_class_name,
     header_content_split,
     header_name_to_class,
+    is_legal_header_name,
 )
 
 
 def parse_it(raw_headers: Any) -> Headers:
     """
     Just decode anything that could contain headers. That simple PERIOD.
+    :param raw_headers: Accept bytes, str, fp, dict, email.Message, requests.Response, urllib3.HTTPResponse and httpx.Response.
+    :raises:
+        TypeError: If passed argument cannot be parsed to extract headers from it.
     """
 
     headers: Optional[Iterable[Tuple[str, Any]]] = None
@@ -71,6 +75,11 @@ def parse_it(raw_headers: Any) -> Headers:
     list_of_headers: List[Header] = []
 
     for head, content in revised_headers:
+
+        # We should ignore when a illegal name is considered as an header. We avoid ValueError (in __init__ of Header)
+        if is_legal_header_name(head) is False:
+            continue
+
         entries: List[str] = header_content_split(content, ",")
 
         # Multiple entries are detected in one content

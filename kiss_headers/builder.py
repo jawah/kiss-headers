@@ -58,6 +58,11 @@ class Accept(CustomHeader):
         :param mime: Describe the MIME using this syntax <MIME_type/MIME_subtype>
         :param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
         :param kwargs:
+        >>> header = Accept("text/html", qualifier=0.8)
+        >>> header.content
+        'text/html; q="0.8"'
+        >>> repr(header)
+        'Accept: text/html; q="0.8"'
         """
         if len(mime.split("/")) != 2:
             raise ValueError(
@@ -98,6 +103,9 @@ class ContentType(CustomHeader):
         :param format_: Mostly used in IMAP, could be one of : original or flowed.
         :param boundary: For multipart entities the boundary directive is required, which consists of 1 to 70 characters from a set of characters known to be very robust through email gateways, and not ending with white space. It is used to encapsulate the boundaries of the multiple parts of the message.
         :param kwargs:
+        >>> header = ContentType("text/html", charset="utf-8")
+        >>> repr(header)
+        'Content-Type: text/html; charset="UTF-8"'
         """
 
         if len(mime.split("/")) != 2:
@@ -130,6 +138,9 @@ class XContentTypeOptions(CustomHeader):
         """
         :param nosniff: see https://fetch.spec.whatwg.org/#x-content-type-options-header
         :param kwargs:
+        >>> header = XContentTypeOptions(nosniff=True)
+        >>> repr(header)
+        'X-Content-Type-Options: nosniff'
         """
         super().__init__("nosniff" if nosniff else "", **kwargs)
 
@@ -202,6 +213,9 @@ class Authorization(CustomHeader):
         """
         :param type_: Authentication type. A common type is "Basic". See IANA registry of Authentication schemes for others.
         :param credentials: Associated credentials to use. Preferably Base-64 encoded.
+        >>> header = Authorization("Bearer", "base64encoded")
+        >>> repr(header)
+        'Authorization: Bearer base64encoded'
         """
         if type_.lower() not in [
             "basic",
@@ -255,6 +269,12 @@ class Host(CustomHeader):
         """
         :param host: The domain name of the server (for virtual hosting).
         :param port: TCP port number on which the server is listening.
+        >>> header = Host("www.python.org")
+        >>> repr(header)
+        'Host: www.python.org'
+        >>> header = Host("www.python.org", port=8000)
+        >>> repr(header)
+        'Host: www.python.org:8000'
         """
         super().__init__(host + (":" + str(port) if port else ""), **kwargs)
 
@@ -344,6 +364,9 @@ class Allow(CustomHeader):
         """
         :param supported_verb: Choose exactly one of "HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "PURGE", "CONNECT" or "TRACE" HTTP verbs.
         :param kwargs:
+        >>> header = Allow("POST")
+        >>> repr(header)
+        'Allow: POST'
         """
         supported_verb = supported_verb.upper()
 
