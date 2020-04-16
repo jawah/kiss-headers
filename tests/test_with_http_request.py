@@ -3,7 +3,7 @@ from typing import Optional
 
 from requests import get, Response
 
-from kiss_headers import parse_it
+from kiss_headers import parse_it, Headers, Authorization
 
 
 class MyHttpTestKissHeaders(unittest.TestCase):
@@ -99,6 +99,15 @@ Cache-Control: max-age=0""".encode(
         )
 
         self.assertIn("application/kiss", headers.freeform)
+
+    def test_httpbin_with_our_headers(self):
+
+        response = get(
+            "https://httpbin.org/bearer",
+            headers=Headers(Authorization("Bearer", "qwerty")),
+        )
+
+        self.assertEqual("qwerty", response.json()["token"])
 
 
 if __name__ == "__main__":
