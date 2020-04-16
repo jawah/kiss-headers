@@ -152,11 +152,49 @@ class Header(object):
 
         return self._content
 
+    def __lt__(self, other: object) -> bool:
+        """
+        This method is only implemented to make sorted work with Header.
+        The lower than is based on alphabetical order using the header name.
+        >>> Header("A", "") < Header("Z", "")
+        True
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError
+        return self.normalized_name < other.normalized_name
+
+    def __gt__(self, other: object) -> bool:
+        """
+        This method is only implemented to make sorted work with Header.
+        The greater than is based on alphabetical order using the header name.
+        >>> Header("A", "") > Header("Z", "")
+        False
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError
+        return self.normalized_name > other.normalized_name
+
     def __deepcopy__(self, memodict: Dict) -> "Header":
         """Simply provide a deepcopy of an Header object. Pointer/Reference free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
 
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
+        """
+        Allow you to assign-add any string to an Header instance. The string will be a new member of your header.
+        >>> header = Header("X-Hello-World", "")
+        >>> repr(header)
+        'X-Hello-World: '
+        >>> header += "preload"
+        >>> repr(header)
+        'X-Hello-World: preload'
+        >>> header += "inclSubDomain"
+        >>> repr(header)
+        'X-Hello-World: preload; inclSubDomain'
+        >>> header += 1
+        Traceback (most recent call last):
+          ...
+        TypeError: Cannot assign-add with type <class 'int'> to an Header.
+        """
         if not isinstance(other, str):
             raise TypeError(
                 "Cannot assign-add with type {type_} to an Header.".format(
@@ -171,6 +209,21 @@ class Header(object):
         return self
 
     def __add__(self, other: Union[str, "Header"]) -> Union["Header", "Headers"]:
+        """
+        This implementation permit to add either a string or a Header to your Header instance.
+        When you add string to your Header instance, it will create another instance with a new
+        member in it using the string; see iadd doc about it. But when its another Header the result is an Headers
+        object containing both Header object.
+        >>> headers = Header("X-Hello-World", "1") + Header("Content-Type", "happiness=True")
+        >>> len(headers)
+        2
+        >>> headers.keys()
+        ['X-Hello-World', 'Content-Type']
+        >>> Header("Content-Type", "happiness=True") + 1
+        Traceback (most recent call last):
+          ...
+        TypeError: Cannot make addition with type <class 'int'> to an Header.
+        """
         if not isinstance(other, str) and not isinstance(other, Header):
             raise TypeError(
                 "Cannot make addition with type {type_} to an Header.".format(
@@ -492,6 +545,7 @@ class Headers(object):
     """
     Object oriented representation for Headers. Contains a list of Header with some level of abstraction.
     Combine advantages of dict, CaseInsensibleDict and native objects.
+    Headers does not inherit of the Mapping type, but it does borrow some concept from it.
     """
 
     # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
@@ -552,11 +606,15 @@ class Headers(object):
 
     from_: Union[Header, List[Header]]
 
-    def __init__(self, headers: Optional[List[Header]] = None):
+    def __init__(self, *headers: Union[List[Header], Header]):
         """
         :param headers: Initial list of header. Can be empty.
         """
-        self._headers: List[Header] = headers or []
+        self._headers: List[Header] = headers[0] if len(headers) == 1 and isinstance(
+            headers[0], list
+        ) else list(
+            headers  # type: ignore
+        )
 
     def has(self, header: str) -> bool:
         """
@@ -582,6 +640,7 @@ class Headers(object):
     def keys(self) -> List[str]:
         """
         Return a list of distinct header name set in headers.
+        Be aware that it wont return a typing.KeysView
         """
         keys = list()
 
@@ -592,9 +651,21 @@ class Headers(object):
 
         return keys
 
+    def values(self) -> NotImplemented:
+        """
+        I choose not to implement values() on Headers as it would bring more confusion..
+        Either we make it the same len as keys() or we don't. Either way don't please me. Hope to ear from the
+        community about this.
+        """
+        return NotImplemented
+
     def items(self) -> List[Tuple[str, str]]:
         """
         Provide an iterator witch each entry contain a tuple of header name and content.
+        This wont return a ItemView.
+        >>> headers = Header("X-Hello-World", "1") + Header("Content-Type", "happiness=True") + Header("Content-Type", "happiness=False")
+        >>> headers.items()
+        [('X-Hello-World', '1'), ('Content-Type', 'happiness=True'), ('Content-Type', 'happiness=False')]
         """
         items: List[Tuple[str, str]] = []
 
@@ -893,6 +964,12 @@ class Headers(object):
         b'Content-Type: text/html; charset=UTF-8\\r\\nAllow: POST'
         """
         return repr(self).encode("utf-8", errors="surrogateescape")
+
+    def __reversed__(self) -> "Headers":
+        list_of_headers: List[Header] = deepcopy(self._headers)
+        list_of_headers.reverse()
+
+        return Headers(list_of_headers)
 
     def __contains__(self, item: Union[Header, str]) -> bool:
         """

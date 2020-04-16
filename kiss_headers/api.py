@@ -89,7 +89,7 @@ def parse_it(raw_headers: Any) -> Headers:
         else:
             list_of_headers.append(Header(head, content))
 
-    return Headers(list_of_headers)
+    return Headers(*list_of_headers)
 
 
 def explain(headers: Headers) -> CaseInsensitiveDict:

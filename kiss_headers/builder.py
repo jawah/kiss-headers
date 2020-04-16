@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from email import utils
 from re import fullmatch
 from typing import Dict, List, Optional, Union
+from urllib.parse import quote as url_quote
 
 from kiss_headers.models import Header
 from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
@@ -181,7 +182,7 @@ class ContentDisposition(CustomHeader):
                 fallback_filename.encode("ASCII")
             except UnicodeEncodeError:
                 raise ValueError(
-                    "The fallback filename should only contain valid ASCII characters. Not '{fb_filename}'.".format(
+                    "The fallback filename should only contain valid ASCII characters. Not '{fb_filename}'. Use fallback_filename instead.".format(
                         fb_filename=fallback_filename
                     )
                 )
@@ -189,7 +190,9 @@ class ContentDisposition(CustomHeader):
         args: Dict = {
             "name": name,
             "filename": filename,
-            "filename*": fallback_filename,
+            "filename*": ("UTF-8''" + url_quote(fallback_filename))
+            if fallback_filename
+            else None,
             "boundary": boundary,
         }
 
