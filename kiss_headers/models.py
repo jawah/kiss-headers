@@ -931,6 +931,12 @@ class Headers(object):
         """
         return repr(self).encode("utf-8", errors="surrogateescape")
 
+    def __reversed__(self) -> "Headers":
+        list_of_headers: List[Header] = deepcopy(self._headers)
+        list_of_headers.reverse()
+
+        return Headers(list_of_headers)
+
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
         This method will allow you to test if a header, based on it's string name, is present or not in headers.
