@@ -152,6 +152,28 @@ class Header(object):
 
         return self._content
 
+    def __lt__(self, other: object) -> bool:
+        """
+        This method is only implemented to make sorted work with Header.
+        The lower than is based on alphabetical order using the header name.
+        >>> Header("A", "") < Header("Z", "")
+        True
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError
+        return self.normalized_name < other.normalized_name
+
+    def __gt__(self, other: object) -> bool:
+        """
+        This method is only implemented to make sorted work with Header.
+        The greater than is based on alphabetical order using the header name.
+        >>> Header("A", "") > Header("Z", "")
+        False
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError
+        return self.normalized_name > other.normalized_name
+
     def __deepcopy__(self, memodict: Dict) -> "Header":
         """Simply provide a deepcopy of an Header object. Pointer/Reference free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
