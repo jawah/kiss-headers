@@ -478,6 +478,22 @@ class Header(object):
             return None
         return self._valued_attrs[attr]
 
+    def has_many(self, name: str) -> bool:
+        """
+        Determine if an attribute name has multiple entries in Header. Detect OneToMany entries.
+        >>> header = Header("A", "charset=UTF-8; charset=ASCII; format=flowed")
+        >>> header.has_many("charset")
+        True
+        >>> header.has_many("format")
+        False
+        """
+        if name not in self:
+            return False
+
+        r = self[name]
+
+        return isinstance(r, list) and len(r) > 1
+
     def __getitem__(self, item: Union[str]) -> Union[str, List[str]]:
         """
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
@@ -629,6 +645,22 @@ class Headers(object):
         if header not in self:
             return None
         return self[header]
+
+    def has_many(self, name: str) -> bool:
+        """
+        Determine if an header name has multiple entries in Headers. Detect OneToMany entries.
+        >>> headers = Header("A", "0") + Header("A", "1") + Header("B", "sad")
+        >>> headers.has_many("a")
+        True
+        >>> headers.has_many("b")
+        False
+        """
+        if name not in self:
+            return False
+
+        r = self[name]
+
+        return isinstance(r, list) and len(r) > 1
 
     def __iter__(self) -> Iterator[Header]:
         """
