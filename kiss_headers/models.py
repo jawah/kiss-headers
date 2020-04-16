@@ -625,6 +625,14 @@ class Headers(object):
 
         return keys
 
+    def values(self) -> NotImplemented:
+        """
+        I choose not to implement values() on Headers as it would bring more confusion..
+        Either we make it the same len as keys() or we don't. Either way don't please me. Hope to ear from the
+        community about this.
+        """
+        return NotImplemented
+
     def items(self) -> List[Tuple[str, str]]:
         """
         Provide an iterator witch each entry contain a tuple of header name and content.
