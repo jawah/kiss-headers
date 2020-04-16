@@ -584,11 +584,11 @@ class Headers(object):
 
     from_: Union[Header, List[Header]]
 
-    def __init__(self, headers: Optional[List[Header]] = None):
+    def __init__(self, *headers: Header):
         """
         :param headers: Initial list of header. Can be empty.
         """
-        self._headers: List[Header] = headers or []
+        self._headers: List[Header] = headers[0] if len(headers) > 0 and isinstance(headers[0], list) else list(headers)
 
     def has(self, header: str) -> bool:
         """
