@@ -9,21 +9,12 @@ from kiss_headers import parse_it, Headers, Authorization
 class MyHttpTestKissHeaders(unittest.TestCase):
 
     HTTPBIN_GET: Optional[Response] = None
-    HTTPBIN_RESPONSE_HEADER: Optional[Response] = None
-    HTTPBIEN_GET_HTTPX: Optional[Response] = None
 
     def setUp(self) -> None:
 
         MyHttpTestKissHeaders.HTTPBIN_GET = get("https://httpbin.org/get")
-        MyHttpTestKissHeaders.HTTPBIN_RESPONSE_HEADER = get(
-            "https://httpbin.org/response-headers",
-            params={
-                "freeform": 'application/kiss; format="flowed"; expires=Thu, 12 Mar 2020 03:18:25 -0700 (PDT)'
-            },
-        )
 
     def test_httpbin_raw_headers(self):
-        # HTTPResponse().
 
         headers = parse_it(
             """Host: developer.mozilla.org
@@ -84,7 +75,13 @@ Cache-Control: max-age=0""".encode(
 
     def test_httpbin_freeform(self):
 
-        response_headers = MyHttpTestKissHeaders.HTTPBIN_RESPONSE_HEADER.headers
+        response_headers = get(
+            "https://httpbin.org/response-headers",
+            params={
+                "freeform": 'application/kiss; format="flowed"; expires=Thu, 12 Mar 2020 03:18:25 -0700 (PDT)'
+            },
+        ).headers
+
         headers = parse_it(response_headers)
 
         self.assertIn("freeform", headers)
