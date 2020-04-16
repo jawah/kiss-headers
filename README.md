@@ -1,7 +1,7 @@
-<h1 align="center">Welcome to Headers for Humans 👋 <a href="https://twitter.com/intent/tweet?text=So%20simple,%20you%20may%20fall%20in%20love%20at%20first%20sight%20!%20With%20auto-completion%20!&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
+<h1 align="center">Welcome to Headers for Humans 👋 <a href="https://twitter.com/intent/tweet?text=Python%20library%20for%20oriented%20object%20HTTP%20or%20IMAP%20headers.&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
 
 <p align="center">
-  <sup>Object oriented headers, pythonic, with auto-completion!</sup><br>
+  <sup>Object oriented headers, parser and builder.</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
   </a>
@@ -118,6 +118,16 @@ headers['from']
 
 Introduced in the version 2.0, kiss-headers now allow you to create headers with more than 40+ ready-to-use, fully documented, header objects.
 
+1st example usage
+```python
+from kiss_headers import Headers, Authorization
+from requests import get
+
+response = get("https://httpbin.org/bearer", headers=Headers(Authorization("Bearer", "qwerty")))
+print(response.status_code)  # 200
+```
+
+2nd example usage
 ```python
 from kiss_headers import *
 
@@ -175,7 +185,7 @@ Contributions, issues and feature requests are very much welcome.<br />
 Feel free to check [issues page](https://github.com/Ousret/kiss-headers/issues) if you want to contribute.
 
 Do not forget to run `pip install pytest pytest-cov codecov isort black requests mypy` before you start working on your fork.
-Also check `.travis.yml` file to see what command is expected to return OK (Code 0).
+Also check `.travis.yml` file to see what command is expected to return OK.
 
 ## 📝 License
 
