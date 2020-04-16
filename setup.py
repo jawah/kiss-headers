@@ -17,7 +17,7 @@ def get_version():
 
 # Package meta-data.
 NAME = "kiss-headers"
-DESCRIPTION = "Python package for headers, object oriented, http or imap."
+DESCRIPTION = "Python package for headers, object oriented, http or imap. Also parse headers."
 URL = "https://github.com/ousret/kiss-headers"
 EMAIL = "ahmed.tahri@cloudnursery.dev"
 AUTHOR = "Ahmed TAHRI @Ousret"
