@@ -315,4 +315,4 @@ def is_legal_header_name(name: str) -> bool:
     >>> is_legal_header_name("Hello \\tWorld")
     False
     """
-    return search(r"[^\x00-\x7F]|[:;(),<>=@?\[\]\r\n\t &{}\\]", name) is None
+    return name != "" and search(r"[^\x00-\x7F]|[:;(),<>=@?\[\]\r\n\t &{}\\]", name) is None
