@@ -612,7 +612,9 @@ class Headers(object):
         """
         self._headers: List[Header] = headers[0] if len(headers) == 1 and isinstance(
             headers[0], list
-        ) else list(headers)  # type: ignore
+        ) else list(
+            headers
+        )  # type: ignore
 
     def has(self, header: str) -> bool:
         """
