@@ -99,7 +99,9 @@ set-cookie: CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; do
 headers = parse_it(my_cookies)
 
 type(headers.set_cookie)  # output: list
-headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
+headers.set_cookie[0].expires # output: Wed, 15-Apr-2020 21:27:31 GMT
+headers.set_cookie[0]._1p_jar # output: 2020-03-16-21
+headers.set_cookie[0]["1P_JAR"] # output: 2020-03-16-21
 ```
 
 If this behaviour does bother you, you can lock output to always be a list. Just call `lock_output_type()` method.

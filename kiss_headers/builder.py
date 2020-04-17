@@ -1,3 +1,4 @@
+from base64 import b64encode
 from datetime import datetime, timezone
 from email import utils
 from re import fullmatch
@@ -24,6 +25,10 @@ class CustomHeader(Header):
     __squash__: bool = False  # This value indicate whenever the representation of multiple entries should be squashed into one content.
     __tags__: List[str] = []
 
+    __override__: Optional[
+        str
+    ] = None  # Create this static member in your custom header when the class name does not match the target header.
+
     def __init__(self, initial_content: str = "", **kwargs: Optional[str]):
         """
         :param initial_content: Initial content of the Header if any.
@@ -34,7 +39,12 @@ class CustomHeader(Header):
                 "You can not instantiate CustomHeader class. You may create first your class that inherit it."
             )
 
-        super().__init__(class_to_header_name(self.__class__), initial_content)
+        super().__init__(
+            class_to_header_name(self.__class__)
+            if not self.__class__.__override__
+            else prettify_header_name(self.__class__.__override__),
+            initial_content,
+        )
 
         for attribute, value in kwargs.items():
             if value is None:
@@ -167,8 +177,8 @@ class ContentDisposition(CustomHeader):
         """
         :param disposition: Could be either inline, form-data, attachment or empty. Choose one. Default to inline.
         :param name: Is a string containing the name of the HTML field in the form that the content of this subpart refers to.
-        :param filename: Is a string containing the original name of the file transmitted. The filename is always optional and must not be used blindly by the application.
-        :param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987. ASCII-US Only.
+        :param filename: Is a string containing the original name of the file transmitted. The filename is always optional and must not be used blindly by the application. ASCII-US Only.
+        :param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987.
         :param boundary: For multipart entities the boundary directive is required, which consists of 1 to 70 characters from a set of characters known to be very robust through email gateways, and not ending with white space. It is used to encapsulate the boundaries of the multiple parts of the message.
         :param kwargs:
         """
@@ -212,7 +222,7 @@ class Authorization(CustomHeader):
 
     __tags__: List[str] = ["request"]
 
-    def __init__(self, type_: str, credentials: str):
+    def __init__(self, type_: str, credentials: str, **kwargs: Optional[str]):
         """
         :param type_: Authentication type. A common type is "Basic". See IANA registry of Authentication schemes for others.
         :param credentials: Associated credentials to use. Preferably Base-64 encoded.
@@ -239,8 +249,38 @@ class Authorization(CustomHeader):
             )
 
         super().__init__(
-            "{type_} {credentials}".format(type_=type_, credentials=credentials)
+            "{type_} {credentials}".format(type_=type_, credentials=credentials),
+            **kwargs,
         )
+
+
+class BasicAuthorization(Authorization):
+    """
+    Same as Authorization header but simplified for the Basic method. Also an example of __override__ usage.
+    """
+
+    __override__ = "Authorization"
+
+    def __init__(
+        self,
+        username: str,
+        password: str,
+        charset: str = "latin1",
+        **kwargs: Optional[str],
+    ):
+        """
+        :param username:
+        :param password:
+        :param kwargs:
+        >>> header = BasicAuthorization("azerty", "qwerty")
+        >>> header
+        Authorization: Basic YXplcnR5OnF3ZXJ0eQ==
+        """
+        b64_auth_content: str = b64encode(
+            (username + ":" + password).encode(charset)
+        ).decode("ascii")
+
+        super().__init__("Basic", b64_auth_content, **kwargs)
 
 
 class ProxyAuthorization(Authorization):

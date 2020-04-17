@@ -21,28 +21,9 @@ from kiss_headers.utils import (
     is_legal_header_name,
     normalize_str,
     prettify_header_name,
+    unpack_protected_keyword,
     unquote,
 )
-
-RESERVED_KEYWORD: List[str] = [
-    "and_",
-    "assert_",
-    "in_",
-    "not_",
-    "pass_",
-    "finally_",
-    "while_",
-    "yield_",
-    "is_",
-    "as_",
-    "break_",
-    "return_",
-    "elif_",
-    "except_",
-    "def_",
-    "from_",
-    "for_",
-]
 
 OUTPUT_LOCK_TYPE: bool = False
 
@@ -298,7 +279,7 @@ class Header(object):
         """
 
         # Avoid conflict with __init__ sequence of Header
-        if key in [
+        if key in {
             "_name",
             "_normalized_name",
             "_pretty_name",
@@ -307,14 +288,10 @@ class Header(object):
             "_not_valued_attrs",
             "_valued_attrs_normalized",
             "_valued_attrs",
-        ]:
+        }:
             return super().__setattr__(key, value)
 
-        if key[0] == "_":
-            key = key[1:]
-
-        if key.lower() in RESERVED_KEYWORD:
-            key = key[:-1]
+        key = unpack_protected_keyword(key)
 
         self[key] = value
 
@@ -525,11 +502,7 @@ class Header(object):
         All the magic happen here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
         """
-        if item[0] == "_":
-            item = item[1:]
-
-        if item.lower() in RESERVED_KEYWORD:
-            item = item[:-1]
+        item = unpack_protected_keyword(item)
 
         if (
             item not in self._valued_attrs
@@ -552,7 +525,7 @@ class Header(object):
         item = normalize_str(item)
         for attr in self.attrs:
             target = normalize_str(attr)
-            if item == target or item in target.split(","):
+            if item == target or item in target.split(" "):
                 return True
         return False
 
@@ -964,15 +937,13 @@ class Headers(object):
         Where the magic happen, every header are accessible via the property notation.
         The result is either a single Header or a list of Header.
         eg.
-        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST") + Header("From", "john-doe@gmail.com")
         >>> headers.content_type
         Content-Type: text/html; charset=UTF-8
+        >>> headers.from_
+        From: john-doe@gmail.com
         """
-        if item[0] == "_":
-            item = item[1:]
-
-        if item.lower() in RESERVED_KEYWORD:
-            item = item[:-1]
+        item = unpack_protected_keyword(item)
 
         if item not in self:
             raise AttributeError(
@@ -998,10 +969,15 @@ class Headers(object):
         return repr(self).encode("utf-8", errors="surrogateescape")
 
     def __reversed__(self) -> "Headers":
+        """Return a new instance of Headers containing headers in reversed order."""
         list_of_headers: List[Header] = deepcopy(self._headers)
         list_of_headers.reverse()
 
         return Headers(list_of_headers)
+
+    def __bool__(self) -> bool:
+        """Return True if Headers does contain at least one entry in it."""
+        return bool(self._headers)
 
     def __contains__(self, item: Union[Header, str]) -> bool:
         """

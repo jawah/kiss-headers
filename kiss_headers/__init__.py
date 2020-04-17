@@ -44,6 +44,7 @@ from kiss_headers.builder import (
     Allow,
     AltSvc,
     Authorization,
+    BasicAuthorization,
     CacheControl,
     Connection,
     ContentDisposition,
