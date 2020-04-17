@@ -192,7 +192,12 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
         if class_name is None:
             continue
 
-        if normalize_str(class_name.split(".")[-1]) == normalized_name:
+        if (
+            not (
+                hasattr(subclass, "__override__") and subclass.__override__ is not None
+            )
+            and normalize_str(class_name.split(".")[-1]) == normalized_name
+        ):
             return subclass
 
         if subclass.__subclasses__():
