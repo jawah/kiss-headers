@@ -3,6 +3,7 @@ from email import utils
 from re import fullmatch
 from typing import Dict, List, Optional, Union
 from urllib.parse import quote as url_quote
+from base64 import b64encode
 
 from kiss_headers.models import Header
 from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
@@ -214,7 +215,7 @@ class Authorization(CustomHeader):
 
     __tags__: List[str] = ["request"]
 
-    def __init__(self, type_: str, credentials: str):
+    def __init__(self, type_: str, credentials: str, **kwargs: Optional[str]):
         """
         :param type_: Authentication type. A common type is "Basic". See IANA registry of Authentication schemes for others.
         :param credentials: Associated credentials to use. Preferably Base-64 encoded.
@@ -241,8 +242,31 @@ class Authorization(CustomHeader):
             )
 
         super().__init__(
-            "{type_} {credentials}".format(type_=type_, credentials=credentials)
+            "{type_} {credentials}".format(type_=type_, credentials=credentials), **kwargs
         )
+
+
+class BasicAuthorization(Authorization):
+    """
+    Same as Authorization header but simplified for the Basic method. Also an example of __override__ usage.
+    """
+
+    __override__ = "Authorization"
+
+    def __init__(self, username: str, password: str, charset: str = "latin1", **kwargs: Optional[str]):
+        """
+        :param username:
+        :param password:
+        :param kwargs:
+        >>> header = BasicAuthorization("azerty", "qwerty")
+        >>> header
+        Authorization: Basic YXplcnR5OnF3ZXJ0eQ==
+        """
+        b64_auth_content: str = b64encode(
+            (username + ":" + password).encode(charset)
+        ).decode('ascii')
+
+        super().__init__("Basic", b64_auth_content, **kwargs)
 
 
 class ProxyAuthorization(Authorization):
