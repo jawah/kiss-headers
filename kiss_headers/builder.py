@@ -25,7 +25,9 @@ class CustomHeader(Header):
     __squash__: bool = False  # This value indicate whenever the representation of multiple entries should be squashed into one content.
     __tags__: List[str] = []
 
-    __override__: Optional[str] = None  # Create this static member in your custom header when the class name does not match the target header.
+    __override__: Optional[
+        str
+    ] = None  # Create this static member in your custom header when the class name does not match the target header.
 
     def __init__(self, initial_content: str = "", **kwargs: Optional[str]):
         """
@@ -37,7 +39,12 @@ class CustomHeader(Header):
                 "You can not instantiate CustomHeader class. You may create first your class that inherit it."
             )
 
-        super().__init__(class_to_header_name(self.__class__) if not self.__class__.__override__ else prettify_header_name(self.__class__.__override__), initial_content)
+        super().__init__(
+            class_to_header_name(self.__class__)
+            if not self.__class__.__override__
+            else prettify_header_name(self.__class__.__override__),
+            initial_content,
+        )
 
         for attribute, value in kwargs.items():
             if value is None:
@@ -242,7 +249,8 @@ class Authorization(CustomHeader):
             )
 
         super().__init__(
-            "{type_} {credentials}".format(type_=type_, credentials=credentials), **kwargs
+            "{type_} {credentials}".format(type_=type_, credentials=credentials),
+            **kwargs,
         )
 
 
@@ -253,7 +261,13 @@ class BasicAuthorization(Authorization):
 
     __override__ = "Authorization"
 
-    def __init__(self, username: str, password: str, charset: str = "latin1", **kwargs: Optional[str]):
+    def __init__(
+        self,
+        username: str,
+        password: str,
+        charset: str = "latin1",
+        **kwargs: Optional[str],
+    ):
         """
         :param username:
         :param password:
@@ -264,7 +278,7 @@ class BasicAuthorization(Authorization):
         """
         b64_auth_content: str = b64encode(
             (username + ":" + password).encode(charset)
-        ).decode('ascii')
+        ).decode("ascii")
 
         super().__init__("Basic", b64_auth_content, **kwargs)
 
