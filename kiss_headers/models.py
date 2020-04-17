@@ -525,7 +525,7 @@ class Header(object):
         item = normalize_str(item)
         for attr in self.attrs:
             target = normalize_str(attr)
-            if item == target or item in target.split(","):
+            if item == target or item in target.split(" "):
                 return True
         return False
 
