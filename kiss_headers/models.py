@@ -21,8 +21,8 @@ from kiss_headers.utils import (
     is_legal_header_name,
     normalize_str,
     prettify_header_name,
-    unquote,
     unpack_protected_keyword,
+    unquote,
 )
 
 OUTPUT_LOCK_TYPE: bool = False

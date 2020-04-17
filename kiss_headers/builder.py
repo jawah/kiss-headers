@@ -1,9 +1,9 @@
+from base64 import b64encode
 from datetime import datetime, timezone
 from email import utils
 from re import fullmatch
 from typing import Dict, List, Optional, Union
 from urllib.parse import quote as url_quote
-from base64 import b64encode
 
 from kiss_headers.models import Header
 from kiss_headers.utils import class_to_header_name, prettify_header_name, quote

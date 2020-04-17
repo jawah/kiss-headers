@@ -1,6 +1,6 @@
 from email.header import decode_header
 from re import findall, search
-from typing import Any, Iterable, List, Optional, Tuple, Type, Final, Set
+from typing import Any, Final, Iterable, List, Optional, Set, Tuple, Type
 
 RESERVED_KEYWORD: Final[Set[str]] = {
     "and_",
