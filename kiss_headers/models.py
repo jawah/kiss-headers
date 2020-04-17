@@ -279,7 +279,7 @@ class Header(object):
         """
 
         # Avoid conflict with __init__ sequence of Header
-        if key in [
+        if key in {
             "_name",
             "_normalized_name",
             "_pretty_name",
@@ -288,7 +288,7 @@ class Header(object):
             "_not_valued_attrs",
             "_valued_attrs_normalized",
             "_valued_attrs",
-        ]:
+        }:
             return super().__setattr__(key, value)
 
         key = unpack_protected_keyword(key)
