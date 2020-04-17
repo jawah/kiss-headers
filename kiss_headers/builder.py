@@ -177,8 +177,8 @@ class ContentDisposition(CustomHeader):
         """
         :param disposition: Could be either inline, form-data, attachment or empty. Choose one. Default to inline.
         :param name: Is a string containing the name of the HTML field in the form that the content of this subpart refers to.
-        :param filename: Is a string containing the original name of the file transmitted. The filename is always optional and must not be used blindly by the application.
-        :param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987. ASCII-US Only.
+        :param filename: Is a string containing the original name of the file transmitted. The filename is always optional and must not be used blindly by the application. ASCII-US Only.
+        :param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987.
         :param boundary: For multipart entities the boundary directive is required, which consists of 1 to 70 characters from a set of characters known to be very robust through email gateways, and not ending with white space. It is used to encapsulate the boundaries of the multiple parts of the message.
         :param kwargs:
         """
