@@ -969,6 +969,7 @@ class Headers(object):
         return repr(self).encode("utf-8", errors="surrogateescape")
 
     def __reversed__(self) -> "Headers":
+        """Return a new instance of Headers containing headers in reversed order."""
         list_of_headers: List[Header] = deepcopy(self._headers)
         list_of_headers.reverse()
 
