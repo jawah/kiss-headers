@@ -1,6 +1,26 @@
 from email.header import decode_header
 from re import findall, search
-from typing import Any, Iterable, List, Optional, Tuple, Type
+from typing import Any, Iterable, List, Optional, Tuple, Type, Final, Set
+
+RESERVED_KEYWORD: Final[Set[str]] = {
+    "and_",
+    "assert_",
+    "in_",
+    "not_",
+    "pass_",
+    "finally_",
+    "while_",
+    "yield_",
+    "is_",
+    "as_",
+    "break_",
+    "return_",
+    "elif_",
+    "except_",
+    "def_",
+    "from_",
+    "for_",
+}
 
 
 def normalize_str(string: str) -> str:
@@ -12,6 +32,34 @@ def normalize_str(string: str) -> str:
     'x_content_type'
     """
     return string.lower().replace("-", "_")
+
+
+def unpack_protected_keyword(name: str) -> str:
+    """
+    By choice this project aim to allow developper to access header or attribute in header by using the property
+    notation. Some keyword are protected by the language itself. So :
+    When starting by a number, prepend a underscore to it. When using a protected keyword, append a underscore to it.
+    >>> unpack_protected_keyword("_3to1")
+    '3to1'
+    >>> unpack_protected_keyword("from_")
+    'from'
+    >>> unpack_protected_keyword("_from")
+    '_from'
+    >>> unpack_protected_keyword("3")
+    '3'
+    >>> unpack_protected_keyword("FroM_")
+    'FroM_'
+    """
+    if len(name) < 2:
+        return name
+
+    if name[0] == "_" and name[1].isdigit():
+        name = name[1:]
+
+    if name in RESERVED_KEYWORD:
+        name = name[:-1]
+
+    return name
 
 
 def extract_class_name(type_: Type) -> Optional[str]:

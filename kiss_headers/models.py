@@ -22,27 +22,8 @@ from kiss_headers.utils import (
     normalize_str,
     prettify_header_name,
     unquote,
+    unpack_protected_keyword,
 )
-
-RESERVED_KEYWORD: List[str] = [
-    "and_",
-    "assert_",
-    "in_",
-    "not_",
-    "pass_",
-    "finally_",
-    "while_",
-    "yield_",
-    "is_",
-    "as_",
-    "break_",
-    "return_",
-    "elif_",
-    "except_",
-    "def_",
-    "from_",
-    "for_",
-]
 
 OUTPUT_LOCK_TYPE: bool = False
 
@@ -310,11 +291,7 @@ class Header(object):
         ]:
             return super().__setattr__(key, value)
 
-        if key[0] == "_":
-            key = key[1:]
-
-        if key.lower() in RESERVED_KEYWORD:
-            key = key[:-1]
+        key = unpack_protected_keyword(key)
 
         self[key] = value
 
@@ -525,11 +502,7 @@ class Header(object):
         All the magic happen here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
         """
-        if item[0] == "_":
-            item = item[1:]
-
-        if item.lower() in RESERVED_KEYWORD:
-            item = item[:-1]
+        item = unpack_protected_keyword(item)
 
         if (
             item not in self._valued_attrs
@@ -964,15 +937,13 @@ class Headers(object):
         Where the magic happen, every header are accessible via the property notation.
         The result is either a single Header or a list of Header.
         eg.
-        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
+        >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST") + Header("From", "john-doe@gmail.com")
         >>> headers.content_type
         Content-Type: text/html; charset=UTF-8
+        >>> headers.from_
+        From: john-doe@gmail.com
         """
-        if item[0] == "_":
-            item = item[1:]
-
-        if item.lower() in RESERVED_KEYWORD:
-            item = item[:-1]
+        item = unpack_protected_keyword(item)
 
         if item not in self:
             raise AttributeError(
