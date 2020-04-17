@@ -974,6 +974,10 @@ class Headers(object):
 
         return Headers(list_of_headers)
 
+    def __bool__(self) -> bool:
+        """Return True if Headers does contain at least one entry in it."""
+        return bool(self._headers)
+
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
         This method will allow you to test if a header, based on it's string name, is present or not in headers.
