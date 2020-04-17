@@ -24,6 +24,8 @@ class CustomHeader(Header):
     __squash__: bool = False  # This value indicate whenever the representation of multiple entries should be squashed into one content.
     __tags__: List[str] = []
 
+    __override__: Optional[str] = None  # Create this static member in your custom header when the class name does not match the target header.
+
     def __init__(self, initial_content: str = "", **kwargs: Optional[str]):
         """
         :param initial_content: Initial content of the Header if any.
@@ -34,7 +36,7 @@ class CustomHeader(Header):
                 "You can not instantiate CustomHeader class. You may create first your class that inherit it."
             )
 
-        super().__init__(class_to_header_name(self.__class__), initial_content)
+        super().__init__(class_to_header_name(self.__class__) if not self.__class__.__override__ else prettify_header_name(self.__class__.__override__), initial_content)
 
         for attribute, value in kwargs.items():
             if value is None:
