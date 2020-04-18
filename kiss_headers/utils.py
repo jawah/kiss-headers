@@ -85,8 +85,8 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     >>> header_content_split("text/html; charset=UTF-8", ";")
     ['text/html', 'charset=UTF-8']
     """
-    if len(delimiter) != 1 or delimiter not in {";", ","}:
-        raise ValueError("Delimiter should be either semi-colon or a coma.")
+    if len(delimiter) != 1 or delimiter not in {";", ",", " "}:
+        raise ValueError("Delimiter should be either semi-colon, a coma or a space.")
 
     in_double_quote: bool = False
     in_parenthesis: bool = False
