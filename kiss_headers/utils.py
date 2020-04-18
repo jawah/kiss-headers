@@ -372,3 +372,12 @@ def is_legal_header_name(name: str) -> bool:
         name != ""
         and search(r"[^\x00-\x7F]|[:;(),<>=@?\[\]\r\n\t &{}\\]", name) is None
     )
+
+
+def extract_comments(content: str) -> List[str]:
+    """
+    Extract parts of content that are considered as comments. Between parenthesis.
+    >>> extract_comments("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0 (hello) llll (abc)")
+    ['Macintosh; Intel Mac OS X 10.9; rv:50.0', 'hello', 'abc']
+    """
+    return findall(r"\(([^)]+)\)", content)

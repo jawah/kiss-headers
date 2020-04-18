@@ -15,6 +15,7 @@ from typing import (
 
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
+    extract_comments,
     header_content_split,
     header_name_to_class,
     header_strip,
@@ -132,6 +133,11 @@ class Header(object):
             return unquote(self._content)
 
         return self._content
+
+    @property
+    def comments(self) -> List[str]:
+        """Retrieve comments in header content."""
+        return extract_comments(self.content)
 
     def __lt__(self, other: object) -> bool:
         """
