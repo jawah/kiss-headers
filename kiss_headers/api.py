@@ -8,6 +8,7 @@ from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
     decode_partials,
     extract_class_name,
+    extract_encoded_headers,
     header_content_split,
     header_name_to_class,
     is_legal_header_name,
@@ -27,14 +28,8 @@ def parse_it(raw_headers: Any) -> Headers:
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
     elif isinstance(raw_headers, bytes) or isinstance(raw_headers, IOBase):
-        headers = (
-            BytesHeaderParser()
-            .parse(
-                BytesIO(raw_headers) if isinstance(raw_headers, bytes) else raw_headers,  # type: ignore
-                headersonly=True,
-            )
-            .items()
-        )
+        decoded, not_decoded = extract_encoded_headers(raw_headers if isinstance(raw_headers, bytes) else raw_headers.read())
+        return parse_it(decoded)
     elif isinstance(raw_headers, Mapping) or isinstance(raw_headers, Message):
         headers = raw_headers.items()
     else:
