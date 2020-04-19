@@ -395,12 +395,12 @@ def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
     index: int = 0
 
     for line, index in zip(lines, range(0, len(lines))):
-        if line == b'':
-            return result, b'\r\n'.join(lines[index:])
+        if line == b"":
+            return result, b"\r\n".join(lines[index:])
 
         try:
-            result += line.decode("utf-8") + '\r\n'
+            result += line.decode("utf-8") + "\r\n"
         except UnicodeDecodeError:
             break
 
-    return result, b'\r\n'.join(lines[index:])
+    return result, b"\r\n".join(lines[index:])

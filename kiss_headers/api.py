@@ -28,7 +28,9 @@ def parse_it(raw_headers: Any) -> Headers:
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
     elif isinstance(raw_headers, bytes) or isinstance(raw_headers, RawIOBase):
-        decoded, not_decoded = extract_encoded_headers(raw_headers if isinstance(raw_headers, bytes) else raw_headers.read() or b'')
+        decoded, not_decoded = extract_encoded_headers(
+            raw_headers if isinstance(raw_headers, bytes) else raw_headers.read() or b""
+        )
         return parse_it(decoded)
     elif isinstance(raw_headers, Mapping) or isinstance(raw_headers, Message):
         headers = raw_headers.items()
