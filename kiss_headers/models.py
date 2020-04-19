@@ -22,9 +22,9 @@ from kiss_headers.utils import (
     is_legal_header_name,
     normalize_str,
     prettify_header_name,
+    unfold,
     unpack_protected_keyword,
     unquote,
-    unfold,
 )
 
 OUTPUT_LOCK_TYPE: bool = False
