@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from collections.abc import Mapping, MutableMapping
 from typing import Any, Iterator, Optional, Tuple
+from kiss_headers.utils import normalize_str
 
 
 """
@@ -45,13 +46,13 @@ class CaseInsensitiveDict(MutableMapping):
     def __setitem__(self, key: str, value: Any) -> None:
         # Use the lowercased key for lookups, but store the actual
         # key alongside the value.
-        self._store[key.lower().replace("-", "_")] = (key, value)
+        self._store[normalize_str(key)] = (key, value)
 
     def __getitem__(self, key: str) -> Any:
-        return self._store[key.lower().replace("-", "_")][1]
+        return self._store[normalize_str(key)][1]
 
     def __delitem__(self, key: str) -> None:
-        del self._store[key.lower().replace("-", "_")]
+        del self._store[normalize_str(key)]
 
     def __iter__(self) -> Iterator[Tuple[str, Any]]:
         return (casedkey for casedkey, mappedvalue in self._store.values())

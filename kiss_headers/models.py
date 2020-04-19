@@ -6,7 +6,6 @@ from typing import (
     Iterable,
     Iterator,
     List,
-    MutableMapping,
     Optional,
     Tuple,
     Type,
@@ -67,10 +66,7 @@ class Header(object):
         ]
 
         self._not_valued_attrs: List[str] = list()
-        self._valued_attrs: MutableMapping[str, Union[str, List[str]]] = dict()
-        self._valued_attrs_normalized: MutableMapping[
-            str, Union[str, List[str]]
-        ] = dict()
+        self._valued_attrs: CaseInsensitiveDict[str, Union[str, List[str]]] = CaseInsensitiveDict()
 
         for member in self._members:
             if member == "":
@@ -92,9 +88,6 @@ class Header(object):
                     else:
                         self._valued_attrs[key].append(value)  # type: ignore
 
-                self._valued_attrs_normalized[normalize_str(key)] = self._valued_attrs[
-                    key
-                ]
                 continue
 
             self._not_valued_attrs.append(unquote(member))
@@ -251,7 +244,7 @@ class Header(object):
 
         other = normalize_str(other)
 
-        if other in self._valued_attrs_normalized:
+        if other in self._valued_attrs:
             del self[other]
 
         if other in self._not_valued_attrs:
@@ -292,7 +285,6 @@ class Header(object):
             "_content",
             "_members",
             "_not_valued_attrs",
-            "_valued_attrs_normalized",
             "_valued_attrs",
         }:
             return super().__setattr__(key, value)
@@ -306,7 +298,6 @@ class Header(object):
         Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
         Any value that are not a str are casted to str.
         """
-        key_normalized = normalize_str(key)
 
         if key in self:
             del self[key]
@@ -314,7 +305,6 @@ class Header(object):
             value = str(value)
 
         self._valued_attrs[key] = value
-        self._valued_attrs_normalized[key_normalized] = self._valued_attrs[key]
 
         self._content += '{semi_colon_r}{key}="{value}"'.format(
             key=key,
@@ -332,22 +322,14 @@ class Header(object):
         >>> str(headers.content_type)
         'text/html'
         """
-        key_normalized = normalize_str(key)
-
-        if key_normalized not in self._valued_attrs_normalized:
+        if key not in self._valued_attrs:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=key, header=self.name
                 )
             )
 
-        del self._valued_attrs_normalized[key]
-        not_normalized_keys = self._valued_attrs.keys()
-
-        for key_ in not_normalized_keys:
-            if normalize_str(key_) == key_normalized:
-                del self._valued_attrs[key_]
-                break
+        del self._valued_attrs[key]
 
         for elem in findall(
             r"{key_name}=.*?(?=[;\n])".format(key_name=escape(key)),
@@ -368,7 +350,7 @@ class Header(object):
         """
         item = normalize_str(item)
 
-        if item not in self._valued_attrs_normalized:
+        if item not in self._valued_attrs:
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=item, header=self.name
@@ -436,7 +418,7 @@ class Header(object):
         Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other word, more precise auto-completion when not using IDE.
         """
-        return list(super().__dir__()) + list(self._valued_attrs_normalized.keys())
+        return list(super().__dir__()) + list(self._valued_attrs.keys())
 
     @property
     def attrs(self) -> List[str]:
@@ -477,16 +459,15 @@ class Header(object):
 
         return isinstance(r, list) and len(r) > 1
 
-    def __getitem__(self, item: Union[str]) -> Union[str, List[str]]:
+    def __getitem__(self, item: Union[str, int]) -> Union[str, List[str]]:
         """
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
         """
-        normalized_item = normalize_str(item)
+        if isinstance(item, int):
+            return self._members[item] if not OUTPUT_LOCK_TYPE else [self._members[item]]
 
         if item in self._valued_attrs:
             value = self._valued_attrs[item]
-        elif normalized_item in self._valued_attrs_normalized:
-            value = self._valued_attrs_normalized[normalized_item]
         else:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
@@ -512,7 +493,6 @@ class Header(object):
 
         if (
             item not in self._valued_attrs
-            and normalize_str(item) not in self._valued_attrs_normalized
         ):
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
