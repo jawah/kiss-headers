@@ -57,8 +57,7 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
     def test_bytes_headers(self):
 
         self.assertEqual(
-            MyKissHeadersFromStringTest.headers,
-            parse_it(RAW_HEADERS.encode("utf-8"))
+            MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS.encode("utf-8"))
         )
 
     def test_two_headers_eq(self):
