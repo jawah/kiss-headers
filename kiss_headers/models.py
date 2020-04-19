@@ -22,6 +22,7 @@ from kiss_headers.utils import (
     is_legal_header_name,
     normalize_str,
     prettify_header_name,
+    unfold,
     unpack_protected_keyword,
     unquote,
 )
@@ -473,7 +474,7 @@ class Header(object):
 
     def __getitem__(self, item: Union[str, int]) -> Union[str, List[str]]:
         """
-        This method will allow you to retrieve attribute value using the bracket syntax, list-like.
+        This method will allow you to retrieve attribute value using the bracket syntax, list-like or dict-like.
         """
         if isinstance(item, int):
             return (
@@ -493,9 +494,9 @@ class Header(object):
             value = [value]
 
         return (
-            unquote(value)
+            unfold(unquote(value))
             if not isinstance(value, list)
-            else [unquote(v) for v in value]
+            else [unfold(unquote(v)) for v in value]
         )
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:

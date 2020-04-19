@@ -383,6 +383,15 @@ def extract_comments(content: str) -> List[str]:
     return findall(r"\(([^)]+)\)", content)
 
 
+def unfold(content: str) -> str:
+    """Some header content may have folded content (LF + 9 spaces or LF + 7 spaces) in it, making your job at reading them a little more difficult.
+    This function undo the folding in given content.
+    >>> unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\\n         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s")
+    'eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s'
+    """
+    return content.replace("\n" + (9 * " "), "").replace("\n" + (7 * " "), " ")
+
+
 def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
     """This function purpose is to extract lines that can be decoded using utf-8.
     >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\n".encode("utf-8"))
