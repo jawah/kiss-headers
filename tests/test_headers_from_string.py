@@ -54,6 +54,12 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
             decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")]),
         )
 
+    def test_bytes_headers(self):
+
+        self.assertEqual(
+            MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS.encode("utf-8"))
+        )
+
     def test_two_headers_eq(self):
 
         self.assertEqual(MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS))

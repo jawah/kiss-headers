@@ -381,3 +381,26 @@ def extract_comments(content: str) -> List[str]:
     ['Macintosh; Intel Mac OS X 10.9; rv:50.0', 'hello', 'abc']
     """
     return findall(r"\(([^)]+)\)", content)
+
+
+def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
+    """This function purpose is to extract lines that can be decoded using utf-8.
+    >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\n".encode("utf-8"))
+    ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'')
+    >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\nThat IS totally random.".encode("utf-8"))
+    ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'\\r\\nThat IS totally random.')
+    """
+    result: str = ""
+    lines: List[bytes] = payload.splitlines()
+    index: int = 0
+
+    for line, index in zip(lines, range(0, len(lines))):
+        if line == b"":
+            return result, b"\r\n".join(lines[index:])
+
+        try:
+            result += line.decode("utf-8") + "\r\n"
+        except UnicodeDecodeError:
+            break
+
+    return result, b"\r\n".join(lines[index:])
