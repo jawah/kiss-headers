@@ -6,6 +6,7 @@ from typing import (
     Iterable,
     Iterator,
     List,
+    MutableMapping,
     Optional,
     Tuple,
     Type,
@@ -66,7 +67,7 @@ class Header(object):
         ]
 
         self._not_valued_attrs: List[str] = list()
-        self._valued_attrs: CaseInsensitiveDict[str, Union[str, List[str]]] = CaseInsensitiveDict()
+        self._valued_attrs: MutableMapping[str, Union[str, List[str]]] = CaseInsensitiveDict()
 
         for member in self._members:
             if member == "":
