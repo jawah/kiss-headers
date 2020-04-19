@@ -85,8 +85,8 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     >>> header_content_split("text/html; charset=UTF-8", ";")
     ['text/html', 'charset=UTF-8']
     """
-    if len(delimiter) != 1 or delimiter not in {";", ","}:
-        raise ValueError("Delimiter should be either semi-colon or a coma.")
+    if len(delimiter) != 1 or delimiter not in {";", ",", " "}:
+        raise ValueError("Delimiter should be either semi-colon, a coma or a space.")
 
     in_double_quote: bool = False
     in_parenthesis: bool = False
@@ -372,3 +372,44 @@ def is_legal_header_name(name: str) -> bool:
         name != ""
         and search(r"[^\x00-\x7F]|[:;(),<>=@?\[\]\r\n\t &{}\\]", name) is None
     )
+
+
+def extract_comments(content: str) -> List[str]:
+    """
+    Extract parts of content that are considered as comments. Between parenthesis.
+    >>> extract_comments("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0 (hello) llll (abc)")
+    ['Macintosh; Intel Mac OS X 10.9; rv:50.0', 'hello', 'abc']
+    """
+    return findall(r"\(([^)]+)\)", content)
+
+
+def unfold(content: str) -> str:
+    """Some header content may have folded content (LF + 9 spaces or LF + 7 spaces) in it, making your job at reading them a little more difficult.
+    This function undo the folding in given content.
+    >>> unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\\n         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s")
+    'eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s'
+    """
+    return content.replace("\n" + (9 * " "), "").replace("\n" + (7 * " "), " ")
+
+
+def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
+    """This function purpose is to extract lines that can be decoded using utf-8.
+    >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\n".encode("utf-8"))
+    ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'')
+    >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\nThat IS totally random.".encode("utf-8"))
+    ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'\\r\\nThat IS totally random.')
+    """
+    result: str = ""
+    lines: List[bytes] = payload.splitlines()
+    index: int = 0
+
+    for line, index in zip(lines, range(0, len(lines))):
+        if line == b"":
+            return result, b"\r\n".join(lines[index:])
+
+        try:
+            result += line.decode("utf-8") + "\r\n"
+        except UnicodeDecodeError:
+            break
+
+    return result, b"\r\n".join(lines[index:])

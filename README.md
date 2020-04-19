@@ -49,7 +49,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 * A backwards-compatible syntax using bracket style.
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
 * Flexibility if headers are from IMAP4 or HTTP, use as you need with one library.
-* Ability to parse any object and extract recognized headers from it.
+* Ability to parse any object and extract recognized headers from it, it also support UTF-8 encoded headers.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
 * Absolutely no dependencies.
@@ -60,7 +60,7 @@ Plus all the features that you would expect from handling headers...
 * Properties syntax for headers and attribute in header.
 * Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
 * Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response` and `httpx._models.Response`.
-* Automatically unquote value of an attribute when retrieving it.
+* Automatically unquote and unfold value of an attribute when retrieving it.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.
