@@ -67,7 +67,9 @@ class Header(object):
         ]
 
         self._not_valued_attrs: List[str] = list()
-        self._valued_attrs: MutableMapping[str, Union[str, List[str]]] = CaseInsensitiveDict()
+        self._valued_attrs: MutableMapping[
+            str, Union[str, List[str]]
+        ] = CaseInsensitiveDict()
 
         for member in self._members:
             if member == "":
@@ -465,7 +467,9 @@ class Header(object):
         This method will allow you to retrieve attribute value using the bracket syntax, list-like.
         """
         if isinstance(item, int):
-            return self._members[item] if not OUTPUT_LOCK_TYPE else [self._members[item]]
+            return (
+                self._members[item] if not OUTPUT_LOCK_TYPE else [self._members[item]]
+            )
 
         if item in self._valued_attrs:
             value = self._valued_attrs[item]
@@ -492,9 +496,7 @@ class Header(object):
         """
         item = unpack_protected_keyword(item)
 
-        if (
-            item not in self._valued_attrs
-        ):
+        if item not in self._valued_attrs:
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=item, header=self.name
