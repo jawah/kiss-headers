@@ -441,6 +441,15 @@ class Header(object):
     def get(self, attr: str) -> Optional[Union[str, List[str]]]:
         """
         Retrieve associated value of an attribute.
+        >>> header = Header("Content-Type", "application/json; charset=UTF-8; format=flowed")
+        >>> header.charset
+        'UTF-8'
+        >>> header.ChArSeT
+        'UTF-8'
+        >>> header.FORMAT
+        'flowed'
+        >>> header.format
+        'flowed'
         """
         if attr not in self._valued_attrs:
             return None
