@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+export PREFIX="venv/bin/"
+
+set -x
+
+if [ -d 'venv' ] ; then
+  echo "Python virtual env already exists."
+  ${PREFIX}python --version
+else
+  python -m venv venv
+fi
+
+${PREFIX}pip install -U pip setuptools
+${PREFIX}pip install -r requirements.txt
+
+set +x
