@@ -10,15 +10,10 @@ jobs:
   - python: "3.9-dev"  # See https://github.com/python/mypy/issues/8627
 
 install:
-  - pip install pytest pytest-cov codecov isort black requests mypy
-  - python setup.py install
+  - "./scripts/install"
 
 script:
-  - "black --check --diff --target-version=py36 kiss_headers/"
-  - "black --check --diff --target-version=py36 tests/"
-  - "mypy kiss_headers"
-  - "isort --check-only kiss_headers/*.py"
-  - "pytest"
+  - "./scripts/check"
 
 after_success:
   - codecov
