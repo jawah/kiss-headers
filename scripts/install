@@ -9,10 +9,9 @@ if [ -d 'venv' ] ; then
   ${PREFIX}python --version
 else
   python -m venv venv
-  ${PREFIX}python -m pip install -U pip
 fi
 
-${PREFIX}pip install -U pip setuptools
-${PREFIX}pip install -r requirements.txt
+${PREFIX}python -m pip install -U pip setuptools
+${PREFIX}python -m pip install -r requirements.txt
 
 set +x
