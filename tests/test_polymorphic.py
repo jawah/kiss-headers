@@ -1,5 +1,6 @@
 import unittest
-from kiss_headers import parse_it, get_polymorphic, ContentType, Allow, Header
+
+from kiss_headers import Allow, ContentType, Header, get_polymorphic, parse_it
 
 
 class MyPolymorphicTestCase(unittest.TestCase):

@@ -1,17 +1,17 @@
 from email.message import Message
 from email.parser import HeaderParser
 from io import RawIOBase
-from typing import Any, Iterable, List, Mapping, Optional, Tuple, TypeVar, Union, Type
+from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
 from kiss_headers.models import Header, Headers
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
+    class_to_header_name,
     decode_partials,
     extract_class_name,
     extract_encoded_headers,
     header_content_split,
     header_name_to_class,
-    class_to_header_name,
     is_legal_header_name,
 )
 
@@ -152,4 +152,4 @@ def get_polymorphic(target: Union[Headers, Header], desired_output: Type[T]) -> 
         for header in r:
             header.__class__ = desired_output
 
-    return r
+    return r  # type: ignore

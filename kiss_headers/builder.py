@@ -139,10 +139,11 @@ class ContentType(CustomHeader):
         for el in self.attrs:
             if '/' in el:
                 return el
+        return None
 
-    def get_charset(self, _default='ISO-8859-1'):
+    def get_charset(self, _default: Optional[str]='ISO-8859-1') -> Optional[str]:
         """Extract defined charset, if not present will return 'ISO-8859-1' by default."""
-        return self["charset"] if self.has("charset") else _default
+        return str(self["charset"]) if self.has("charset") else _default
 
 
 class XContentTypeOptions(CustomHeader):
@@ -537,11 +538,11 @@ class SetCookie(CustomHeader):
 
     def get_expire(self) -> Optional[datetime]:
         """Retrieve the parsed expiration date."""
-        return utils.parsedate_to_datetime(self["expires"]) if self.has("expires") else None
+        return utils.parsedate_to_datetime(str(self["expires"])) if self.has("expires") else None
 
     def get_max_age(self) -> Optional[int]:
         """Getting the max-age value as an integer if set."""
-        return int(self["max-age"]) if "max-age" in self else None
+        return int(str(self["max-age"])) if "max-age" in self else None
 
     def get_cookie_name(self) -> str:
         """Extract the cookie name."""
@@ -549,7 +550,7 @@ class SetCookie(CustomHeader):
 
     def get_cookie_value(self) -> str:
         """Extract the cookie value."""
-        return self[self.get_cookie_name()]
+        return str(self[self.get_cookie_name()])
 
 
 class StrictTransportSecurity(CustomHeader):
