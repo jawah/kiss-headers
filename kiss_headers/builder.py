@@ -134,6 +134,16 @@ class ContentType(CustomHeader):
 
         super().__init__(mime, **args)
 
+    def get_mime(self) -> Optional[str]:
+        """Return defined mime in content type."""
+        for el in self.attrs:
+            if '/' in el:
+                return el
+
+    def get_charset(self, _default='ISO-8859-1'):
+        """Extract defined charset, if not present will return 'ISO-8859-1' by default."""
+        return self["charset"] if self.has("charset") else _default
+
 
 class XContentTypeOptions(CustomHeader):
     """
@@ -516,6 +526,30 @@ class SetCookie(CustomHeader):
             self += "Secure"  # type: ignore
         if is_httponly:
             self += "HttpOnly"  # type: ignore
+
+    def is_http_only(self) -> bool:
+        """Determine if the cookie can only be accessed by the browser."""
+        return "HttpOnly" in self
+
+    def is_secure(self) -> bool:
+        """Determine if the cookie is TLS/SSL only."""
+        return "Secure" in self
+
+    def get_expire(self) -> Optional[datetime]:
+        """Retrieve the parsed expiration date."""
+        return utils.parsedate_to_datetime(self["expires"]) if self.has("expires") else None
+
+    def get_max_age(self) -> Optional[int]:
+        """Getting the max-age value as an integer if set."""
+        return int(self["max-age"]) if "max-age" in self else None
+
+    def get_cookie_name(self) -> str:
+        """Extract the cookie name."""
+        return self.attrs[0]
+
+    def get_cookie_value(self) -> str:
+        """Extract the cookie value."""
+        return self[self.get_cookie_name()]
 
 
 class StrictTransportSecurity(CustomHeader):
