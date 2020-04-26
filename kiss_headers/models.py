@@ -994,6 +994,29 @@ class Headers(object):
 
         return False
 
+    def pop(self, __index_or_name: Union[str, int] = -1) -> Union[Header, List[Header]]:
+        """Pop header from headers. By default the last one."""
+        if isinstance(__index_or_name, int):
+            return self._headers.pop(__index_or_name)
+        if isinstance(__index_or_name, str):
+            headers = self.get(__index_or_name)
+
+            if headers is None:
+                raise IndexError()
+
+            if isinstance(headers, list):
+                for header in headers:
+                    self._headers.remove(header)
+            else:
+                self._headers.remove(headers)
+            return headers
+        raise TypeError
+
+    def popitem(self) -> Tuple[str, str]:
+        """Pop last header as a tuple (header name, header content)."""
+        header: Header = self.pop()  # type: ignore
+        return header.name, header.content
+
     def __dir__(self) -> Iterable[str]:
         """
         Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
