@@ -137,11 +137,11 @@ class ContentType(CustomHeader):
     def get_mime(self) -> Optional[str]:
         """Return defined mime in content type."""
         for el in self.attrs:
-            if '/' in el:
+            if "/" in el:
                 return el
         return None
 
-    def get_charset(self, _default: Optional[str]='ISO-8859-1') -> Optional[str]:
+    def get_charset(self, _default: Optional[str] = "ISO-8859-1") -> Optional[str]:
         """Extract defined charset, if not present will return 'ISO-8859-1' by default."""
         return str(self["charset"]) if self.has("charset") else _default
 
@@ -538,7 +538,11 @@ class SetCookie(CustomHeader):
 
     def get_expire(self) -> Optional[datetime]:
         """Retrieve the parsed expiration date."""
-        return utils.parsedate_to_datetime(str(self["expires"])) if self.has("expires") else None
+        return (
+            utils.parsedate_to_datetime(str(self["expires"]))
+            if self.has("expires")
+            else None
+        )
 
     def get_max_age(self) -> Optional[int]:
         """Getting the max-age value as an integer if set."""
