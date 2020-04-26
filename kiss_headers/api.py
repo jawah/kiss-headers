@@ -1,11 +1,12 @@
 from email.message import Message
 from email.parser import HeaderParser
 from io import RawIOBase
-from typing import Any, Iterable, List, Mapping, Optional, Tuple
+from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
 from kiss_headers.models import Header, Headers
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
+    class_to_header_name,
     decode_partials,
     extract_class_name,
     extract_encoded_headers,
@@ -13,6 +14,8 @@ from kiss_headers.utils import (
     header_name_to_class,
     is_legal_header_name,
 )
+
+T = TypeVar("T")
 
 
 def parse_it(raw_headers: Any) -> Headers:
@@ -117,3 +120,42 @@ def explain(headers: Headers) -> CaseInsensitiveDict:
         )
 
     return explanations
+
+
+def get_polymorphic(
+    target: Union[Headers, Header], desired_output: Type[T]
+) -> Union[T, List[T], None]:
+    """Experimental."""
+
+    if not issubclass(desired_output, Header):
+        raise TypeError(
+            f"The desired output should be a subclass of Header not {desired_output}."
+        )
+
+    desired_output_header_name: str = class_to_header_name(desired_output)
+
+    if isinstance(target, Headers):
+        r = target.get(desired_output_header_name)
+
+        if r is None:
+            return None
+
+    elif isinstance(target, Header):
+        if header_name_to_class(target.name, Header) != desired_output:
+            raise TypeError(
+                f"The target class does not match the desired output class. {str(target.__class__)} != {str(desired_output)}."
+            )
+        r = target
+    else:
+        raise TypeError(
+            f"Unable to apply get_polymorphic on type {str(target.__class__)}."
+        )
+
+    # Change __class__ attribute.
+    if not isinstance(r, list):
+        r.__class__ = desired_output
+    else:
+        for header in r:
+            header.__class__ = desired_output
+
+    return r  # type: ignore

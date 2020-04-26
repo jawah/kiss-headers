@@ -290,6 +290,7 @@ class Header(object):
             "_members",
             "_not_valued_attrs",
             "_valued_attrs",
+            "__class__",
         }:
             return super().__setattr__(key, value)
 
