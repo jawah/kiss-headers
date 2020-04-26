@@ -143,12 +143,12 @@ def get_polymorphic(
     elif isinstance(target, Header):
         if header_name_to_class(target.name, Header) != desired_output:
             raise TypeError(
-                f"The target class does not match the desired output class. {str(target.__class__)} != {str(desired_output)}."
+                f"The target class does not match the desired output class. {target.__class__} != {desired_output}."
             )
         r = target
     else:
         raise TypeError(
-            f"Unable to apply get_polymorphic on type {str(target.__class__)}."
+            f"Unable to apply get_polymorphic on type {target.__class__}."
         )
 
     # Change __class__ attribute.
