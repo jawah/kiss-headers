@@ -7,16 +7,25 @@ python:
   - "3.7"
   - "3.8"
   - "3.9-dev"
+  - "pypy3"
 
 jobs:
   allow_failures:
   - python: "3.9-dev"  # See https://github.com/python/mypy/issues/8627
 
+before_install:
+  - "pip install -U pip setuptools"
+  - "pip install -r requirements.txt"
+
 install:
-  - "./scripts/install"
+  - "python setup.py install"
 
 script:
-  - "./scripts/check"
+  - export SOURCE_FILES="kiss_headers tests"
+  - black --check --diff --target-version=py36 $SOURCE_FILES
+  - mypy kiss_headers
+  - isort --check --diff --project=kiss_headers --recursive $SOURCE_FILES
+  - pytest
 
 after_success:
   - codecov
