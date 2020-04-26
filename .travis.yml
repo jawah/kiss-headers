@@ -12,6 +12,7 @@ python:
 jobs:
   allow_failures:
   - python: "3.9-dev"  # See https://github.com/python/mypy/issues/8627
+  - python: "pypy3"
 
 before_install:
   - "pip install -U pip setuptools"
