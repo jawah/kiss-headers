@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+export PREFIX=""
+if [ -d 'venv' ] ; then
+    export PREFIX="venv/bin/"
+fi
+export SOURCE_FILES="kiss_headers tests"
+
+set -x
+
+${PREFIX}black --check --diff --target-version=py36 $SOURCE_FILES
+${PREFIX}mypy kiss_headers
+${PREFIX}isort --check --diff --project=kiss_headers --recursive $SOURCE_FILES
+${PREFIX}pytest
