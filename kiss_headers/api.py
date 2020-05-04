@@ -13,6 +13,7 @@ from kiss_headers.utils import (
     header_content_split,
     header_name_to_class,
     is_legal_header_name,
+    normalize_str,
 )
 
 T = TypeVar("T")
@@ -82,8 +83,8 @@ def parse_it(raw_headers: Any) -> Headers:
 
         entries: List[str] = header_content_split(content, ",")
 
-        # Multiple entries are detected in one content
-        if len(entries) > 1:
+        # Multiple entries are detected in one content at the only exception that its not IMAP header "Subject".
+        if len(entries) > 1 and normalize_str(head) != "subject":
             for entry in entries:
                 list_of_headers.append(Header(head, entry))
         else:
