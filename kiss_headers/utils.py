@@ -397,7 +397,7 @@ def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
     >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\n".encode("utf-8"))
     ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'')
     >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\nThat IS totally random.".encode("utf-8"))
-    ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'\\r\\nThat IS totally random.')
+    ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'That IS totally random.')
     """
     result: str = ""
     lines: List[bytes] = payload.splitlines()
@@ -405,11 +405,11 @@ def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
 
     for line, index in zip(lines, range(0, len(lines))):
         if line == b"":
-            return result, b"\r\n".join(lines[index:])
+            return result, b"\r\n".join(lines[index+1:])
 
         try:
             result += line.decode("utf-8") + "\r\n"
         except UnicodeDecodeError:
             break
 
-    return result, b"\r\n".join(lines[index:])
+    return result, b"\r\n".join(lines[index+1:])
