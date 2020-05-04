@@ -88,6 +88,17 @@ class Accept(CustomHeader):
             mime, **args,
         )
 
+    def get_mime(self) -> Optional[str]:
+        """Return defined mime in current accept header."""
+        for el in self.attrs:
+            if "/" in el:
+                return el
+        return None
+
+    def get_qualifier(self, _default: float = 1.0) -> Optional[float]:
+        """Return defined qualifier for specified mime. If not set, output 1.0."""
+        return float(str(self["q"])) if self.has("q") else _default
+
 
 class ContentType(CustomHeader):
     """
