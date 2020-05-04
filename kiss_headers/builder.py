@@ -476,6 +476,27 @@ class Digest(CustomHeader):
         super().__init__("", **args)
 
 
+class Cookie(CustomHeader):
+    """The Cookie HTTP request header contains stored HTTP cookies previously sent by
+    the server with the Set-Cookie header."""
+
+    __tags__ = ["request"]
+
+    def __init__(self, **kwargs: Optional[str]):
+        """
+        :param kwargs: Pair of cookie name associated with a value.
+        """
+        super().__init__("", **kwargs)
+
+    def get_cookies_names(self) -> List[str]:
+        """Retrieve all defined cookie names from Cookie header."""
+        return self.attrs
+
+    def get_cookie_value(self, cookie_name: str, __default: Optional[str] = None) -> Optional[str]:
+        """Retrieve associated value with a given cookie name."""
+        return str(self[cookie_name]) if cookie_name in self else __default
+
+
 class SetCookie(CustomHeader):
     """
     The Set-Cookie HTTP response header is used to send cookies from the server to the user agent,
