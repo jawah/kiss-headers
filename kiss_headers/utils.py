@@ -384,12 +384,12 @@ def extract_comments(content: str) -> List[str]:
 
 
 def unfold(content: str) -> str:
-    """Some header content may have folded content (LF + 9 spaces or LF + 7 spaces) in it, making your job at reading them a little more difficult.
+    """Some header content may have folded content (LF + 9 spaces, LF + 7 spaces or LF + 1 spaces) in it, making your job at reading them a little more difficult.
     This function undo the folding in given content.
     >>> unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\\n         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s")
     'eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s'
     """
-    return content.replace("\n" + (9 * " "), "").replace("\n" + (7 * " "), " ")
+    return content.replace("\n" + (9 * " "), "").replace("\n" + (7 * " "), " ").replace("\n" + (1 * " "), " ")
 
 
 def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
