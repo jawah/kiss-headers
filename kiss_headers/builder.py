@@ -382,6 +382,10 @@ class Date(CustomHeader):
             **kwargs,
         )
 
+    def get_datetime(self) -> datetime:
+        """Parse and return a datetime according to content."""
+        return utils.parsedate_to_datetime(str(self))
+
 
 class CrossOriginResourcePolicy(CustomHeader):
     """
