@@ -63,9 +63,7 @@ class Header(object):
         self._pretty_name: str = prettify_header_name(self._name)
         self._content: str = content
 
-        self._members: List[str] = [
-            el.lstrip() for el in header_content_split(self._content, ";")
-        ]
+        self._members: List[str] = header_content_split(self._content, ";")
 
         self._not_valued_attrs: List[str] = list()
         self._valued_attrs: MutableMapping[
