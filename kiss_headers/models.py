@@ -130,6 +130,12 @@ class Header(object):
         return self._content
 
     @property
+    def unfolded_content(self) -> str:
+        """Output unfolded associated content to header. Meaning that every LF + n space(s) would be properly
+        replaced."""
+        return unfold(self.content)
+
+    @property
     def comments(self) -> List[str]:
         """Retrieve comments in header content."""
         return extract_comments(self.content)
