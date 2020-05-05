@@ -1,7 +1,6 @@
 import unittest
 
 from kiss_headers import (
-    Header,
     AltSvc,
     CacheControl,
     ContentEncoding,
@@ -9,6 +8,7 @@ from kiss_headers import (
     ContentType,
     Date,
     Expires,
+    Header,
     Server,
     SetCookie,
     StrictTransportSecurity,

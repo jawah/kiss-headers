@@ -1,6 +1,6 @@
 import unittest
 
-from kiss_headers import Headers, parse_it, Header, lock_output_type
+from kiss_headers import Header, Headers, lock_output_type, parse_it
 from kiss_headers.utils import decode_partials
 
 RAW_HEADERS = """accept-ch: DPR

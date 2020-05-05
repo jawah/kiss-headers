@@ -63,9 +63,7 @@ class Header(object):
         self._pretty_name: str = prettify_header_name(self._name)
         self._content: str = content
 
-        self._members: List[str] = [
-            el.lstrip() for el in header_content_split(self._content, ";")
-        ]
+        self._members: List[str] = header_content_split(self._content, ";")
 
         self._not_valued_attrs: List[str] = list()
         self._valued_attrs: MutableMapping[
@@ -130,6 +128,12 @@ class Header(object):
             return unquote(self._content)
 
         return self._content
+
+    @property
+    def unfolded_content(self) -> str:
+        """Output unfolded associated content to header. Meaning that every LF + n space(s) would be properly
+        replaced."""
+        return unfold(self.content)
 
     @property
     def comments(self) -> List[str]:
@@ -290,6 +294,7 @@ class Header(object):
             "_members",
             "_not_valued_attrs",
             "_valued_attrs",
+            "__class__",
         }:
             return super().__setattr__(key, value)
 
@@ -992,6 +997,29 @@ class Headers(object):
                 return True
 
         return False
+
+    def pop(self, __index_or_name: Union[str, int] = -1) -> Union[Header, List[Header]]:
+        """Pop header from headers. By default the last one."""
+        if isinstance(__index_or_name, int):
+            return self._headers.pop(__index_or_name)
+        if isinstance(__index_or_name, str):
+            headers = self.get(__index_or_name)
+
+            if headers is None:
+                raise IndexError()
+
+            if isinstance(headers, list):
+                for header in headers:
+                    self._headers.remove(header)
+            else:
+                self._headers.remove(headers)
+            return headers
+        raise TypeError
+
+    def popitem(self) -> Tuple[str, str]:
+        """Pop last header as a tuple (header name, header content)."""
+        header: Header = self.pop()  # type: ignore
+        return header.name, header.content
 
     def __dir__(self) -> Iterable[str]:
         """

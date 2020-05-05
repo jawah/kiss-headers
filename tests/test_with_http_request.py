@@ -1,9 +1,9 @@
 import unittest
 from typing import Optional
 
-from requests import get, Response
+from requests import Response, get
 
-from kiss_headers import parse_it, Headers, Authorization
+from kiss_headers import Authorization, Headers, parse_it
 
 
 class MyHttpTestKissHeaders(unittest.TestCase):

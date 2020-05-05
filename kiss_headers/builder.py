@@ -88,6 +88,17 @@ class Accept(CustomHeader):
             mime, **args,
         )
 
+    def get_mime(self) -> Optional[str]:
+        """Return defined mime in current accept header."""
+        for el in self.attrs:
+            if "/" in el:
+                return el
+        return None
+
+    def get_qualifier(self, _default: float = 1.0) -> Optional[float]:
+        """Return defined qualifier for specified mime. If not set, output 1.0."""
+        return float(str(self["q"])) if self.has("q") else _default
+
 
 class ContentType(CustomHeader):
     """
@@ -133,6 +144,17 @@ class ContentType(CustomHeader):
         args.update(kwargs)
 
         super().__init__(mime, **args)
+
+    def get_mime(self) -> Optional[str]:
+        """Return defined mime in content type."""
+        for el in self.attrs:
+            if "/" in el:
+                return el
+        return None
+
+    def get_charset(self, _default: Optional[str] = "ISO-8859-1") -> Optional[str]:
+        """Extract defined charset, if not present will return 'ISO-8859-1' by default."""
+        return str(self["charset"]) if self.has("charset") else _default
 
 
 class XContentTypeOptions(CustomHeader):
@@ -371,6 +393,10 @@ class Date(CustomHeader):
             **kwargs,
         )
 
+    def get_datetime(self) -> datetime:
+        """Parse and return a datetime according to content."""
+        return utils.parsedate_to_datetime(str(self))
+
 
 class CrossOriginResourcePolicy(CustomHeader):
     """
@@ -450,6 +476,29 @@ class Digest(CustomHeader):
         super().__init__("", **args)
 
 
+class Cookie(CustomHeader):
+    """The Cookie HTTP request header contains stored HTTP cookies previously sent by
+    the server with the Set-Cookie header."""
+
+    __tags__ = ["request"]
+
+    def __init__(self, **kwargs: Optional[str]):
+        """
+        :param kwargs: Pair of cookie name associated with a value.
+        """
+        super().__init__("", **kwargs)
+
+    def get_cookies_names(self) -> List[str]:
+        """Retrieve all defined cookie names from Cookie header."""
+        return self.attrs
+
+    def get_cookie_value(
+        self, cookie_name: str, __default: Optional[str] = None
+    ) -> Optional[str]:
+        """Retrieve associated value with a given cookie name."""
+        return str(self[cookie_name]) if cookie_name in self else __default
+
+
 class SetCookie(CustomHeader):
     """
     The Set-Cookie HTTP response header is used to send cookies from the server to the user agent,
@@ -516,6 +565,34 @@ class SetCookie(CustomHeader):
             self += "Secure"  # type: ignore
         if is_httponly:
             self += "HttpOnly"  # type: ignore
+
+    def is_http_only(self) -> bool:
+        """Determine if the cookie can only be accessed by the browser."""
+        return "HttpOnly" in self
+
+    def is_secure(self) -> bool:
+        """Determine if the cookie is TLS/SSL only."""
+        return "Secure" in self
+
+    def get_expire(self) -> Optional[datetime]:
+        """Retrieve the parsed expiration date."""
+        return (
+            utils.parsedate_to_datetime(str(self["expires"]))
+            if self.has("expires")
+            else None
+        )
+
+    def get_max_age(self) -> Optional[int]:
+        """Getting the max-age value as an integer if set."""
+        return int(str(self["max-age"])) if "max-age" in self else None
+
+    def get_cookie_name(self) -> str:
+        """Extract the cookie name."""
+        return self.attrs[0]
+
+    def get_cookie_value(self) -> str:
+        """Extract the cookie value."""
+        return str(self[self.get_cookie_name()])
 
 
 class StrictTransportSecurity(CustomHeader):
@@ -942,21 +1019,30 @@ class WwwAuthenticate(CustomHeader):
     """
     The HTTP WWW-Authenticate response header defines the authentication
     method that should be used to gain access to a resource.
+    Fair-Warning : This header is like none other and is harder to parse. It need a specific case.
     """
 
     __tags__: List[str] = ["response"]
+    __squash__ = True
 
     def __init__(
         self,
-        auth_type: str,
-        realm: str,
-        charset: Optional[str] = None,
+        auth_type: Optional[str] = None,
+        challenge: str = "realm",
+        value: str = "Secured area",
         **kwargs: Optional[str],
     ):
-        args: Dict = {"realm": realm, charset: charset.upper() if charset else None}
-        args.update(kwargs)
-
-        super().__init__(auth_type)
+        """
+        >>> www_authenticate = WwwAuthenticate("Basic", "realm", "Secured area")
+        >>> repr(www_authenticate)
+        'Www-Authenticate: Basic realm="Secured area"'
+        >>> headers = www_authenticate + WwwAuthenticate(challenge="charset", value="UTF-8")
+        >>> repr(headers)
+        'Www-Authenticate: Basic realm="Secured area", charset="UTF-8"'
+        """
+        super().__init__(
+            f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs
+        )
 
 
 class XDnsPrefetchControl(CustomHeader):

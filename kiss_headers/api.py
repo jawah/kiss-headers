@@ -1,18 +1,22 @@
 from email.message import Message
 from email.parser import HeaderParser
 from io import RawIOBase
-from typing import Any, Iterable, List, Mapping, Optional, Tuple
+from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
 from kiss_headers.models import Header, Headers
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
+    class_to_header_name,
     decode_partials,
     extract_class_name,
     extract_encoded_headers,
     header_content_split,
     header_name_to_class,
     is_legal_header_name,
+    normalize_str,
 )
+
+T = TypeVar("T")
 
 
 def parse_it(raw_headers: Any) -> Headers:
@@ -79,8 +83,8 @@ def parse_it(raw_headers: Any) -> Headers:
 
         entries: List[str] = header_content_split(content, ",")
 
-        # Multiple entries are detected in one content
-        if len(entries) > 1:
+        # Multiple entries are detected in one content at the only exception that its not IMAP header "Subject".
+        if len(entries) > 1 and normalize_str(head) != "subject":
             for entry in entries:
                 list_of_headers.append(Header(head, entry))
         else:
@@ -117,3 +121,50 @@ def explain(headers: Headers) -> CaseInsensitiveDict:
         )
 
     return explanations
+
+
+def get_polymorphic(
+    target: Union[Headers, Header], desired_output: Type[T]
+) -> Union[T, List[T], None]:
+    """Experimental. Transform an Header or Headers object to its target `CustomHeader` subclass
+    in order to access more ready-to-use methods. eg. You have an Header object named 'Set-Cookie' and you wish
+    to extract the expiration date as a datetime.
+    >>> header = Header("Set-Cookie", "1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT")
+    >>> header["expires"]
+    'Wed, 15-Apr-2020 21:27:31 GMT'
+    >>> from kiss_headers import SetCookie
+    >>> set_cookie = get_polymorphic(header, SetCookie)
+    >>> set_cookie.get_expire()
+    datetime.datetime(2020, 4, 15, 21, 27, 31, tzinfo=datetime.timezone.utc)
+    """
+
+    if not issubclass(desired_output, Header):
+        raise TypeError(
+            f"The desired output should be a subclass of Header not {desired_output}."
+        )
+
+    desired_output_header_name: str = class_to_header_name(desired_output)
+
+    if isinstance(target, Headers):
+        r = target.get(desired_output_header_name)
+
+        if r is None:
+            return None
+
+    elif isinstance(target, Header):
+        if header_name_to_class(target.name, Header) != desired_output:
+            raise TypeError(
+                f"The target class does not match the desired output class. {target.__class__} != {desired_output}."
+            )
+        r = target
+    else:
+        raise TypeError(f"Unable to apply get_polymorphic on type {target.__class__}.")
+
+    # Change __class__ attribute.
+    if not isinstance(r, list):
+        r.__class__ = desired_output
+    else:
+        for header in r:
+            header.__class__ = desired_output
+
+    return r  # type: ignore

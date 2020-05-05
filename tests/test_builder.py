@@ -1,19 +1,18 @@
 import unittest
-from datetime import datetime
-from datetime import timezone
+from datetime import datetime, timezone
 from email import utils
 
 from kiss_headers import (
-    CustomHeader,
-    ContentType,
-    SetCookie,
-    ContentLength,
-    ContentDisposition,
-    CrossOriginResourcePolicy,
-    ReferrerPolicy,
-    From,
     Allow,
+    ContentDisposition,
+    ContentLength,
+    ContentType,
+    CrossOriginResourcePolicy,
+    CustomHeader,
     Date,
+    From,
+    ReferrerPolicy,
+    SetCookie,
 )
 
 
