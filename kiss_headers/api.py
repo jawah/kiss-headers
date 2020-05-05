@@ -148,9 +148,7 @@ def get_polymorphic(
             )
         r = target
     else:
-        raise TypeError(
-            f"Unable to apply get_polymorphic on type {target.__class__}."
-        )
+        raise TypeError(f"Unable to apply get_polymorphic on type {target.__class__}.")
 
     # Change __class__ attribute.
     if not isinstance(r, list):

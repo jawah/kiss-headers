@@ -492,7 +492,9 @@ class Cookie(CustomHeader):
         """Retrieve all defined cookie names from Cookie header."""
         return self.attrs
 
-    def get_cookie_value(self, cookie_name: str, __default: Optional[str] = None) -> Optional[str]:
+    def get_cookie_value(
+        self, cookie_name: str, __default: Optional[str] = None
+    ) -> Optional[str]:
         """Retrieve associated value with a given cookie name."""
         return str(self[cookie_name]) if cookie_name in self else __default
 
@@ -1038,7 +1040,9 @@ class WwwAuthenticate(CustomHeader):
         >>> repr(headers)
         'Www-Authenticate: Basic realm="Secured area", charset="UTF-8"'
         """
-        super().__init__(f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs)
+        super().__init__(
+            f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs
+        )
 
 
 class XDnsPrefetchControl(CustomHeader):

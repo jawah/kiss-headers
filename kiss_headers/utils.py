@@ -389,7 +389,11 @@ def unfold(content: str) -> str:
     >>> unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\\n         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s")
     'eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s'
     """
-    return content.replace("\n" + (9 * " "), "").replace("\n" + (7 * " "), " ").replace("\n" + (1 * " "), " ")
+    return (
+        content.replace("\n" + (9 * " "), "")
+        .replace("\n" + (7 * " "), " ")
+        .replace("\n" + (1 * " "), " ")
+    )
 
 
 def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
@@ -405,11 +409,11 @@ def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
 
     for line, index in zip(lines, range(0, len(lines))):
         if line == b"":
-            return result, b"\r\n".join(lines[index+1:])
+            return result, b"\r\n".join(lines[index + 1 :])
 
         try:
             result += line.decode("utf-8") + "\r\n"
         except UnicodeDecodeError:
             break
 
-    return result, b"\r\n".join(lines[index+1:])
+    return result, b"\r\n".join(lines[index + 1 :])
