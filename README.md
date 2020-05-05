@@ -104,7 +104,25 @@ headers.set_cookie[0]._1p_jar # output: 2020-03-16-21
 headers.set_cookie[0]["1P_JAR"] # output: 2020-03-16-21
 ```
 
-If this behaviour does bother you, you can lock output to always be a list. Just call `lock_output_type()` method.
+Since v2.1 you can transform an Header object to its target `CustomHeader` subclass in order to access more methods.
+
+```python
+from kiss_headers import parse_it, get_polymorphic, SetCookie
+
+my_cookies = """set-cookie: 1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT; path=/; domain=.google.fr; Secure; SameSite=none
+set-cookie: CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; domain=.google.fr"""
+
+headers = parse_it(my_cookies)
+
+type(headers.set_cookie[0])  # output: Header
+
+set_cookie = get_polymorphic(headers.set_cookie[0], SetCookie)
+
+type(set_cookie)  # output: SetCookie
+
+set_cookie.get_cookie_name()  # output: 1P_JAR
+set_cookie.get_expire()  # output: datetime(...)
+```
 
 Just a note: Accessing a header that has the same name as a reserved keyword must be done this way :
 ```python
