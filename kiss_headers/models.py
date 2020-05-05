@@ -438,6 +438,11 @@ class Header(object):
         """
         return list(self._valued_attrs.keys()) + self._not_valued_attrs
 
+    def keys(self) -> List[str]:
+        """Return a list of attribute name that have a value. Like "hello; attr=value; attr_b=value".
+        Should return you ["attr", "attr_b"]."""
+        return list(self._valued_attrs.keys())
+
     def has(self, attr: str) -> bool:
         """
         Safely check is current header has an attribute or adjective in it.
