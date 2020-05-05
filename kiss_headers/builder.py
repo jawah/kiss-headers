@@ -1017,21 +1017,28 @@ class WwwAuthenticate(CustomHeader):
     """
     The HTTP WWW-Authenticate response header defines the authentication
     method that should be used to gain access to a resource.
+    Fair-Warning : This header is like none other and is harder to parse. It need a specific case.
     """
 
     __tags__: List[str] = ["response"]
+    __squash__ = True
 
     def __init__(
         self,
-        auth_type: str,
-        realm: str,
-        charset: Optional[str] = None,
+        auth_type: Optional[str] = None,
+        challenge: str = "realm",
+        value: str = "Secured area",
         **kwargs: Optional[str],
     ):
-        args: Dict = {"realm": realm, charset: charset.upper() if charset else None}
-        args.update(kwargs)
-
-        super().__init__(auth_type)
+        """
+        >>> www_authenticate = WwwAuthenticate("Basic", "realm", "Secured area")
+        >>> repr(www_authenticate)
+        'Www-Authenticate: Basic realm="Secured area"'
+        >>> headers = www_authenticate + WwwAuthenticate(challenge="charset", value="UTF-8")
+        >>> repr(headers)
+        'Www-Authenticate: Basic realm="Secured area", charset="UTF-8"'
+        """
+        super().__init__(f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs)
 
 
 class XDnsPrefetchControl(CustomHeader):
