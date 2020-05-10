@@ -2,7 +2,7 @@ from base64 import b64encode, b64decode
 from datetime import datetime, timezone
 from email import utils
 from re import fullmatch
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, Tuple
 from urllib.parse import quote as url_quote
 
 from kiss_headers.models import Header
@@ -649,6 +649,18 @@ class StrictTransportSecurity(CustomHeader):
 
         if is_preload:
             self += "preload"  # type: ignore
+
+    def does_includesubdomains(self) -> bool:
+        """Verify if this rule applies to all of the site's subdomains."""
+        return "includeSubDomains" in self
+
+    def should_preload(self) -> bool:
+        """Verify if Preloading Strict Transport Security should be set."""
+        return "preload" in self
+
+    def get_max_age(self) -> Optional[int]:
+        """Get the time, in seconds, if set, that the browser should remember."""
+        return self["max-age"] if self.has("max-age") else None
 
 
 class UpgradeInsecureRequests(CustomHeader):
