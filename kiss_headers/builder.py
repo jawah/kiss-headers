@@ -1,4 +1,4 @@
-from base64 import b64encode
+from base64 import b64encode, b64decode
 from datetime import datetime, timezone
 from email import utils
 from re import fullmatch
@@ -275,6 +275,14 @@ class Authorization(CustomHeader):
             **kwargs,
         )
 
+    def get_auth_type(self) -> str:
+        """Return the auth type used in Authorization."""
+        return self.content.split(" ", maxsplit=1)[0]
+
+    def get_credentials(self) -> str:
+        """Output the credentials."""
+        return self.content.split(" ", maxsplit=1)[1]
+
 
 class BasicAuthorization(Authorization):
     """
@@ -306,6 +314,17 @@ class BasicAuthorization(Authorization):
         ).decode("ascii")
 
         super().__init__("Basic", b64_auth_content, **kwargs)
+
+    def get_credentials(self, __default_charset: str = "latin1") -> str:
+        """Decode base64 encoded credentials from Authorization header."""
+        if self.get_auth_type().lower() != "basic":
+            raise ValueError()
+
+        return b64decode(self.get_credentials()).decode(__default_charset)
+
+    def get_username_password(self, __default_charset: str = "latin1") -> Tuple[str, ...]:
+        """Extract username and password as a tuple from Basic Authorization."""
+        return tuple(self.get_credentials(__default_charset).split(":", maxsplit=1))
 
 
 class ProxyAuthorization(Authorization):
