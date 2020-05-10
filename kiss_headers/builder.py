@@ -805,6 +805,26 @@ class AltSvc(CustomHeader):
 
         super().__init__(**args)
 
+    def get_protocol_id(self) -> str:
+        """Get the ALPN protocol identifier."""
+        return self.attrs[0]
+
+    def get_alt_authority(self) -> str:
+        """Extract the alternative authority which consists of an optional host override, a colon, and a mandatory port number."""
+        return str(self[self.get_protocol_id()])
+
+    def get_max_age(self) -> Optional[int]:
+        """Output the number of seconds for which the alternative service is considered fresh. None if undefined."""
+        return int(str(self["ma"])) if "ma" in self else None
+
+    def get_versions(self) -> Optional[List[str]]:
+        """May return, if available, a list of versions of the ALPN protocol identifier."""
+        return str(self["v"]).split(",") if "v" in self else None
+
+    def should_persist(self) -> Optional[bool]:
+        """Verify if the entry should not be deleted through network configuration changes. None if no indication."""
+        return str(self["persist"]) == "1" if "persist" in self else None
+
 
 class Forwarded(CustomHeader):
     """
