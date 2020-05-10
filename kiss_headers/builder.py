@@ -298,6 +298,9 @@ class BasicAuthorization(Authorization):
         >>> header
         Authorization: Basic YXplcnR5OnF3ZXJ0eQ==
         """
+        if ":" in username:
+            raise ValueError("The username cannot contain a single colon in it.")
+
         b64_auth_content: str = b64encode(
             (username + ":" + password).encode(charset)
         ).decode("ascii")
