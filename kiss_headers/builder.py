@@ -1,8 +1,8 @@
-from base64 import b64encode, b64decode
+from base64 import b64decode, b64encode
 from datetime import datetime, timezone
 from email import utils
 from re import fullmatch
-from typing import Dict, List, Optional, Union, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import quote as url_quote
 
 from kiss_headers.models import Header
@@ -322,7 +322,9 @@ class BasicAuthorization(Authorization):
 
         return b64decode(self.get_credentials()).decode(__default_charset)
 
-    def get_username_password(self, __default_charset: str = "latin1") -> Tuple[str, ...]:
+    def get_username_password(
+        self, __default_charset: str = "latin1"
+    ) -> Tuple[str, ...]:
         """Extract username and password as a tuple from Basic Authorization."""
         return tuple(self.get_credentials(__default_charset).split(":", maxsplit=1))
 
@@ -660,7 +662,7 @@ class StrictTransportSecurity(CustomHeader):
 
     def get_max_age(self) -> Optional[int]:
         """Get the time, in seconds, if set, that the browser should remember."""
-        return self["max-age"] if self.has("max-age") else None
+        return int(str(self["max-age"])) if self.has("max-age") else None
 
 
 class UpgradeInsecureRequests(CustomHeader):
