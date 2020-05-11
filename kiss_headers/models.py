@@ -427,7 +427,7 @@ class Header(object):
         Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other word, more precise auto-completion when not using IDE.
         """
-        return list(super().__dir__()) + list(self._valued_attrs.keys())
+        return list(super().__dir__()) + [normalize_str(key) for key in self._valued_attrs.keys()]
 
     @property
     def attrs(self) -> List[str]:
