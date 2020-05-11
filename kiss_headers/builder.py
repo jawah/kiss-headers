@@ -392,9 +392,11 @@ class BasicAuthorization(Authorization):
     def get_credentials(self, __default_charset: str = "latin1") -> str:
         """Decode base64 encoded credentials from Authorization header."""
         if self.get_auth_type().lower() != "basic":
-            raise ValueError()
+            raise ValueError(
+                f"Only Authorization using Basic method is supported by BasicAuthorization. Given '{self.get_auth_type()}'."
+            )
 
-        return b64decode(self.get_credentials()).decode(__default_charset)
+        return b64decode(super().get_credentials()).decode(__default_charset)
 
     def get_username_password(
         self, __default_charset: str = "latin1"
