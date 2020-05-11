@@ -1177,9 +1177,35 @@ class WwwAuthenticate(CustomHeader):
         >>> headers = www_authenticate + WwwAuthenticate(challenge="charset", value="UTF-8")
         >>> repr(headers)
         'Www-Authenticate: Basic realm="Secured area", charset="UTF-8"'
+        >>> www_authenticate.get_challenge()
+        ('realm', 'Secured area')
+        >>> www_authenticate.get_auth_type()
+        'Basic'
         """
         super().__init__(
             f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs
+        )
+
+    def get_auth_type(self) -> Optional[str]:
+        """Retrieve given authentication method if defined."""
+        parts: List[str] = header_content_split(str(self), " ")
+
+        if len(parts) >= 1 and "=" not in parts:
+            return parts[0]
+
+        return None
+
+    def get_challenge(self) -> Tuple[str, str]:
+        """Output a tuple containing the challenge and the associated value. Raises :ValueError:"""
+        parts: List[str] = header_content_split(str(self), " ")
+
+        for part in parts:
+            if "=" in part:
+                challenge, value = tuple(part.split("=", maxsplit=1))
+                return challenge, unquote(value)
+
+        raise ValueError(
+            f"WwwAuthenticate header does not seems to contain a valid content. No challenge detected."
         )
 
 
