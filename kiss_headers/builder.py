@@ -208,6 +208,10 @@ class ContentType(CustomHeader):
         >>> header = ContentType("text/html", charset="utf-8")
         >>> repr(header)
         'Content-Type: text/html; charset="UTF-8"'
+        >>> header.get_charset()
+        'UTF-8'
+        >>> header.get_mime()
+        'text/html'
         """
 
         if len(mime.split("/")) != 2:
@@ -381,10 +385,13 @@ class BasicAuthorization(Authorization):
         """
         :param username:
         :param password:
+        :param charset: By default, credentials are encoded using latin1 charset. You may want to choose otherwise.
         :param kwargs:
         >>> header = BasicAuthorization("azerty", "qwerty")
         >>> header
         Authorization: Basic YXplcnR5OnF3ZXJ0eQ==
+        >>> header.get_username_password()
+        ('azerty', 'qwerty')
         """
         if ":" in username:
             raise ValueError("The username cannot contain a single colon in it.")
