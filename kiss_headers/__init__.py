@@ -51,6 +51,7 @@ from kiss_headers.builder import (
     ContentEncoding,
     ContentLength,
     ContentRange,
+    ContentSecurityPolicy,
     ContentType,
     CrossOriginResourcePolicy,
     CustomHeader,
