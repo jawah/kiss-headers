@@ -1,12 +1,18 @@
-from base64 import b64encode
+from base64 import b64decode, b64encode
 from datetime import datetime, timezone
 from email import utils
-from re import fullmatch
-from typing import Dict, List, Optional, Union
+from re import findall, fullmatch
+from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import quote as url_quote
 
 from kiss_headers.models import Header
-from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
+from kiss_headers.utils import (
+    class_to_header_name,
+    header_content_split,
+    prettify_header_name,
+    quote,
+    unquote,
+)
 
 
 """
@@ -52,6 +58,80 @@ class CustomHeader(Header):
             self[attribute] = value
 
 
+class ContentSecurityPolicy(CustomHeader):
+    """
+    Content-Security-Policy is the name of a HTTP response header
+    that modern browsers use to enhance the security of the document (or web page).
+    The Content-Security-Policy header allows you to restrict how resources such as
+    JavaScript, CSS, or pretty much anything that the browser loads.
+    """
+
+    __tags__ = ["response"]
+
+    def __init__(self, *policies: List[str]):
+        """
+        :param policies: One policy consist of a list of str like ["default-src", "'none'"].
+        >>> header = ContentSecurityPolicy(["default-src", "'none'"], ["img-src", "'self'", "img.example.com"])
+        >>> repr(header)
+        "Content-Security-Policy: default-src 'none'; img-src 'self' img.example.com"
+        >>> header.get_policies_names()
+        ['default-src', 'img-src']
+        >>> header.get_policy_args("img-src")
+        ["'self'", 'img.example.com']
+        """
+        super().__init__("")
+
+        for policy in policies:
+            if len(policy) == 0 or policy[0] not in {
+                "default-src",
+                "script-src",
+                "style-src",
+                "img-src",
+                "connect-src",
+                "font-src",
+                "object-src",
+                "media-src",
+                "frame-src",
+                "sandbox",
+                "report-uri",
+                "child-src",
+                "form-action",
+                "frame-ancestors",
+                "plugin-types",
+                "base-uri",
+                "report-to",
+                "worker-src",
+                "manifest-src",
+                "prefetch-src",
+                "navigate-to",
+            }:
+                raise ValueError(
+                    f"Policy {policy[0]} is not a valid one. See https://content-security-policy.com/ for instructions."
+                )
+            elif len(policy) == 1:
+                raise ValueError(
+                    f"Policy {policy[0]} need at least one argument to proceed."
+                )
+
+            self += " ".join(policy)  # type: ignore
+
+    def get_policies_names(self) -> List[str]:
+        """Fetch a list of policy name set in content."""
+        return [member.split(" ")[0] for member in self.attrs]
+
+    def get_policy_args(self, policy_name: str) -> Optional[List[str]]:
+        """Retrieve given arguments for a policy."""
+        policy_name = policy_name.lower()
+
+        for member in self.attrs:
+            parts: List[str] = member.split(" ")
+
+            if parts[0].lower() == policy_name:
+                return parts[1:]
+
+        return None
+
+
 class Accept(CustomHeader):
     """
     The Accept request HTTP header advertises which content types, expressed as MIME types,
@@ -95,7 +175,7 @@ class Accept(CustomHeader):
                 return el
         return None
 
-    def get_qualifier(self, _default: float = 1.0) -> Optional[float]:
+    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
         """Return defined qualifier for specified mime. If not set, output 1.0."""
         return float(str(self["q"])) if self.has("q") else _default
 
@@ -128,6 +208,10 @@ class ContentType(CustomHeader):
         >>> header = ContentType("text/html", charset="utf-8")
         >>> repr(header)
         'Content-Type: text/html; charset="UTF-8"'
+        >>> header.get_charset()
+        'UTF-8'
+        >>> header.get_mime()
+        'text/html'
         """
 
         if len(mime.split("/")) != 2:
@@ -275,6 +359,14 @@ class Authorization(CustomHeader):
             **kwargs,
         )
 
+    def get_auth_type(self) -> str:
+        """Return the auth type used in Authorization."""
+        return self.content.split(" ", maxsplit=1)[0]
+
+    def get_credentials(self) -> str:
+        """Output the credentials."""
+        return self.content.split(" ", maxsplit=1)[1]
+
 
 class BasicAuthorization(Authorization):
     """
@@ -293,16 +385,37 @@ class BasicAuthorization(Authorization):
         """
         :param username:
         :param password:
+        :param charset: By default, credentials are encoded using latin1 charset. You may want to choose otherwise.
         :param kwargs:
         >>> header = BasicAuthorization("azerty", "qwerty")
         >>> header
         Authorization: Basic YXplcnR5OnF3ZXJ0eQ==
+        >>> header.get_username_password()
+        ('azerty', 'qwerty')
         """
+        if ":" in username:
+            raise ValueError("The username cannot contain a single colon in it.")
+
         b64_auth_content: str = b64encode(
             (username + ":" + password).encode(charset)
         ).decode("ascii")
 
         super().__init__("Basic", b64_auth_content, **kwargs)
+
+    def get_credentials(self, __default_charset: str = "latin1") -> str:
+        """Decode base64 encoded credentials from Authorization header."""
+        if self.get_auth_type().lower() != "basic":
+            raise ValueError(
+                f"Only Authorization using Basic method is supported by BasicAuthorization. Given '{self.get_auth_type()}'."
+            )
+
+        return b64decode(super().get_credentials()).decode(__default_charset)
+
+    def get_username_password(
+        self, __default_charset: str = "latin1"
+    ) -> Tuple[str, ...]:
+        """Extract username and password as a tuple from Basic Authorization."""
+        return tuple(self.get_credentials(__default_charset).split(":", maxsplit=1))
 
 
 class ProxyAuthorization(Authorization):
@@ -628,6 +741,18 @@ class StrictTransportSecurity(CustomHeader):
         if is_preload:
             self += "preload"  # type: ignore
 
+    def does_includesubdomains(self) -> bool:
+        """Verify if this rule applies to all of the site's subdomains."""
+        return "includeSubDomains" in self
+
+    def should_preload(self) -> bool:
+        """Verify if Preloading Strict Transport Security should be set."""
+        return "preload" in self
+
+    def get_max_age(self) -> Optional[int]:
+        """Get the time, in seconds, if set, that the browser should remember."""
+        return int(str(self["max-age"])) if self.has("max-age") else None
+
 
 class UpgradeInsecureRequests(CustomHeader):
     """
@@ -717,6 +842,10 @@ class AcceptEncoding(TransferEncoding):
 
         super().__init__(method, **args)
 
+    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+        """Return defined qualifier for specified encoding. If not set, output 1.0."""
+        return float(str(self["q"])) if self.has("q") else _default
+
 
 class Dnt(CustomHeader):
     """
@@ -782,6 +911,26 @@ class AltSvc(CustomHeader):
         args.update(kwargs)
 
         super().__init__(**args)
+
+    def get_protocol_id(self) -> str:
+        """Get the ALPN protocol identifier."""
+        return self.attrs[0]
+
+    def get_alt_authority(self) -> str:
+        """Extract the alternative authority which consists of an optional host override, a colon, and a mandatory port number."""
+        return str(self[self.get_protocol_id()])
+
+    def get_max_age(self) -> Optional[int]:
+        """Output the number of seconds for which the alternative service is considered fresh. None if undefined."""
+        return int(str(self["ma"])) if "ma" in self else None
+
+    def get_versions(self) -> Optional[List[str]]:
+        """May return, if available, a list of versions of the ALPN protocol identifier."""
+        return str(self["v"]).split(",") if "v" in self else None
+
+    def should_persist(self) -> Optional[bool]:
+        """Verify if the entry should not be deleted through network configuration changes. None if no indication."""
+        return str(self["persist"]) == "1" if "persist" in self else None
 
 
 class Forwarded(CustomHeader):
@@ -924,6 +1073,10 @@ class AcceptLanguage(CustomHeader):
             language, **args,
         )
 
+    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+        """Return defined qualifier for specified language. If not set, output 1.0."""
+        return float(str(self["q"])) if self.has("q") else _default
+
 
 class Etag(CustomHeader):
     """
@@ -1039,9 +1192,35 @@ class WwwAuthenticate(CustomHeader):
         >>> headers = www_authenticate + WwwAuthenticate(challenge="charset", value="UTF-8")
         >>> repr(headers)
         'Www-Authenticate: Basic realm="Secured area", charset="UTF-8"'
+        >>> www_authenticate.get_challenge()
+        ('realm', 'Secured area')
+        >>> www_authenticate.get_auth_type()
+        'Basic'
         """
         super().__init__(
             f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs
+        )
+
+    def get_auth_type(self) -> Optional[str]:
+        """Retrieve given authentication method if defined."""
+        parts: List[str] = header_content_split(str(self), " ")
+
+        if len(parts) >= 1 and "=" not in parts:
+            return parts[0]
+
+        return None
+
+    def get_challenge(self) -> Tuple[str, str]:
+        """Output a tuple containing the challenge and the associated value. Raises :ValueError:"""
+        parts: List[str] = header_content_split(str(self), " ")
+
+        for part in parts:
+            if "=" in part:
+                challenge, value = tuple(part.split("=", maxsplit=1))
+                return challenge, unquote(value)
+
+        raise ValueError(
+            f"WwwAuthenticate header does not seems to contain a valid content. No challenge detected."
         )
 
 
@@ -1109,16 +1288,52 @@ class ContentRange(CustomHeader):
     __tags__ = ["response"]
 
     def __init__(
-        self, unit: str, start: int, end: int, size: int, **kwargs: Optional[str]
+        self,
+        unit: str,
+        start: int,
+        end: int,
+        size: Union[str, int],
+        **kwargs: Optional[str],
     ):
         """
-        :param unit: The unit in which ranges are specified. This is usually bytes.
+        :param unit: The unit in which ranges is specified. This is usually bytes.
         :param start: An integer in the given unit indicating the beginning of the request range.
         :param end: An integer in the given unit indicating the end of the requested range.
         :param size: The total size of the document (or '*' if unknown).
         :param kwargs:
+        >>> header = ContentRange("bytes", 0, 1024, 4096)
+        >>> repr(header)
+        'Content-Range: bytes 0-1024/4096'
+        >>> header.get_size()
+        4096
+        >>> header.unpack()
+        ('bytes', '0', '1024', '4096')
         """
         super().__init__(f"{unit} {start}-{end}/{size}", **kwargs)
+
+    def unpack(self) -> Tuple[str, str, str, str]:
+        """Provide a basic way to parse ContentRange format."""
+        return findall(
+            r"^([0-9a-zA-Z*]+) ([0-9a-zA-Z*]+)-([0-9a-zA-Z*]+)/([0-9a-zA-Z*]+)$",
+            str(self),
+        )[0]
+
+    def get_unit(self) -> str:
+        """Retrieve the unit in which ranges is specified."""
+        return self.unpack()[0]
+
+    def get_start(self) -> int:
+        """Get the beginning of the request range."""
+        return int(self.unpack()[1])
+
+    def get_end(self) -> int:
+        """Get the end of the requested range."""
+        return int(self.unpack()[2])
+
+    def get_size(self) -> Union[str, int]:
+        """Get the total size of the document (or '*' if unknown)."""
+        size: str = self.unpack()[3]
+        return int(size) if size.isdigit() else size
 
 
 class CacheControl(CustomHeader):

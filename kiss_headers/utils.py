@@ -148,12 +148,17 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
 def class_to_header_name(type_: Type) -> str:
     """
     Take a type and infer its header name.
-    >>> from kiss_headers.builder import ContentType, XContentTypeOptions
+    >>> from kiss_headers.builder import ContentType, XContentTypeOptions, BasicAuthorization
     >>> class_to_header_name(ContentType)
     'Content-Type'
     >>> class_to_header_name(XContentTypeOptions)
     'X-Content-Type-Options'
+    >>> class_to_header_name(BasicAuthorization)
+    'Authorization'
     """
+    if hasattr(type_, "__override__") and type_.__override__ is not None:
+        return type_.__override__
+
     class_raw_name: str = str(type_).split("'")[-2].split(".")[-1]
 
     if class_raw_name.endswith("_"):
