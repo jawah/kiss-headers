@@ -1,12 +1,18 @@
 from base64 import b64decode, b64encode
 from datetime import datetime, timezone
 from email import utils
-from re import fullmatch
+from re import fullmatch, findall
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import quote as url_quote
 
 from kiss_headers.models import Header
-from kiss_headers.utils import class_to_header_name, prettify_header_name, quote
+from kiss_headers.utils import (
+    class_to_header_name,
+    header_content_split,
+    prettify_header_name,
+    quote,
+    unquote,
+)
 
 
 """
