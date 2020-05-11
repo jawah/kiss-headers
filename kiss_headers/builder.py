@@ -52,6 +52,80 @@ class CustomHeader(Header):
             self[attribute] = value
 
 
+class ContentSecurityPolicy(CustomHeader):
+    """
+    Content-Security-Policy is the name of a HTTP response header
+    that modern browsers use to enhance the security of the document (or web page).
+    The Content-Security-Policy header allows you to restrict how resources such as
+    JavaScript, CSS, or pretty much anything that the browser loads.
+    """
+
+    __tags__ = ["response"]
+
+    def __init__(self, *policies: List[str]):
+        """
+        :param policies: One policy consist of a list of str like ["default-src", "'none'"].
+        >>> header = ContentSecurityPolicy(["default-src", "'none'"], ["img-src", "'self'", "img.example.com"])
+        >>> repr(header)
+        "Content-Security-Policy: default-src 'none'; img-src 'self' img.example.com"
+        >>> header.get_policies_names()
+        ['default-src', 'img-src']
+        >>> header.get_policy_args("img-src")
+        ["'self'", 'img.example.com']
+        """
+        super().__init__("")
+
+        for policy in policies:
+            if len(policy) == 0 or policy[0] not in {
+                "default-src",
+                "script-src",
+                "style-src",
+                "img-src",
+                "connect-src",
+                "font-src",
+                "object-src",
+                "media-src",
+                "frame-src",
+                "sandbox",
+                "report-uri",
+                "child-src",
+                "form-action",
+                "frame-ancestors",
+                "plugin-types",
+                "base-uri",
+                "report-to",
+                "worker-src",
+                "manifest-src",
+                "prefetch-src",
+                "navigate-to",
+            }:
+                raise ValueError(
+                    f"Policy {policy[0]} is not a valid one. See https://content-security-policy.com/ for instructions."
+                )
+            elif len(policy) == 1:
+                raise ValueError(
+                    f"Policy {policy[0]} need at least one argument to proceed."
+                )
+
+            self += " ".join(policy)  # type: ignore
+
+    def get_policies_names(self) -> List[str]:
+        """Fetch a list of policy name set in content."""
+        return [member.split(" ")[0] for member in self.attrs]
+
+    def get_policy_args(self, policy_name: str) -> Optional[List[str]]:
+        """Retrieve given arguments for a policy."""
+        policy_name = policy_name.lower()
+
+        for member in self.attrs:
+            parts: List[str] = member.split(" ")
+
+            if parts[0].lower() == policy_name:
+                return parts[1:]
+
+        return None
+
+
 class Accept(CustomHeader):
     """
     The Accept request HTTP header advertises which content types, expressed as MIME types,
