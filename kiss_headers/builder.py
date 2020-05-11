@@ -169,7 +169,7 @@ class Accept(CustomHeader):
                 return el
         return None
 
-    def get_qualifier(self, _default: float = 1.0) -> Optional[float]:
+    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
         """Return defined qualifier for specified mime. If not set, output 1.0."""
         return float(str(self["q"])) if self.has("q") else _default
 
@@ -827,6 +827,10 @@ class AcceptEncoding(TransferEncoding):
 
         super().__init__(method, **args)
 
+    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+        """Return defined qualifier for specified encoding. If not set, output 1.0."""
+        return float(str(self["q"])) if self.has("q") else _default
+
 
 class Dnt(CustomHeader):
     """
@@ -1053,6 +1057,10 @@ class AcceptLanguage(CustomHeader):
         super().__init__(
             language, **args,
         )
+
+    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+        """Return defined qualifier for specified language. If not set, output 1.0."""
+        return float(str(self["q"])) if self.has("q") else _default
 
 
 class Etag(CustomHeader):
