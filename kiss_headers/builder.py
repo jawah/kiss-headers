@@ -1,7 +1,7 @@
 from base64 import b64decode, b64encode
 from datetime import datetime, timezone
 from email import utils
-from re import fullmatch, findall
+from re import findall, fullmatch
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import quote as url_quote
 
