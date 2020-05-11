@@ -1275,16 +1275,52 @@ class ContentRange(CustomHeader):
     __tags__ = ["response"]
 
     def __init__(
-        self, unit: str, start: int, end: int, size: int, **kwargs: Optional[str]
+        self,
+        unit: str,
+        start: int,
+        end: int,
+        size: Union[str, int],
+        **kwargs: Optional[str],
     ):
         """
-        :param unit: The unit in which ranges are specified. This is usually bytes.
+        :param unit: The unit in which ranges is specified. This is usually bytes.
         :param start: An integer in the given unit indicating the beginning of the request range.
         :param end: An integer in the given unit indicating the end of the requested range.
         :param size: The total size of the document (or '*' if unknown).
         :param kwargs:
+        >>> header = ContentRange("bytes", 0, 1024, 4096)
+        >>> repr(header)
+        'Content-Range: bytes 0-1024/4096'
+        >>> header.get_size()
+        4096
+        >>> header.unpack()
+        ('bytes', '0', '1024', '4096')
         """
         super().__init__(f"{unit} {start}-{end}/{size}", **kwargs)
+
+    def unpack(self) -> Tuple[str, str, str, str]:
+        """Provide a basic way to parse ContentRange format."""
+        return findall(
+            r"^([0-9a-zA-Z*]+) ([0-9a-zA-Z*]+)-([0-9a-zA-Z*]+)/([0-9a-zA-Z*]+)$",
+            str(self),
+        )[0]
+
+    def get_unit(self) -> str:
+        """Retrieve the unit in which ranges is specified."""
+        return self.unpack()[0]
+
+    def get_start(self) -> int:
+        """Get the beginning of the request range."""
+        return int(self.unpack()[1])
+
+    def get_end(self) -> int:
+        """Get the end of the requested range."""
+        return int(self.unpack()[2])
+
+    def get_size(self) -> Union[str, int]:
+        """Get the total size of the document (or '*' if unknown)."""
+        size: str = self.unpack()[3]
+        return int(size) if size.isdigit() else size
 
 
 class CacheControl(CustomHeader):
