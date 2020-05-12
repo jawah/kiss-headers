@@ -36,11 +36,11 @@ No matter if you are currently building software using HTTP or IMAP _(message, e
 <img src="https://user-images.githubusercontent.com/9326700/77257881-55866300-6c77-11ea-820c-7550e6bdeee7.gif" alt="using kiss-headers from python interpreter"/>
 </p>
 
-I have seen so many chunks of code trying to deal with these headers; often I saw this implementation :
+I have seen so many chunks of code trying to deal with these headers; often I saw this implementation:
 ```python
 charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
-**No more of that !**
+**No more of that!**
 
 ## 🔪 Features
 
