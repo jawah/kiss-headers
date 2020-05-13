@@ -1,0 +1,1081 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
+      
+      
+        <link rel="canonical" href="https://kiss-headers.tech/APIs/others/">
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.1, mkdocs-material-5.1.6">
+    
+    
+      
+        <title>Utils - Kiss-Headers</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4b9ffd7b.min.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.b79bcd20.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#009688">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="teal" data-md-color-accent="deep-orange">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kiss_headers.utils" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://kiss-headers.tech/" title="Kiss-Headers" class="md-header-nav__button md-logo" aria-label="Kiss-Headers">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kiss-Headers
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Utils
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/Ousret/kiss-headers/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ousret/kiss-headers
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://kiss-headers.tech/" title="Kiss-Headers" class="md-nav__button md-logo" aria-label="Kiss-Headers">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Kiss-Headers
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/Ousret/kiss-headers/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ousret/kiss-headers
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../the-theory/" title="The Theory" class="md-nav__link">
+      The Theory
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Usages
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Usages" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Usages
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/" title="Quick Start" class="md-nav__link">
+      Quick Start
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
+    
+    <label class="md-nav__link" for="nav-3-2">
+      Advanced Tips
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Advanced Tips" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Advanced Tips
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced-headers/" title="Headers" class="md-nav__link">
+      Headers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced-header/" title="Header" class="md-nav__link">
+      Header
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../polymorphism/" title="Polymorphism" class="md-nav__link">
+      Polymorphism
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../the-builder/" title="The Builder" class="md-nav__link">
+      The Builder
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../explain-headers/" title="Explain Headers" class="md-nav__link">
+      Explain Headers
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../imap/" title="Email" class="md-nav__link">
+      Email
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      Developer Interface
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Developer Interface" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Developer Interface
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../functions/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../custom-headers/" title="Custom Headers" class="md-nav__link">
+      Custom Headers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Utils
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Utils" class="md-nav__link md-nav__link--active">
+      Utils
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.class_to_header_name" class="md-nav__link">
+    Function class_to_header_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.count_leftover_space" class="md-nav__link">
+    Function count_leftover_space
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.decode_partials" class="md-nav__link">
+    Function decode_partials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.extract_class_name" class="md-nav__link">
+    Function extract_class_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.extract_comments" class="md-nav__link">
+    Function extract_comments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.extract_encoded_headers" class="md-nav__link">
+    Function extract_encoded_headers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.header_content_split" class="md-nav__link">
+    Function header_content_split
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.header_name_to_class" class="md-nav__link">
+    Function header_name_to_class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.header_strip" class="md-nav__link">
+    Function header_strip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.is_legal_header_name" class="md-nav__link">
+    Function is_legal_header_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.normalize_str" class="md-nav__link">
+    Function normalize_str
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.prettify_header_name" class="md-nav__link">
+    Function prettify_header_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.quote" class="md-nav__link">
+    Function quote
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.unfold" class="md-nav__link">
+    Function unfold
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.unpack_protected_keyword" class="md-nav__link">
+    Function unpack_protected_keyword
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.unquote" class="md-nav__link">
+    Function unquote
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../contributing/" title="Contributing" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.class_to_header_name" class="md-nav__link">
+    Function class_to_header_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.count_leftover_space" class="md-nav__link">
+    Function count_leftover_space
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.decode_partials" class="md-nav__link">
+    Function decode_partials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.extract_class_name" class="md-nav__link">
+    Function extract_class_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.extract_comments" class="md-nav__link">
+    Function extract_comments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.extract_encoded_headers" class="md-nav__link">
+    Function extract_encoded_headers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.header_content_split" class="md-nav__link">
+    Function header_content_split
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.header_name_to_class" class="md-nav__link">
+    Function header_name_to_class
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.header_strip" class="md-nav__link">
+    Function header_strip
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.is_legal_header_name" class="md-nav__link">
+    Function is_legal_header_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.normalize_str" class="md-nav__link">
+    Function normalize_str
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.prettify_header_name" class="md-nav__link">
+    Function prettify_header_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.quote" class="md-nav__link">
+    Function quote
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.unfold" class="md-nav__link">
+    Function unfold
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.unpack_protected_keyword" class="md-nav__link">
+    Function unpack_protected_keyword
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.utils.unquote" class="md-nav__link">
+    Function unquote
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Ousret/kiss-headers/tree/master/docs/APIs/others.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="kiss_headers.utils">Module <code>kiss_headers.utils</code></h1>
+<h2 id="functions">Functions</h2>
+<h3 id="kiss_headers.utils.class_to_header_name">Function <code>class_to_header_name</code></h3>
+<blockquote>
+<p><code>def class_to_header_name(type_: Type) -&gt; str</code></p>
+</blockquote>
+<p>Take a type and infer its header name.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers.builder</span> <span class="kn">import</span> <span class="n">ContentType</span><span class="p">,</span> <span class="n">XContentTypeOptions</span><span class="p">,</span> <span class="n">BasicAuthorization</span>
+<span class="n">class_to_header_name</span><span class="p">(</span><span class="n">ContentType</span><span class="p">)</span>
+<span class="s1">&#39;Content-Type&#39;</span>
+<span class="n">class_to_header_name</span><span class="p">(</span><span class="n">XContentTypeOptions</span><span class="p">)</span>
+<span class="s1">&#39;X-Content-Type-Options&#39;</span>
+<span class="n">class_to_header_name</span><span class="p">(</span><span class="n">BasicAuthorization</span><span class="p">)</span>
+<span class="s1">&#39;Authorization&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.count_leftover_space">Function <code>count_leftover_space</code></h3>
+<blockquote>
+<p><code>def count_leftover_space(content: str) -&gt; int</code></p>
+</blockquote>
+<p>Recursive function that count trailing white space at the end of given string.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">count_leftover_space</span><span class="p">(</span><span class="s2">&quot;hello   &quot;</span><span class="p">)</span>
+<span class="mi">3</span>
+<span class="n">count_leftover_space</span><span class="p">(</span><span class="s2">&quot;byebye &quot;</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="n">count_leftover_space</span><span class="p">(</span><span class="s2">&quot;  hello &quot;</span><span class="p">)</span>
+<span class="mi">1</span>
+<span class="n">count_leftover_space</span><span class="p">(</span><span class="s2">&quot;  hello    &quot;</span><span class="p">)</span>
+<span class="mi">4</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.decode_partials">Function <code>decode_partials</code></h3>
+<blockquote>
+<p><code>def decode_partials(items: Iterable[Tuple[str, Any]]) -&gt; List[Tuple[str, str]]</code></p>
+</blockquote>
+<p>This function takes a list of tuple, representing headers by key, value. Where value is bytes or string containing
+(RFC 2047 encoded) partials fragments like the following :</p>
+<div class="codehilite"><pre><span></span><code><span class="n">decode_partials</span><span class="p">([(</span><span class="s2">&quot;Subject&quot;</span><span class="p">,</span> <span class="s2">&quot;=?iso-8859-1?q?p=F6stal?=&quot;</span><span class="p">)])</span>
+<span class="p">[(</span><span class="s1">&#39;Subject&#39;</span><span class="p">,</span> <span class="s1">&#39;pöstal&#39;</span><span class="p">)]</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.extract_class_name">Function <code>extract_class_name</code></h3>
+<blockquote>
+<p><code>def extract_class_name(type_: Type) -&gt; Union[str, NoneType]</code></p>
+</blockquote>
+<p>Typically extract a class name from a Type.</p>
+<h3 id="kiss_headers.utils.extract_comments">Function <code>extract_comments</code></h3>
+<blockquote>
+<p><code>def extract_comments(content: str) -&gt; List[str]</code></p>
+</blockquote>
+<p>Extract parts of content that are considered as comments. Between parenthesis.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">extract_comments</span><span class="p">(</span><span class="s2">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0 (hello) llll (abc)&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;Macintosh; Intel Mac OS X 10.9; rv:50.0&#39;</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;abc&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.extract_encoded_headers">Function <code>extract_encoded_headers</code></h3>
+<blockquote>
+<p><code>def extract_encoded_headers(payload: bytes) -&gt; Tuple[str, bytes]</code></p>
+</blockquote>
+<p>This function purpose is to extract lines that can be decoded using utf-8.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">extract_encoded_headers</span><span class="p">(</span><span class="s2">&quot;Host: developer.mozilla.org</span><span class="se">\r\n</span><span class="s2">X-Hello-World: 死の漢字</span><span class="se">\r\n\r\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="p">(</span><span class="s1">&#39;Host: developer.mozilla.org</span><span class="se">\r\n</span><span class="s1">X-Hello-World: 死の漢字</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="n">extract_encoded_headers</span><span class="p">(</span><span class="s2">&quot;Host: developer.mozilla.org</span><span class="se">\r\n</span><span class="s2">X-Hello-World: 死の漢字</span><span class="se">\r\n\r\n</span><span class="s2">That IS totally random.&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="p">(</span><span class="s1">&#39;Host: developer.mozilla.org</span><span class="se">\r\n</span><span class="s1">X-Hello-World: 死の漢字</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;That IS totally random.&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.header_content_split">Function <code>header_content_split</code></h3>
+<blockquote>
+<p><code>def header_content_split(string: str, delimiter: str) -&gt; List[str]</code></p>
+</blockquote>
+<p>Take a string and split it according to the passed delimiter.
+It will ignore delimiter if inside between double quote, inside a value or in parenthesis.
+The input string is considered perfectly formed. This function do not split coma on a day
+when attached, see &ldquo;RFC 7231, section 7.1.1.2: Date&rdquo;.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header_content_split</span><span class="p">(</span><span class="s2">&quot;Wed, 15-Apr-2020 21:27:31 GMT, Fri, 01-Jan-2038 00:00:00 GMT&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;Wed, 15-Apr-2020 21:27:31 GMT&#39;</span><span class="p">,</span> <span class="s1">&#39;Fri, 01-Jan-2038 00:00:00 GMT&#39;</span><span class="p">]</span>
+<span class="n">header_content_split</span><span class="p">(</span><span class="s1">&#39;quic=&quot;:443&quot;; ma=2592000; v=&quot;46,43&quot;, h3-Q050=&quot;:443&quot;; ma=2592000, h3-Q049=&quot;:443&quot;; ma=2592000&#39;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;quic=&quot;:443&quot;; ma=2592000; v=&quot;46,43&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;h3-Q050=&quot;:443&quot;; ma=2592000&#39;</span><span class="p">,</span> <span class="s1">&#39;h3-Q049=&quot;:443&quot;; ma=2592000&#39;</span><span class="p">]</span>
+<span class="n">header_content_split</span><span class="p">(</span><span class="s2">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0&quot;</span><span class="p">,</span> <span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0&#39;</span><span class="p">]</span>
+<span class="n">header_content_split</span><span class="p">(</span><span class="s2">&quot;text/html; charset=UTF-8&quot;</span><span class="p">,</span> <span class="s2">&quot;;&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s1">&#39;text/html&#39;</span><span class="p">,</span> <span class="s1">&#39;charset=UTF-8&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.header_name_to_class">Function <code>header_name_to_class</code></h3>
+<blockquote>
+<p><code>def header_name_to_class(name: str, root_type: Type) -&gt; Type</code></p>
+</blockquote>
+<p>The opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
+Do it recursively from the root type.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers.builder</span> <span class="kn">import</span> <span class="n">CustomHeader</span><span class="p">,</span> <span class="n">ContentType</span><span class="p">,</span> <span class="n">XContentTypeOptions</span><span class="p">,</span> <span class="n">LastModified</span><span class="p">,</span> <span class="n">Date</span>
+<span class="n">header_name_to_class</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="n">CustomHeader</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">kiss_headers</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">ContentType</span><span class="s1">&#39;&gt;</span>
+<span class="n">header_name_to_class</span><span class="p">(</span><span class="s2">&quot;Last-Modified&quot;</span><span class="p">,</span> <span class="n">CustomHeader</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">kiss_headers</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">LastModified</span><span class="s1">&#39;&gt;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.header_strip">Function <code>header_strip</code></h3>
+<blockquote>
+<p><code>def header_strip(content: str, elem: str) -&gt; str</code></p>
+</blockquote>
+<p>Remove a member for a given header content and take care of the unneeded leftover semi-colon.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header_strip</span><span class="p">(</span><span class="s2">&quot;text/html; charset=UTF-8; format=flowed&quot;</span><span class="p">,</span> <span class="s2">&quot;charset=UTF-8&quot;</span><span class="p">)</span>
+<span class="s1">&#39;text/html; format=flowed&#39;</span>
+<span class="n">header_strip</span><span class="p">(</span><span class="s2">&quot;text/html; charset=UTF-8;    format=flowed&quot;</span><span class="p">,</span> <span class="s2">&quot;charset=UTF-8&quot;</span><span class="p">)</span>
+<span class="s1">&#39;text/html; format=flowed&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.is_legal_header_name">Function <code>is_legal_header_name</code></h3>
+<blockquote>
+<p><code>def is_legal_header_name(name: str) -&gt; bool</code></p>
+</blockquote>
+<p>Verify if a provided header name is valid.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">is_legal_header_name</span><span class="p">(</span><span class="s2">&quot;:hello&quot;</span><span class="p">)</span>
+<span class="kc">False</span>
+<span class="n">is_legal_header_name</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">is_legal_header_name</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">is_legal_header_name</span><span class="p">(</span><span class="s2">&quot;Hello;&quot;</span><span class="p">)</span>
+<span class="kc">False</span>
+<span class="n">is_legal_header_name</span><span class="p">(</span><span class="s2">&quot;Hello</span><span class="se">\r</span><span class="s2">World&quot;</span><span class="p">)</span>
+<span class="kc">False</span>
+<span class="n">is_legal_header_name</span><span class="p">(</span><span class="s2">&quot;Hello </span><span class="se">\t</span><span class="s2">World&quot;</span><span class="p">)</span>
+<span class="kc">False</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.normalize_str">Function <code>normalize_str</code></h3>
+<blockquote>
+<p><code>def normalize_str(string: str) -&gt; str</code></p>
+</blockquote>
+<p>Normalize a string by applying on it lowercase and replacing &lsquo;-&lsquo; to &lsquo;_&rsquo;.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">normalize_str</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span>
+<span class="s1">&#39;content_type&#39;</span>
+<span class="n">normalize_str</span><span class="p">(</span><span class="s2">&quot;X-content-type&quot;</span><span class="p">)</span>
+<span class="s1">&#39;x_content_type&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.prettify_header_name">Function <code>prettify_header_name</code></h3>
+<blockquote>
+<p><code>def prettify_header_name(name: str) -&gt; str</code></p>
+</blockquote>
+<p>Take a header name and prettify it.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">prettify_header_name</span><span class="p">(</span><span class="s2">&quot;x-hEllo-wORLD&quot;</span><span class="p">)</span>
+<span class="s1">&#39;X-Hello-World&#39;</span>
+<span class="n">prettify_header_name</span><span class="p">(</span><span class="s2">&quot;server&quot;</span><span class="p">)</span>
+<span class="s1">&#39;Server&#39;</span>
+<span class="n">prettify_header_name</span><span class="p">(</span><span class="s2">&quot;contEnt-TYPE&quot;</span><span class="p">)</span>
+<span class="s1">&#39;Content-Type&#39;</span>
+<span class="n">prettify_header_name</span><span class="p">(</span><span class="s2">&quot;content_type&quot;</span><span class="p">)</span>
+<span class="s1">&#39;Content-Type&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.quote">Function <code>quote</code></h3>
+<blockquote>
+<p><code>def quote(string: str) -&gt; str</code></p>
+</blockquote>
+<p>Surround string by double quote.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">quote</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="s1">&#39;&quot;hello&quot;&#39;</span>
+<span class="n">quote</span><span class="p">(</span><span class="s1">&#39;&quot;hello&#39;</span><span class="p">)</span>
+<span class="s1">&#39;&quot;&quot;hello&quot;&#39;</span>
+<span class="n">quote</span><span class="p">(</span><span class="s1">&#39;&quot;hello&quot;&#39;</span><span class="p">)</span>
+<span class="s1">&#39;&quot;hello&quot;&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.unfold">Function <code>unfold</code></h3>
+<blockquote>
+<p><code>def unfold(content: str) -&gt; str</code></p>
+</blockquote>
+<p>Some header content may have folded content (LF + 9 spaces, LF + 7 spaces or LF + 1 spaces) in it, making your job at reading them a little more difficult.
+This function undo the folding in given content.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">unfold</span><span class="p">(</span><span class="s2">&quot;eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH</span><span class="se">\n</span><span class="s2">         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s&quot;</span><span class="p">)</span>
+<span class="s1">&#39;eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.unpack_protected_keyword">Function <code>unpack_protected_keyword</code></h3>
+<blockquote>
+<p><code>def unpack_protected_keyword(name: str) -&gt; str</code></p>
+</blockquote>
+<p>By choice this project aim to allow developper to access header or attribute in header by using the property
+notation. Some keyword are protected by the language itself. So :
+When starting by a number, prepend a underscore to it. When using a protected keyword, append a underscore to it.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">unpack_protected_keyword</span><span class="p">(</span><span class="s2">&quot;_3to1&quot;</span><span class="p">)</span>
+<span class="s1">&#39;3to1&#39;</span>
+<span class="n">unpack_protected_keyword</span><span class="p">(</span><span class="s2">&quot;from_&quot;</span><span class="p">)</span>
+<span class="s1">&#39;from&#39;</span>
+<span class="n">unpack_protected_keyword</span><span class="p">(</span><span class="s2">&quot;_from&quot;</span><span class="p">)</span>
+<span class="s1">&#39;_from&#39;</span>
+<span class="n">unpack_protected_keyword</span><span class="p">(</span><span class="s2">&quot;3&quot;</span><span class="p">)</span>
+<span class="s1">&#39;3&#39;</span>
+<span class="n">unpack_protected_keyword</span><span class="p">(</span><span class="s2">&quot;FroM_&quot;</span><span class="p">)</span>
+<span class="s1">&#39;FroM_&#39;</span>
+</code></pre></div>
+
+
+<h3 id="kiss_headers.utils.unquote">Function <code>unquote</code></h3>
+<blockquote>
+<p><code>def unquote(string: str) -&gt; str</code></p>
+</blockquote>
+<p>Remove simple quote or double quote around a string if any.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">unquote</span><span class="p">(</span><span class="s1">&#39;&quot;hello&quot;&#39;</span><span class="p">)</span>
+<span class="s1">&#39;hello&#39;</span>
+<span class="n">unquote</span><span class="p">(</span><span class="s1">&#39;&quot;hello&#39;</span><span class="p">)</span>
+<span class="s1">&#39;&quot;hello&#39;</span>
+<span class="n">unquote</span><span class="p">(</span><span class="s1">&#39;&quot;a&quot;&#39;</span><span class="p">)</span>
+<span class="s1">&#39;a&#39;</span>
+<span class="n">unquote</span><span class="p">(</span><span class="s1">&#39;&quot;&quot;&#39;</span><span class="p">)</span>
+<span class="s1">&#39;&#39;</span>
+</code></pre></div>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../custom-headers/" title="Custom Headers" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Custom Headers
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../../contributing/" title="Contributing" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Contributing
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.a0c4167b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.fb26dd1d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.37585f48.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

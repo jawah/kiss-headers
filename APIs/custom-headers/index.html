@@ -1,0 +1,4582 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
+      
+      
+        <link rel="canonical" href="https://kiss-headers.tech/APIs/custom-headers/">
+      
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.1, mkdocs-material-5.1.6">
+    
+    
+      
+        <title>Custom Headers - Kiss-Headers</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4b9ffd7b.min.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.b79bcd20.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#009688">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../../custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="teal" data-md-color-accent="deep-orange">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#kiss_headers.builder" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://kiss-headers.tech/" title="Kiss-Headers" class="md-header-nav__button md-logo" aria-label="Kiss-Headers">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kiss-Headers
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Custom Headers
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/Ousret/kiss-headers/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ousret/kiss-headers
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://kiss-headers.tech/" title="Kiss-Headers" class="md-nav__button md-logo" aria-label="Kiss-Headers">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Kiss-Headers
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/Ousret/kiss-headers/" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ousret/kiss-headers
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../the-theory/" title="The Theory" class="md-nav__link">
+      The Theory
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      Usages
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Usages" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Usages
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../quickstart/" title="Quick Start" class="md-nav__link">
+      Quick Start
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
+    
+    <label class="md-nav__link" for="nav-3-2">
+      Advanced Tips
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Advanced Tips" data-md-level="2">
+      <label class="md-nav__title" for="nav-3-2">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Advanced Tips
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced-headers/" title="Headers" class="md-nav__link">
+      Headers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced-header/" title="Header" class="md-nav__link">
+      Header
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../polymorphism/" title="Polymorphism" class="md-nav__link">
+      Polymorphism
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../the-builder/" title="The Builder" class="md-nav__link">
+      The Builder
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../explain-headers/" title="Explain Headers" class="md-nav__link">
+      Explain Headers
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../imap/" title="Email" class="md-nav__link">
+      Email
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      Developer Interface
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Developer Interface" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Developer Interface
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../functions/" title="API" class="md-nav__link">
+      API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Custom Headers
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Custom Headers" class="md-nav__link md-nav__link--active">
+      Custom Headers
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Accept" class="md-nav__link">
+    Class Accept
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Accept">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Accept.get_mime" class="md-nav__link">
+    Method get_mime
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Accept.get_qualifier" class="md-nav__link">
+    Method get_qualifier
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptEncoding" class="md-nav__link">
+    Class AcceptEncoding
+  </a>
+  
+    <nav class="md-nav" aria-label="Class AcceptEncoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptEncoding.get_qualifier" class="md-nav__link">
+    Method get_qualifier
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptLanguage" class="md-nav__link">
+    Class AcceptLanguage
+  </a>
+  
+    <nav class="md-nav" aria-label="Class AcceptLanguage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_2" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_2" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptLanguage.get_qualifier" class="md-nav__link">
+    Method get_qualifier
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Allow" class="md-nav__link">
+    Class Allow
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Allow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_3" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc" class="md-nav__link">
+    Class AltSvc
+  </a>
+  
+    <nav class="md-nav" aria-label="Class AltSvc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_4" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_3" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_alt_authority" class="md-nav__link">
+    Method get_alt_authority
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_max_age" class="md-nav__link">
+    Method get_max_age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_protocol_id" class="md-nav__link">
+    Method get_protocol_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_versions" class="md-nav__link">
+    Method get_versions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.should_persist" class="md-nav__link">
+    Method should_persist
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Authorization" class="md-nav__link">
+    Class Authorization
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Authorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_5" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_4" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Authorization.get_auth_type" class="md-nav__link">
+    Method get_auth_type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Authorization.get_credentials" class="md-nav__link">
+    Method get_credentials
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.BasicAuthorization" class="md-nav__link">
+    Class BasicAuthorization
+  </a>
+  
+    <nav class="md-nav" aria-label="Class BasicAuthorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_6" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_5" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.BasicAuthorization.get_credentials" class="md-nav__link">
+    Method get_credentials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.BasicAuthorization.get_username_password" class="md-nav__link">
+    Method get_username_password
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.CacheControl" class="md-nav__link">
+    Class CacheControl
+  </a>
+  
+    <nav class="md-nav" aria-label="Class CacheControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_7" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Connection" class="md-nav__link">
+    Class Connection
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Connection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_8" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentDisposition" class="md-nav__link">
+    Class ContentDisposition
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentDisposition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_9" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentEncoding" class="md-nav__link">
+    Class ContentEncoding
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentEncoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_10" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentLength" class="md-nav__link">
+    Class ContentLength
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentLength">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_11" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange" class="md-nav__link">
+    Class ContentRange
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentRange">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_12" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_6" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_end" class="md-nav__link">
+    Method get_end
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_size" class="md-nav__link">
+    Method get_size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_start" class="md-nav__link">
+    Method get_start
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_unit" class="md-nav__link">
+    Method get_unit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.unpack" class="md-nav__link">
+    Method unpack
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentSecurityPolicy" class="md-nav__link">
+    Class ContentSecurityPolicy
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentSecurityPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_13" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_7" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentSecurityPolicy.get_policies_names" class="md-nav__link">
+    Method get_policies_names
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentSecurityPolicy.get_policy_args" class="md-nav__link">
+    Method get_policy_args
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentType" class="md-nav__link">
+    Class ContentType
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_14" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_8" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentType.get_charset" class="md-nav__link">
+    Method get_charset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentType.get_mime" class="md-nav__link">
+    Method get_mime
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Cookie" class="md-nav__link">
+    Class Cookie
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Cookie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_15" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_9" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Cookie.get_cookie_value" class="md-nav__link">
+    Method get_cookie_value
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Cookie.get_cookies_names" class="md-nav__link">
+    Method get_cookies_names
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.CrossOriginResourcePolicy" class="md-nav__link">
+    Class CrossOriginResourcePolicy
+  </a>
+  
+    <nav class="md-nav" aria-label="Class CrossOriginResourcePolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_16" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.CustomHeader" class="md-nav__link">
+    Class CustomHeader
+  </a>
+  
+    <nav class="md-nav" aria-label="Class CustomHeader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_17" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_1" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Date" class="md-nav__link">
+    Class Date
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Date">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_18" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_2" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_10" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Date.get_datetime" class="md-nav__link">
+    Method get_datetime
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Digest" class="md-nav__link">
+    Class Digest
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Digest">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_19" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Dnt" class="md-nav__link">
+    Class Dnt
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Dnt">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_20" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Etag" class="md-nav__link">
+    Class Etag
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Etag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_21" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Expires" class="md-nav__link">
+    Class Expires
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Expires">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_22" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Forwarded" class="md-nav__link">
+    Class Forwarded
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Forwarded">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_23" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.From" class="md-nav__link">
+    Class From
+  </a>
+  
+    <nav class="md-nav" aria-label="Class From">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_24" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Host" class="md-nav__link">
+    Class Host
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Host">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_25" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfMatch" class="md-nav__link">
+    Class IfMatch
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfMatch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_26" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_3" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfModifiedSince" class="md-nav__link">
+    Class IfModifiedSince
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfModifiedSince">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_27" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfNoneMatch" class="md-nav__link">
+    Class IfNoneMatch
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfNoneMatch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_28" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfUnmodifiedSince" class="md-nav__link">
+    Class IfUnmodifiedSince
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfUnmodifiedSince">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_29" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.KeepAlive" class="md-nav__link">
+    Class KeepAlive
+  </a>
+  
+    <nav class="md-nav" aria-label="Class KeepAlive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_30" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.LastModified" class="md-nav__link">
+    Class LastModified
+  </a>
+  
+    <nav class="md-nav" aria-label="Class LastModified">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_31" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Location" class="md-nav__link">
+    Class Location
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Location">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_32" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ProxyAuthorization" class="md-nav__link">
+    Class ProxyAuthorization
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ProxyAuthorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_33" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Referer" class="md-nav__link">
+    Class Referer
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Referer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_34" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ReferrerPolicy" class="md-nav__link">
+    Class ReferrerPolicy
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ReferrerPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_35" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.RetryAfter" class="md-nav__link">
+    Class RetryAfter
+  </a>
+  
+    <nav class="md-nav" aria-label="Class RetryAfter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_36" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Server" class="md-nav__link">
+    Class Server
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_37" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie" class="md-nav__link">
+    Class SetCookie
+  </a>
+  
+    <nav class="md-nav" aria-label="Class SetCookie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_38" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_11" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_cookie_name" class="md-nav__link">
+    Method get_cookie_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_cookie_value" class="md-nav__link">
+    Method get_cookie_value
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_expire" class="md-nav__link">
+    Method get_expire
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_max_age" class="md-nav__link">
+    Method get_max_age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.is_http_only" class="md-nav__link">
+    Method is_http_only
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.is_secure" class="md-nav__link">
+    Method is_secure
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity" class="md-nav__link">
+    Class StrictTransportSecurity
+  </a>
+  
+    <nav class="md-nav" aria-label="Class StrictTransportSecurity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_39" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_12" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity.does_includesubdomains" class="md-nav__link">
+    Method does_includesubdomains
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity.get_max_age" class="md-nav__link">
+    Method get_max_age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity.should_preload" class="md-nav__link">
+    Method should_preload
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.TransferEncoding" class="md-nav__link">
+    Class TransferEncoding
+  </a>
+  
+    <nav class="md-nav" aria-label="Class TransferEncoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_40" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_4" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.UpgradeInsecureRequests" class="md-nav__link">
+    Class UpgradeInsecureRequests
+  </a>
+  
+    <nav class="md-nav" aria-label="Class UpgradeInsecureRequests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_41" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.UserAgent" class="md-nav__link">
+    Class UserAgent
+  </a>
+  
+    <nav class="md-nav" aria-label="Class UserAgent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_42" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Vary" class="md-nav__link">
+    Class Vary
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Vary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_43" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.WwwAuthenticate" class="md-nav__link">
+    Class WwwAuthenticate
+  </a>
+  
+    <nav class="md-nav" aria-label="Class WwwAuthenticate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_44" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_13" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.WwwAuthenticate.get_auth_type" class="md-nav__link">
+    Method get_auth_type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.WwwAuthenticate.get_challenge" class="md-nav__link">
+    Method get_challenge
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XContentTypeOptions" class="md-nav__link">
+    Class XContentTypeOptions
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XContentTypeOptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_45" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XDnsPrefetchControl" class="md-nav__link">
+    Class XDnsPrefetchControl
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XDnsPrefetchControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_46" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XFrameOptions" class="md-nav__link">
+    Class XFrameOptions
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XFrameOptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_47" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XXssProtection" class="md-nav__link">
+    Class XXssProtection
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XXssProtection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_48" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../others/" title="Utils" class="md-nav__link">
+      Utils
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../contributing/" title="Contributing" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    Classes
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Accept" class="md-nav__link">
+    Class Accept
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Accept">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Accept.get_mime" class="md-nav__link">
+    Method get_mime
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Accept.get_qualifier" class="md-nav__link">
+    Method get_qualifier
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptEncoding" class="md-nav__link">
+    Class AcceptEncoding
+  </a>
+  
+    <nav class="md-nav" aria-label="Class AcceptEncoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_1" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_1" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptEncoding.get_qualifier" class="md-nav__link">
+    Method get_qualifier
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptLanguage" class="md-nav__link">
+    Class AcceptLanguage
+  </a>
+  
+    <nav class="md-nav" aria-label="Class AcceptLanguage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_2" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_2" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AcceptLanguage.get_qualifier" class="md-nav__link">
+    Method get_qualifier
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Allow" class="md-nav__link">
+    Class Allow
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Allow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_3" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc" class="md-nav__link">
+    Class AltSvc
+  </a>
+  
+    <nav class="md-nav" aria-label="Class AltSvc">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_4" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_3" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_alt_authority" class="md-nav__link">
+    Method get_alt_authority
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_max_age" class="md-nav__link">
+    Method get_max_age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_protocol_id" class="md-nav__link">
+    Method get_protocol_id
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.get_versions" class="md-nav__link">
+    Method get_versions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.AltSvc.should_persist" class="md-nav__link">
+    Method should_persist
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Authorization" class="md-nav__link">
+    Class Authorization
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Authorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_5" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_4" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Authorization.get_auth_type" class="md-nav__link">
+    Method get_auth_type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Authorization.get_credentials" class="md-nav__link">
+    Method get_credentials
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.BasicAuthorization" class="md-nav__link">
+    Class BasicAuthorization
+  </a>
+  
+    <nav class="md-nav" aria-label="Class BasicAuthorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_6" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_5" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.BasicAuthorization.get_credentials" class="md-nav__link">
+    Method get_credentials
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.BasicAuthorization.get_username_password" class="md-nav__link">
+    Method get_username_password
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.CacheControl" class="md-nav__link">
+    Class CacheControl
+  </a>
+  
+    <nav class="md-nav" aria-label="Class CacheControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_7" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Connection" class="md-nav__link">
+    Class Connection
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Connection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_8" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentDisposition" class="md-nav__link">
+    Class ContentDisposition
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentDisposition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_9" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentEncoding" class="md-nav__link">
+    Class ContentEncoding
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentEncoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_10" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentLength" class="md-nav__link">
+    Class ContentLength
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentLength">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_11" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange" class="md-nav__link">
+    Class ContentRange
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentRange">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_12" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_6" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_end" class="md-nav__link">
+    Method get_end
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_size" class="md-nav__link">
+    Method get_size
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_start" class="md-nav__link">
+    Method get_start
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.get_unit" class="md-nav__link">
+    Method get_unit
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentRange.unpack" class="md-nav__link">
+    Method unpack
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentSecurityPolicy" class="md-nav__link">
+    Class ContentSecurityPolicy
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentSecurityPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_13" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_7" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentSecurityPolicy.get_policies_names" class="md-nav__link">
+    Method get_policies_names
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentSecurityPolicy.get_policy_args" class="md-nav__link">
+    Method get_policy_args
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentType" class="md-nav__link">
+    Class ContentType
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ContentType">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_14" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_8" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentType.get_charset" class="md-nav__link">
+    Method get_charset
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ContentType.get_mime" class="md-nav__link">
+    Method get_mime
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Cookie" class="md-nav__link">
+    Class Cookie
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Cookie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_15" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_9" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Cookie.get_cookie_value" class="md-nav__link">
+    Method get_cookie_value
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Cookie.get_cookies_names" class="md-nav__link">
+    Method get_cookies_names
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.CrossOriginResourcePolicy" class="md-nav__link">
+    Class CrossOriginResourcePolicy
+  </a>
+  
+    <nav class="md-nav" aria-label="Class CrossOriginResourcePolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_16" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.CustomHeader" class="md-nav__link">
+    Class CustomHeader
+  </a>
+  
+    <nav class="md-nav" aria-label="Class CustomHeader">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_17" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_1" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Date" class="md-nav__link">
+    Class Date
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Date">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_18" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_2" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_10" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Date.get_datetime" class="md-nav__link">
+    Method get_datetime
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Digest" class="md-nav__link">
+    Class Digest
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Digest">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_19" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Dnt" class="md-nav__link">
+    Class Dnt
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Dnt">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_20" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Etag" class="md-nav__link">
+    Class Etag
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Etag">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_21" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Expires" class="md-nav__link">
+    Class Expires
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Expires">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_22" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Forwarded" class="md-nav__link">
+    Class Forwarded
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Forwarded">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_23" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.From" class="md-nav__link">
+    Class From
+  </a>
+  
+    <nav class="md-nav" aria-label="Class From">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_24" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Host" class="md-nav__link">
+    Class Host
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Host">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_25" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfMatch" class="md-nav__link">
+    Class IfMatch
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfMatch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_26" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_3" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfModifiedSince" class="md-nav__link">
+    Class IfModifiedSince
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfModifiedSince">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_27" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfNoneMatch" class="md-nav__link">
+    Class IfNoneMatch
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfNoneMatch">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_28" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.IfUnmodifiedSince" class="md-nav__link">
+    Class IfUnmodifiedSince
+  </a>
+  
+    <nav class="md-nav" aria-label="Class IfUnmodifiedSince">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_29" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.KeepAlive" class="md-nav__link">
+    Class KeepAlive
+  </a>
+  
+    <nav class="md-nav" aria-label="Class KeepAlive">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_30" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.LastModified" class="md-nav__link">
+    Class LastModified
+  </a>
+  
+    <nav class="md-nav" aria-label="Class LastModified">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_31" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Location" class="md-nav__link">
+    Class Location
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Location">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_32" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ProxyAuthorization" class="md-nav__link">
+    Class ProxyAuthorization
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ProxyAuthorization">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_33" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Referer" class="md-nav__link">
+    Class Referer
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Referer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_34" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.ReferrerPolicy" class="md-nav__link">
+    Class ReferrerPolicy
+  </a>
+  
+    <nav class="md-nav" aria-label="Class ReferrerPolicy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_35" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.RetryAfter" class="md-nav__link">
+    Class RetryAfter
+  </a>
+  
+    <nav class="md-nav" aria-label="Class RetryAfter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_36" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Server" class="md-nav__link">
+    Class Server
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_37" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie" class="md-nav__link">
+    Class SetCookie
+  </a>
+  
+    <nav class="md-nav" aria-label="Class SetCookie">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_38" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_11" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_cookie_name" class="md-nav__link">
+    Method get_cookie_name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_cookie_value" class="md-nav__link">
+    Method get_cookie_value
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_expire" class="md-nav__link">
+    Method get_expire
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.get_max_age" class="md-nav__link">
+    Method get_max_age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.is_http_only" class="md-nav__link">
+    Method is_http_only
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.SetCookie.is_secure" class="md-nav__link">
+    Method is_secure
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity" class="md-nav__link">
+    Class StrictTransportSecurity
+  </a>
+  
+    <nav class="md-nav" aria-label="Class StrictTransportSecurity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_39" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_12" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity.does_includesubdomains" class="md-nav__link">
+    Method does_includesubdomains
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity.get_max_age" class="md-nav__link">
+    Method get_max_age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.StrictTransportSecurity.should_preload" class="md-nav__link">
+    Method should_preload
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.TransferEncoding" class="md-nav__link">
+    Class TransferEncoding
+  </a>
+  
+    <nav class="md-nav" aria-label="Class TransferEncoding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_40" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#descendants_4" class="md-nav__link">
+    Descendants
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.UpgradeInsecureRequests" class="md-nav__link">
+    Class UpgradeInsecureRequests
+  </a>
+  
+    <nav class="md-nav" aria-label="Class UpgradeInsecureRequests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_41" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.UserAgent" class="md-nav__link">
+    Class UserAgent
+  </a>
+  
+    <nav class="md-nav" aria-label="Class UserAgent">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_42" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.Vary" class="md-nav__link">
+    Class Vary
+  </a>
+  
+    <nav class="md-nav" aria-label="Class Vary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_43" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.WwwAuthenticate" class="md-nav__link">
+    Class WwwAuthenticate
+  </a>
+  
+    <nav class="md-nav" aria-label="Class WwwAuthenticate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_44" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods_13" class="md-nav__link">
+    Methods
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.WwwAuthenticate.get_auth_type" class="md-nav__link">
+    Method get_auth_type
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.WwwAuthenticate.get_challenge" class="md-nav__link">
+    Method get_challenge
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XContentTypeOptions" class="md-nav__link">
+    Class XContentTypeOptions
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XContentTypeOptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_45" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XDnsPrefetchControl" class="md-nav__link">
+    Class XDnsPrefetchControl
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XDnsPrefetchControl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_46" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XFrameOptions" class="md-nav__link">
+    Class XFrameOptions
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XFrameOptions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_47" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kiss_headers.builder.XXssProtection" class="md-nav__link">
+    Class XXssProtection
+  </a>
+  
+    <nav class="md-nav" aria-label="Class XXssProtection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ancestors-in-mro_48" class="md-nav__link">
+    Ancestors (in MRO)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Ousret/kiss-headers/tree/master/docs/APIs/custom-headers.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  
+                
+                
+                <h1 id="kiss_headers.builder">Module <code>kiss_headers.builder</code></h1>
+<h2 id="classes">Classes</h2>
+<h3 id="kiss_headers.builder.Accept">Class <code>Accept</code></h3>
+<blockquote>
+<p><code>class Accept(mime: str = '*/*', qualifier: float = 1.0, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Accept request HTTP header advertises which content types, expressed as MIME types,
+the client is able to understand. Using content negotiation, the server then selects one of
+the proposals, uses it and informs the client of its choice with the Content-Type response header.</p>
+<p>:param mime: Describe the MIME using this syntax <MIME_type/MIME_subtype>
+:param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
+:param kwargs:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">Accept</span><span class="p">(</span><span class="s2">&quot;text/html&quot;</span><span class="p">,</span> <span class="n">qualifier</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">header</span><span class="o">.</span><span class="n">content</span>
+<span class="s1">&#39;text/html; q=&quot;0.8&quot;&#39;</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Accept: text/html; q=&quot;0.8&quot;&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods">Methods</h4>
+<h5 id="kiss_headers.builder.Accept.get_mime">Method <code>get_mime</code></h5>
+<blockquote>
+<p><code>def get_mime(self) -&gt; Union[str, NoneType]</code></p>
+</blockquote>
+<p>Return defined mime in current accept header.</p>
+<h5 id="kiss_headers.builder.Accept.get_qualifier">Method <code>get_qualifier</code></h5>
+<blockquote>
+<p><code>def get_qualifier(self) -&gt; Union[float, NoneType]</code></p>
+</blockquote>
+<p>Return defined qualifier for specified mime. If not set, output 1.0.</p>
+<h3 id="kiss_headers.builder.AcceptEncoding">Class <code>AcceptEncoding</code></h3>
+<blockquote>
+<p><code>class AcceptEncoding(method: str, qualifier: float = 1.0, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Accept-Encoding request HTTP header advertises which content encoding, usually a compression algorithm,
+the client is able to understand. Using content negotiation, the server selects one of the proposals,
+uses it and informs the client of its choice with the Content-Encoding response header.</p>
+<p>:param method: Either chunked, compress, deflate, gzip, identity, br or a wildcard.
+:param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_1">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.TransferEncoding">kiss_headers.builder.TransferEncoding</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_1">Methods</h4>
+<h5 id="kiss_headers.builder.AcceptEncoding.get_qualifier">Method <code>get_qualifier</code></h5>
+<blockquote>
+<p><code>def get_qualifier(self) -&gt; Union[float, NoneType]</code></p>
+</blockquote>
+<p>Return defined qualifier for specified encoding. If not set, output 1.0.</p>
+<h3 id="kiss_headers.builder.AcceptLanguage">Class <code>AcceptLanguage</code></h3>
+<blockquote>
+<p><code>class AcceptLanguage(language: str = '*', qualifier: float = 1.0, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Accept-Language request HTTP header advertises which languages the client is able to understand,
+and which locale variant is preferred. (By languages, we mean natural languages,
+such as English, and not programming languages.)</p>
+<p>:param language: A language tag (which is sometimes referred to as a &ldquo;locale identifier&rdquo;). This consists of a 2-3 letter base language tag representing the language.
+:param qualifier: Any value placed in an order of preference expressed using a relative quality value called weight.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_2">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_2">Methods</h4>
+<h5 id="kiss_headers.builder.AcceptLanguage.get_qualifier">Method <code>get_qualifier</code></h5>
+<blockquote>
+<p><code>def get_qualifier(self) -&gt; Union[float, NoneType]</code></p>
+</blockquote>
+<p>Return defined qualifier for specified language. If not set, output 1.0.</p>
+<h3 id="kiss_headers.builder.Allow">Class <code>Allow</code></h3>
+<blockquote>
+<p><code>class Allow(supported_verb: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Allow header lists the set of methods supported by a resource.</p>
+<p>:param supported_verb: Choose exactly one of &ldquo;HEAD&rdquo;, &ldquo;GET&rdquo;, &ldquo;POST&rdquo;, &ldquo;PUT&rdquo;, &ldquo;PATCH&rdquo;, &ldquo;DELETE&rdquo;, &ldquo;PURGE&rdquo;, &ldquo;CONNECT&rdquo; or &ldquo;TRACE&rdquo; HTTP verbs.
+:param kwargs:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">Allow</span><span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Allow: POST&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_3">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.AltSvc">Class <code>AltSvc</code></h3>
+<blockquote>
+<p><code>class AltSvc(protocol_id: str, alt_authority: str, max_age: Union[int, NoneType] = None, versions: Union[List[str], NoneType] = None, do_persist: Union[bool, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Alt-Svc HTTP response header is used to advertise alternative services through which
+the same resource can be reached. An alternative service is defined by a protocol/host/port combination.</p>
+<p>:param protocol_id: The ALPN protocol identifier. Examples include h2 for HTTP/2 and h3-25 for draft 25 of the HTTP/3 protocol.
+:param alt_authority: The quoted string specifying the alternative authority which consists of an optional host override, a colon, and a mandatory port number.
+:param max_age: The number of seconds for which the alternative service is considered fresh. If omitted, it defaults to 24 hours.
+:param versions: List of supported versions of the protocol id if the protocol id can be ambiguous. (like QUIC)
+:param do_persist: Use the parameter to ensures that the entry is not deleted through network configuration changes.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_4">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_3">Methods</h4>
+<h5 id="kiss_headers.builder.AltSvc.get_alt_authority">Method <code>get_alt_authority</code></h5>
+<blockquote>
+<p><code>def get_alt_authority(self) -&gt; str</code></p>
+</blockquote>
+<p>Extract the alternative authority which consists of an optional host override, a colon, and a mandatory port number.</p>
+<h5 id="kiss_headers.builder.AltSvc.get_max_age">Method <code>get_max_age</code></h5>
+<blockquote>
+<p><code>def get_max_age(self) -&gt; Union[int, NoneType]</code></p>
+</blockquote>
+<p>Output the number of seconds for which the alternative service is considered fresh. None if undefined.</p>
+<h5 id="kiss_headers.builder.AltSvc.get_protocol_id">Method <code>get_protocol_id</code></h5>
+<blockquote>
+<p><code>def get_protocol_id(self) -&gt; str</code></p>
+</blockquote>
+<p>Get the ALPN protocol identifier.</p>
+<h5 id="kiss_headers.builder.AltSvc.get_versions">Method <code>get_versions</code></h5>
+<blockquote>
+<p><code>def get_versions(self) -&gt; Union[List[str], NoneType]</code></p>
+</blockquote>
+<p>May return, if available, a list of versions of the ALPN protocol identifier.</p>
+<h5 id="kiss_headers.builder.AltSvc.should_persist">Method <code>should_persist</code></h5>
+<blockquote>
+<p><code>def should_persist(self) -&gt; Union[bool, NoneType]</code></p>
+</blockquote>
+<p>Verify if the entry should not be deleted through network configuration changes. None if no indication.</p>
+<h3 id="kiss_headers.builder.Authorization">Class <code>Authorization</code></h3>
+<blockquote>
+<p><code>class Authorization(type_: str, credentials: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The HTTP Authorization request header contains the credentials to authenticate a user agent with a server,
+usually, but not necessarily, after the server has responded with a 401 Unauthorized status
+and the WWW-Authenticate header.</p>
+<p>:param type_: Authentication type. A common type is &ldquo;Basic&rdquo;. See IANA registry of Authentication schemes for others.
+:param credentials: Associated credentials to use. Preferably Base-64 encoded.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">Authorization</span><span class="p">(</span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span> <span class="s2">&quot;base64encoded&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Authorization: Bearer base64encoded&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_5">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="descendants">Descendants</h4>
+<ul>
+<li><a href="#kiss_headers.builder.BasicAuthorization">kiss_headers.builder.BasicAuthorization</a></li>
+<li><a href="#kiss_headers.builder.ProxyAuthorization">kiss_headers.builder.ProxyAuthorization</a></li>
+</ul>
+<h4 id="methods_4">Methods</h4>
+<h5 id="kiss_headers.builder.Authorization.get_auth_type">Method <code>get_auth_type</code></h5>
+<blockquote>
+<p><code>def get_auth_type(self) -&gt; str</code></p>
+</blockquote>
+<p>Return the auth type used in Authorization.</p>
+<h5 id="kiss_headers.builder.Authorization.get_credentials">Method <code>get_credentials</code></h5>
+<blockquote>
+<p><code>def get_credentials(self) -&gt; str</code></p>
+</blockquote>
+<p>Output the credentials.</p>
+<h3 id="kiss_headers.builder.BasicAuthorization">Class <code>BasicAuthorization</code></h3>
+<blockquote>
+<p><code>class BasicAuthorization(username: str, password: str, charset: str = 'latin1', **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>Same as Authorization header but simplified for the Basic method. Also an example of <strong>override</strong> usage.</p>
+<p>:param username:
+:param password:
+:param charset: By default, credentials are encoded using latin1 charset. You may want to choose otherwise.
+:param kwargs:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">BasicAuthorization</span><span class="p">(</span><span class="s2">&quot;azerty&quot;</span><span class="p">,</span> <span class="s2">&quot;qwerty&quot;</span><span class="p">)</span>
+<span class="n">header</span>
+<span class="n">Authorization</span><span class="p">:</span> <span class="n">Basic</span> <span class="n">YXplcnR5OnF3ZXJ0eQ</span><span class="o">==</span>
+<span class="n">header</span><span class="o">.</span><span class="n">get_username_password</span><span class="p">()</span>
+<span class="p">(</span><span class="s1">&#39;azerty&#39;</span><span class="p">,</span> <span class="s1">&#39;qwerty&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_6">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Authorization">kiss_headers.builder.Authorization</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_5">Methods</h4>
+<h5 id="kiss_headers.builder.BasicAuthorization.get_credentials">Method <code>get_credentials</code></h5>
+<blockquote>
+<p><code>def get_credentials(self) -&gt; str</code></p>
+</blockquote>
+<p>Decode base64 encoded credentials from Authorization header.</p>
+<h5 id="kiss_headers.builder.BasicAuthorization.get_username_password">Method <code>get_username_password</code></h5>
+<blockquote>
+<p><code>def get_username_password(self) -&gt; Tuple[str, ...]</code></p>
+</blockquote>
+<p>Extract username and password as a tuple from Basic Authorization.</p>
+<h3 id="kiss_headers.builder.CacheControl">Class <code>CacheControl</code></h3>
+<blockquote>
+<p><code>class CacheControl(directive: Union[str, NoneType] = None, max_age: Union[int, NoneType] = None, max_stale: Union[int, NoneType] = None, min_fresh: Union[int, NoneType] = None, s_maxage: Union[int, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Cache-Control HTTP header holds directives (instructions) for caching in
+both requests and responses. A given directive in a request does not mean the
+same directive should be in the response.</p>
+<p>Pass only one parameter per CacheControl instance.
+:param directive: Could be one of must-revalidate, no-cache, no-store, no-transform, public, private, proxy-revalidate, only-if-cached, no-transform.
+:param max_age: The maximum amount of time a resource is considered fresh. Unlike Expires, this directive is relative to the time of the request.
+:param max_stale: Indicates the client will accept a stale response. An optional value in seconds indicates the upper limit of staleness the client will accept.
+:param min_fresh: Indicates the client wants a response that will still be fresh for at least the specified number of seconds.
+:param s_maxage: Overrides max-age or the Expires header, but only for shared caches (e.g., proxies). Ignored by private caches.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_7">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Connection">Class <code>Connection</code></h3>
+<blockquote>
+<p><code>class Connection(should_keep_alive: bool, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Connection general header controls whether or not the network connection stays open after the current transaction finishes.
+If the value sent is keep-alive, the connection is persistent and not closed, allowing for subsequent requests to the same server to be done.</p>
+<p>:param should_keep_alive: Indicates that the client would like to keep the connection open or not.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_8">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.ContentDisposition">Class <code>ContentDisposition</code></h3>
+<blockquote>
+<p><code>class ContentDisposition(disposition: str = 'inline', name: Union[str, NoneType] = None, filename: Union[str, NoneType] = None, fallback_filename: Union[str, NoneType] = None, boundary: Union[str, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>In a regular HTTP response, the Content-Disposition response header is a header indicating
+if the content is expected to be displayed inline in the browser, that is, as a Web page or
+as part of a Web page, or as an attachment, that is downloaded and saved locally.</p>
+<p>:param disposition: Could be either inline, form-data, attachment or empty. Choose one. Default to inline.
+:param name: Is a string containing the name of the HTML field in the form that the content of this subpart refers to.
+:param filename: Is a string containing the original name of the file transmitted. The filename is always optional and must not be used blindly by the application. ASCII-US Only.
+:param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987.
+:param boundary: For multipart entities the boundary directive is required, which consists of 1 to 70 characters from a set of characters known to be very robust through email gateways, and not ending with white space. It is used to encapsulate the boundaries of the multiple parts of the message.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_9">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.ContentEncoding">Class <code>ContentEncoding</code></h3>
+<blockquote>
+<p><code>class ContentEncoding(method: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Content-Encoding entity header is used to compress the media-type. When present,
+its value indicates which encodings were applied to the entity-body. It lets the client
+know how to decode in order to obtain the media-type referenced by the Content-Type header.</p>
+<p>If multiple, keep them in the order in which they were applied.</p>
+<p>:param method: Either chunked, compress, deflate, gzip, identity or br.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_10">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.TransferEncoding">kiss_headers.builder.TransferEncoding</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.ContentLength">Class <code>ContentLength</code></h3>
+<blockquote>
+<p><code>class ContentLength(length: int, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Content-Length entity header indicates the size of the entity-body, in bytes, sent to the recipient.</p>
+<p>:param length: The length in decimal number of octets.</p>
+<h4 id="ancestors-in-mro_11">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.ContentRange">Class <code>ContentRange</code></h3>
+<blockquote>
+<p><code>class ContentRange(unit: str, start: int, end: int, size: Union[str, int], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Content-Range response HTTP header indicates where in a full body message a partial message belongs.</p>
+<p>:param unit: The unit in which ranges is specified. This is usually bytes.
+:param start: An integer in the given unit indicating the beginning of the request range.
+:param end: An integer in the given unit indicating the end of the requested range.
+:param size: The total size of the document (or &lsquo;*&rsquo; if unknown).
+:param kwargs:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">ContentRange</span><span class="p">(</span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1024</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Content-Range: bytes 0-1024/4096&#39;</span>
+<span class="n">header</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+<span class="mi">4096</span>
+<span class="n">header</span><span class="o">.</span><span class="n">unpack</span><span class="p">()</span>
+<span class="p">(</span><span class="s1">&#39;bytes&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1024&#39;</span><span class="p">,</span> <span class="s1">&#39;4096&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_12">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_6">Methods</h4>
+<h5 id="kiss_headers.builder.ContentRange.get_end">Method <code>get_end</code></h5>
+<blockquote>
+<p><code>def get_end(self) -&gt; int</code></p>
+</blockquote>
+<p>Get the end of the requested range.</p>
+<h5 id="kiss_headers.builder.ContentRange.get_size">Method <code>get_size</code></h5>
+<blockquote>
+<p><code>def get_size(self) -&gt; Union[str, int]</code></p>
+</blockquote>
+<p>Get the total size of the document (or &lsquo;*&rsquo; if unknown).</p>
+<h5 id="kiss_headers.builder.ContentRange.get_start">Method <code>get_start</code></h5>
+<blockquote>
+<p><code>def get_start(self) -&gt; int</code></p>
+</blockquote>
+<p>Get the beginning of the request range.</p>
+<h5 id="kiss_headers.builder.ContentRange.get_unit">Method <code>get_unit</code></h5>
+<blockquote>
+<p><code>def get_unit(self) -&gt; str</code></p>
+</blockquote>
+<p>Retrieve the unit in which ranges is specified.</p>
+<h5 id="kiss_headers.builder.ContentRange.unpack">Method <code>unpack</code></h5>
+<blockquote>
+<p><code>def unpack(self) -&gt; Tuple[str, str, str, str]</code></p>
+</blockquote>
+<p>Provide a basic way to parse ContentRange format.</p>
+<h3 id="kiss_headers.builder.ContentSecurityPolicy">Class <code>ContentSecurityPolicy</code></h3>
+<blockquote>
+<p><code>class ContentSecurityPolicy(*policies: List[str])</code></p>
+</blockquote>
+<p>Content-Security-Policy is the name of a HTTP response header
+that modern browsers use to enhance the security of the document (or web page).
+The Content-Security-Policy header allows you to restrict how resources such as
+JavaScript, CSS, or pretty much anything that the browser loads.</p>
+<p>:param policies: One policy consist of a list of str like [&ldquo;default-src&rdquo;, &ldquo;&lsquo;none&rsquo;&ldquo;].</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">ContentSecurityPolicy</span><span class="p">([</span><span class="s2">&quot;default-src&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;none&#39;&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;img-src&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;self&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;img.example.com&quot;</span><span class="p">])</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s2">&quot;Content-Security-Policy: default-src &#39;none&#39;; img-src &#39;self&#39; img.example.com&quot;</span>
+<span class="n">header</span><span class="o">.</span><span class="n">get_policies_names</span><span class="p">()</span>
+<span class="p">[</span><span class="s1">&#39;default-src&#39;</span><span class="p">,</span> <span class="s1">&#39;img-src&#39;</span><span class="p">]</span>
+<span class="n">header</span><span class="o">.</span><span class="n">get_policy_args</span><span class="p">(</span><span class="s2">&quot;img-src&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="s2">&quot;&#39;self&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;img.example.com&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_13">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_7">Methods</h4>
+<h5 id="kiss_headers.builder.ContentSecurityPolicy.get_policies_names">Method <code>get_policies_names</code></h5>
+<blockquote>
+<p><code>def get_policies_names(self) -&gt; List[str]</code></p>
+</blockquote>
+<p>Fetch a list of policy name set in content.</p>
+<h5 id="kiss_headers.builder.ContentSecurityPolicy.get_policy_args">Method <code>get_policy_args</code></h5>
+<blockquote>
+<p><code>def get_policy_args(self, policy_name: str) -&gt; Union[List[str], NoneType]</code></p>
+</blockquote>
+<p>Retrieve given arguments for a policy.</p>
+<h3 id="kiss_headers.builder.ContentType">Class <code>ContentType</code></h3>
+<blockquote>
+<p><code>class ContentType(mime: str, charset: Union[str, NoneType] = None, format_: Union[str, NoneType] = None, boundary: Union[str, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Content-Type entity header is used to indicate the media type of the resource.</p>
+<p>In responses, a Content-Type header tells the client what the content type of the returned content actually is.
+Browsers will do MIME sniffing in some cases and will not necessarily follow the value of this header;
+to prevent this behavior, the header X-Content-Type-Options can be set to nosniff.</p>
+<p>:param mime_type: The MIME type of the resource or the data. Format <MIME_type>/<MIME_subtype>.
+:param charset: The character encoding standard. Should be an IANA name.
+:param format_: Mostly used in IMAP, could be one of : original or flowed.
+:param boundary: For multipart entities the boundary directive is required, which consists of 1 to 70 characters from a set of characters known to be very robust through email gateways, and not ending with white space. It is used to encapsulate the boundaries of the multiple parts of the message.
+:param kwargs:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">ContentType</span><span class="p">(</span><span class="s2">&quot;text/html&quot;</span><span class="p">,</span> <span class="n">charset</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Content-Type: text/html; charset=&quot;UTF-8&quot;&#39;</span>
+<span class="n">header</span><span class="o">.</span><span class="n">get_charset</span><span class="p">()</span>
+<span class="s1">&#39;UTF-8&#39;</span>
+<span class="n">header</span><span class="o">.</span><span class="n">get_mime</span><span class="p">()</span>
+<span class="s1">&#39;text/html&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_14">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_8">Methods</h4>
+<h5 id="kiss_headers.builder.ContentType.get_charset">Method <code>get_charset</code></h5>
+<blockquote>
+<p><code>def get_charset(self) -&gt; Union[str, NoneType]</code></p>
+</blockquote>
+<p>Extract defined charset, if not present will return &lsquo;ISO-8859-1&rsquo; by default.</p>
+<h5 id="kiss_headers.builder.ContentType.get_mime">Method <code>get_mime</code></h5>
+<blockquote>
+<p><code>def get_mime(self) -&gt; Union[str, NoneType]</code></p>
+</blockquote>
+<p>Return defined mime in content type.</p>
+<h3 id="kiss_headers.builder.Cookie">Class <code>Cookie</code></h3>
+<blockquote>
+<p><code>class Cookie(**kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Cookie HTTP request header contains stored HTTP cookies previously sent by
+the server with the Set-Cookie header.</p>
+<p>:param kwargs: Pair of cookie name associated with a value.</p>
+<h4 id="ancestors-in-mro_15">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_9">Methods</h4>
+<h5 id="kiss_headers.builder.Cookie.get_cookie_value">Method <code>get_cookie_value</code></h5>
+<blockquote>
+<p><code>def get_cookie_value(self, cookie_name: str) -&gt; Union[str, NoneType]</code></p>
+</blockquote>
+<p>Retrieve associated value with a given cookie name.</p>
+<h5 id="kiss_headers.builder.Cookie.get_cookies_names">Method <code>get_cookies_names</code></h5>
+<blockquote>
+<p><code>def get_cookies_names(self) -&gt; List[str]</code></p>
+</blockquote>
+<p>Retrieve all defined cookie names from Cookie header.</p>
+<h3 id="kiss_headers.builder.CrossOriginResourcePolicy">Class <code>CrossOriginResourcePolicy</code></h3>
+<blockquote>
+<p><code>class CrossOriginResourcePolicy(policy: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The HTTP Cross-Origin-Resource-Policy response header conveys a desire that
+the browser blocks no-cors cross-origin/cross-site requests to the given resource.</p>
+<p>:param policy: Accepted values are same-site, same-origin or cross-origin.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_16">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.CustomHeader">Class <code>CustomHeader</code></h3>
+<blockquote>
+<p><code>class CustomHeader(initial_content: str = '', **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>This class is a helper to create ready-to-use Header object with creation assistance.
+Should NOT be instantiated.
+Use this class as a direct parent for creating ready-to-use header object. Inspire yourself with already defined
+class bellow this one.</p>
+<p>:param initial_content: Initial content of the Header if any.
+:param kwargs: Provided args. Any key that associate a None value are just ignored.</p>
+<h4 id="ancestors-in-mro_17">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="descendants_1">Descendants</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Accept">kiss_headers.builder.Accept</a></li>
+<li><a href="#kiss_headers.builder.AcceptLanguage">kiss_headers.builder.AcceptLanguage</a></li>
+<li><a href="#kiss_headers.builder.Allow">kiss_headers.builder.Allow</a></li>
+<li><a href="#kiss_headers.builder.AltSvc">kiss_headers.builder.AltSvc</a></li>
+<li><a href="#kiss_headers.builder.Authorization">kiss_headers.builder.Authorization</a></li>
+<li><a href="#kiss_headers.builder.CacheControl">kiss_headers.builder.CacheControl</a></li>
+<li><a href="#kiss_headers.builder.Connection">kiss_headers.builder.Connection</a></li>
+<li><a href="#kiss_headers.builder.ContentDisposition">kiss_headers.builder.ContentDisposition</a></li>
+<li><a href="#kiss_headers.builder.ContentLength">kiss_headers.builder.ContentLength</a></li>
+<li><a href="#kiss_headers.builder.ContentRange">kiss_headers.builder.ContentRange</a></li>
+<li><a href="#kiss_headers.builder.ContentSecurityPolicy">kiss_headers.builder.ContentSecurityPolicy</a></li>
+<li><a href="#kiss_headers.builder.ContentType">kiss_headers.builder.ContentType</a></li>
+<li><a href="#kiss_headers.builder.Cookie">kiss_headers.builder.Cookie</a></li>
+<li><a href="#kiss_headers.builder.CrossOriginResourcePolicy">kiss_headers.builder.CrossOriginResourcePolicy</a></li>
+<li><a href="#kiss_headers.builder.Date">kiss_headers.builder.Date</a></li>
+<li><a href="#kiss_headers.builder.Digest">kiss_headers.builder.Digest</a></li>
+<li><a href="#kiss_headers.builder.Dnt">kiss_headers.builder.Dnt</a></li>
+<li><a href="#kiss_headers.builder.Etag">kiss_headers.builder.Etag</a></li>
+<li><a href="#kiss_headers.builder.Forwarded">kiss_headers.builder.Forwarded</a></li>
+<li><a href="#kiss_headers.builder.From">kiss_headers.builder.From</a></li>
+<li><a href="#kiss_headers.builder.Host">kiss_headers.builder.Host</a></li>
+<li><a href="#kiss_headers.builder.IfMatch">kiss_headers.builder.IfMatch</a></li>
+<li><a href="#kiss_headers.builder.KeepAlive">kiss_headers.builder.KeepAlive</a></li>
+<li><a href="#kiss_headers.builder.Location">kiss_headers.builder.Location</a></li>
+<li><a href="#kiss_headers.builder.Referer">kiss_headers.builder.Referer</a></li>
+<li><a href="#kiss_headers.builder.ReferrerPolicy">kiss_headers.builder.ReferrerPolicy</a></li>
+<li><a href="#kiss_headers.builder.Server">kiss_headers.builder.Server</a></li>
+<li><a href="#kiss_headers.builder.SetCookie">kiss_headers.builder.SetCookie</a></li>
+<li><a href="#kiss_headers.builder.StrictTransportSecurity">kiss_headers.builder.StrictTransportSecurity</a></li>
+<li><a href="#kiss_headers.builder.TransferEncoding">kiss_headers.builder.TransferEncoding</a></li>
+<li><a href="#kiss_headers.builder.UpgradeInsecureRequests">kiss_headers.builder.UpgradeInsecureRequests</a></li>
+<li><a href="#kiss_headers.builder.UserAgent">kiss_headers.builder.UserAgent</a></li>
+<li><a href="#kiss_headers.builder.Vary">kiss_headers.builder.Vary</a></li>
+<li><a href="#kiss_headers.builder.WwwAuthenticate">kiss_headers.builder.WwwAuthenticate</a></li>
+<li><a href="#kiss_headers.builder.XContentTypeOptions">kiss_headers.builder.XContentTypeOptions</a></li>
+<li><a href="#kiss_headers.builder.XDnsPrefetchControl">kiss_headers.builder.XDnsPrefetchControl</a></li>
+<li><a href="#kiss_headers.builder.XFrameOptions">kiss_headers.builder.XFrameOptions</a></li>
+<li><a href="#kiss_headers.builder.XXssProtection">kiss_headers.builder.XXssProtection</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Date">Class <code>Date</code></h3>
+<blockquote>
+<p><code>class Date(my_date: Union[datetime.datetime, str], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Date general HTTP header contains the date and time at which the message was originated.</p>
+<p>:param my_date: Can either be a datetime that will be automatically converted or a raw string.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_18">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="descendants_2">Descendants</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Expires">kiss_headers.builder.Expires</a></li>
+<li><a href="#kiss_headers.builder.IfModifiedSince">kiss_headers.builder.IfModifiedSince</a></li>
+<li><a href="#kiss_headers.builder.IfUnmodifiedSince">kiss_headers.builder.IfUnmodifiedSince</a></li>
+<li><a href="#kiss_headers.builder.LastModified">kiss_headers.builder.LastModified</a></li>
+<li><a href="#kiss_headers.builder.RetryAfter">kiss_headers.builder.RetryAfter</a></li>
+</ul>
+<h4 id="methods_10">Methods</h4>
+<h5 id="kiss_headers.builder.Date.get_datetime">Method <code>get_datetime</code></h5>
+<blockquote>
+<p><code>def get_datetime(self) -&gt; datetime.datetime</code></p>
+</blockquote>
+<p>Parse and return a datetime according to content.</p>
+<h3 id="kiss_headers.builder.Digest">Class <code>Digest</code></h3>
+<blockquote>
+<p><code>class Digest(algorithm: str, value: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Digest response HTTP header provides a digest of the requested resource. RFC 7231.</p>
+<p>:param algorithm: Supported digest algorithms are defined in RFC 3230 and RFC 5843, and include SHA-256 and SHA-512.
+:param value: The result of applying the digest algorithm to the resource representation and encoding the result.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_19">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Dnt">Class <code>Dnt</code></h3>
+<blockquote>
+<p><code>class Dnt(tracking_consent: bool = False, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The DNT (Do Not Track) request header indicates the user&rsquo;s tracking preference.
+It lets users indicate whether they would prefer privacy rather than personalized content.</p>
+<p>:param tracking_consent: The user prefers to allow tracking on the target site or not.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_20">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Etag">Class <code>Etag</code></h3>
+<blockquote>
+<p><code>class Etag(etag_value: str, is_a_weak_validator: bool = False, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The ETag HTTP response header is an identifier for a specific version of a resource.
+It lets caches be more efficient and save bandwidth, as a web server does not need to
+resend a full response if the content has not changed.</p>
+<p>:param etag_value: Entity tag uniquely representing the requested resource. ASCII string only. Not quoted.
+:param is_a_weak_validator: Indicates that a weak validator is used. Weak etags are easy to generate, but are far less useful for comparisons.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_21">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Expires">Class <code>Expires</code></h3>
+<blockquote>
+<p><code>class Expires(datetime_or_custom: Union[datetime.datetime, str], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Expires header contains the date/time after which the response is considered stale.
+Invalid dates, like the value 0, represent a date in the past and mean that the resource is already expired.</p>
+<p>:param my_date: Can either be a datetime that will be automatically converted or a raw string.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_22">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Date">kiss_headers.builder.Date</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Forwarded">Class <code>Forwarded</code></h3>
+<blockquote>
+<p><code>class Forwarded(by: str, for_: str, using_proto: str, host: Union[str, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Forwarded header contains information from the client-facing side of proxy servers
+that is altered or lost when a proxy is involved in the path of the request.</p>
+<p>:param by: The interface where the request came in to the proxy server. Could be an IP address, an obfuscated identifier or &ldquo;unknown&rdquo;.
+:param for_: The client that initiated the request and subsequent proxies in a chain of proxies.
+:param host: The Host request header field as received by the proxy.
+:param using_proto: Indicates which protocol was used to make the request (typically &ldquo;http&rdquo; or &ldquo;https&rdquo;).
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_23">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.From">Class <code>From</code></h3>
+<blockquote>
+<p><code>class From(email: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The From request header contains an Internet email address for a human user who controls the requesting user agent.
+If you are running a robotic user agent (e.g. a crawler), the From header should be sent, so you can be contacted
+if problems occur on servers, such as if the robot is sending excessive, unwanted, or invalid requests.</p>
+<p>:param email: A machine-usable email address. See RFC 5322.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_24">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Host">Class <code>Host</code></h3>
+<blockquote>
+<p><code>class Host(host: str, port: Union[int, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Host request header specifies the domain name of the server (for virtual hosting),
+and (optionally) the TCP port number on which the server is listening.</p>
+<p>:param host: The domain name of the server (for virtual hosting).
+:param port: TCP port number on which the server is listening.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">Host</span><span class="p">(</span><span class="s2">&quot;www.python.org&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Host: www.python.org&#39;</span>
+<span class="n">header</span> <span class="o">=</span> <span class="n">Host</span><span class="p">(</span><span class="s2">&quot;www.python.org&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8000</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;Host: www.python.org:8000&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_25">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.IfMatch">Class <code>IfMatch</code></h3>
+<blockquote>
+<p><code>class IfMatch(etag_value: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The If-Match HTTP request header makes the request conditional. For GET and HEAD methods,
+the server will send back the requested resource only if it matches one of the listed ETags.
+For PUT and other non-safe methods, it will only upload the resource in this case.</p>
+<p>:param etag_value: Entity tags uniquely representing the requested resources. They are a string of ASCII characters placed between double quotes (like &ldquo;675af34563dc-tr34&rdquo;).
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_26">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="descendants_3">Descendants</h4>
+<ul>
+<li><a href="#kiss_headers.builder.IfNoneMatch">kiss_headers.builder.IfNoneMatch</a></li>
+</ul>
+<h3 id="kiss_headers.builder.IfModifiedSince">Class <code>IfModifiedSince</code></h3>
+<blockquote>
+<p><code>class IfModifiedSince(dt: Union[datetime.datetime, str], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The If-Modified-Since request HTTP header makes the request conditional</p>
+<p>:param dt:
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_27">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Date">kiss_headers.builder.Date</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.IfNoneMatch">Class <code>IfNoneMatch</code></h3>
+<blockquote>
+<p><code>class IfNoneMatch(etag_value: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The If-None-Match HTTP request header makes the request conditional. For GET and HEAD methods,
+the server will send back the requested resource, with a 200 status, only if it doesn&rsquo;t have an ETag matching
+the given ones. For other methods, the request will be processed only if the eventually existing resource&rsquo;s
+ETag doesn&rsquo;t match any of the values listed.</p>
+<p>:param etag_value: Entity tags uniquely representing the requested resources. They are a string of ASCII characters placed between double quotes (like &ldquo;675af34563dc-tr34&rdquo;).
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_28">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.IfMatch">kiss_headers.builder.IfMatch</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.IfUnmodifiedSince">Class <code>IfUnmodifiedSince</code></h3>
+<blockquote>
+<p><code>class IfUnmodifiedSince(dt: Union[datetime.datetime, str], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The If-Unmodified-Since request HTTP header makes the request conditional</p>
+<p>:param dt:
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_29">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Date">kiss_headers.builder.Date</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.KeepAlive">Class <code>KeepAlive</code></h3>
+<blockquote>
+<p><code>class KeepAlive(timeout: Union[int, NoneType] = None, max_: Union[int, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Keep-Alive general header allows the sender to hint about how the connection may be used to
+set a timeout and a maximum amount of requests.</p>
+<p>:param timeout: indicating the minimum amount of time an idle connection has to be kept opened (in seconds).
+:param max: indicating the maximum number of requests that can be sent on this connection before closing it.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_30">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.LastModified">Class <code>LastModified</code></h3>
+<blockquote>
+<p><code>class LastModified(my_date: Union[datetime.datetime, str], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Last-Modified response HTTP header contains the date and time at which the origin server
+believes the resource was last modified. It is used as a validator
+to determine if a resource received or stored is the same.</p>
+<p>:param my_date:
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_31">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Date">kiss_headers.builder.Date</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Location">Class <code>Location</code></h3>
+<blockquote>
+<p><code>class Location(uri: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Location response header indicates the URL to redirect a page to.
+It only provides a meaning when served with a 3xx (redirection) or 201 (created) status response.</p>
+<p>:param uri: A relative (to the request URL) or absolute URL.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_32">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.ProxyAuthorization">Class <code>ProxyAuthorization</code></h3>
+<blockquote>
+<p><code>class ProxyAuthorization(type_: str, credentials: str)</code></p>
+</blockquote>
+<p>The HTTP Proxy-Authorization request header contains the credentials to authenticate a user agent to a proxy server,
+usually after the server has responded with a 407 Proxy Authentication Required status
+and the Proxy-Authenticate header.</p>
+<p>:param type_: Authentication type. A common type is &ldquo;Basic&rdquo;. See IANA registry of Authentication schemes for others.
+:param credentials: Associated credentials to use. Preferably Base-64 encoded.</p>
+<h4 id="ancestors-in-mro_33">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Authorization">kiss_headers.builder.Authorization</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Referer">Class <code>Referer</code></h3>
+<blockquote>
+<p><code>class Referer(url: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Referer request header contains the address of the previous web page from which a link to the currently
+requested page was followed. The Referer header allows servers to identify where people are
+visiting them from and may use that data for analytics, logging, or optimized caching, for example.</p>
+<p>Note that referer is actually a misspelling of the word &ldquo;referrer&rdquo;. See <a href="https://en.wikipedia.org/wiki/HTTP_referer">https://en.wikipedia.org/wiki/HTTP_referer</a></p>
+<p>:param url: An absolute or partial address of the previous web page from which a link to the currently requested page was followed. URL fragments not included.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_34">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.ReferrerPolicy">Class <code>ReferrerPolicy</code></h3>
+<blockquote>
+<p><code>class ReferrerPolicy(policy: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Referrer-Policy HTTP header controls how much referrer information
+(sent via the Referer header) should be included with requests.</p>
+<p>:param policy: Either &ldquo;no-referrer&rdquo;, &ldquo;no-referrer-when-downgrade&rdquo;, &ldquo;origin&rdquo;, &ldquo;origin-when-cross-origin&rdquo;, &ldquo;same-origin&rdquo;, &ldquo;strict-origin&rdquo;, &ldquo;strict-origin-when-cross-origin&rdquo;, &ldquo;unsafe-url&rdquo;
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_35">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.RetryAfter">Class <code>RetryAfter</code></h3>
+<blockquote>
+<p><code>class RetryAfter(delay_or_date: Union[datetime.datetime, int], **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Retry-After response HTTP header indicates how long the user agent should wait
+before making a follow-up request.</p>
+<p>:param my_date: Can either be a datetime that will be automatically converted or a raw string.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_36">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.Date">kiss_headers.builder.Date</a></li>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Server">Class <code>Server</code></h3>
+<blockquote>
+<p><code>class Server(product: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Server header describes the software used by the origin server that handled the request —
+that is, the server that generated the response.</p>
+<p>:param product: The name of the software or product that handled the request. Usually in a format similar to User-Agent.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_37">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.SetCookie">Class <code>SetCookie</code></h3>
+<blockquote>
+<p><code>class SetCookie(cookie_name: str, cookie_value: str, expires: Union[datetime.datetime, str, NoneType] = None, max_age: Union[int, NoneType] = None, domain: Union[str, NoneType] = None, path: Union[str, NoneType] = None, samesite: Union[str, NoneType] = None, is_secure: bool = False, is_httponly: bool = True, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Set-Cookie HTTP response header is used to send cookies from the server to the user agent,
+so the user agent can send them back to the server later.</p>
+<p>:param cookie_name: Can be any US-ASCII characters, except control characters, spaces, or tabs.
+:param cookie_value: Can include any US-ASCII characters excluding control characters, Whitespace, double quotes, comma, semicolon, and backslash.
+:param expires: The maximum lifetime of the cookie as an HTTP-date timestamp. Provided datetime will be converted automatically.
+:param max_age: Number of seconds until the cookie expires. A zero or negative number will expire the cookie immediately. If both Expires and Max-Age are set, Max-Age has precedence.
+:param domain: Hosts to where the cookie will be sent. If omitted, defaults to the host of the current document URL, not including subdomains.
+:param path: A path that must exist in the requested URL, or the browser won&rsquo;t send the Cookie header.
+:param samesite: Asserts that a cookie must not be sent with cross-origin requests, providing some protection against cross-site request forgery attacks.
+:param is_secure: A secure cookie is only sent to the server when a request is made with the https: scheme.
+:param is_httponly: Forbids JavaScript from accessing the cookie.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_38">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_11">Methods</h4>
+<h5 id="kiss_headers.builder.SetCookie.get_cookie_name">Method <code>get_cookie_name</code></h5>
+<blockquote>
+<p><code>def get_cookie_name(self) -&gt; str</code></p>
+</blockquote>
+<p>Extract the cookie name.</p>
+<h5 id="kiss_headers.builder.SetCookie.get_cookie_value">Method <code>get_cookie_value</code></h5>
+<blockquote>
+<p><code>def get_cookie_value(self) -&gt; str</code></p>
+</blockquote>
+<p>Extract the cookie value.</p>
+<h5 id="kiss_headers.builder.SetCookie.get_expire">Method <code>get_expire</code></h5>
+<blockquote>
+<p><code>def get_expire(self) -&gt; Union[datetime.datetime, NoneType]</code></p>
+</blockquote>
+<p>Retrieve the parsed expiration date.</p>
+<h5 id="kiss_headers.builder.SetCookie.get_max_age">Method <code>get_max_age</code></h5>
+<blockquote>
+<p><code>def get_max_age(self) -&gt; Union[int, NoneType]</code></p>
+</blockquote>
+<p>Getting the max-age value as an integer if set.</p>
+<h5 id="kiss_headers.builder.SetCookie.is_http_only">Method <code>is_http_only</code></h5>
+<blockquote>
+<p><code>def is_http_only(self) -&gt; bool</code></p>
+</blockquote>
+<p>Determine if the cookie can only be accessed by the browser.</p>
+<h5 id="kiss_headers.builder.SetCookie.is_secure">Method <code>is_secure</code></h5>
+<blockquote>
+<p><code>def is_secure(self) -&gt; bool</code></p>
+</blockquote>
+<p>Determine if the cookie is TLS/SSL only.</p>
+<h3 id="kiss_headers.builder.StrictTransportSecurity">Class <code>StrictTransportSecurity</code></h3>
+<blockquote>
+<p><code>class StrictTransportSecurity(max_age: int, does_includesubdomains: bool = False, is_preload: bool = False, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The HTTP Strict-Transport-Security response header (often abbreviated as HSTS) lets a web site
+tell browsers that it should only be accessed using HTTPS, instead of using HTTP.</p>
+<p>:param max_age: The time, in seconds, that the browser should remember that a site is only to be accessed using HTTPS.
+:param does_includesubdomains: If this optional parameter is specified, this rule applies to all of the site&rsquo;s subdomains as well.
+:param is_preload: Preloading Strict Transport Security. Google maintains an HSTS preload service. By following the guidelines and successfully submitting your domain, browsers will never connect to your domain using an insecure connection.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_39">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_12">Methods</h4>
+<h5 id="kiss_headers.builder.StrictTransportSecurity.does_includesubdomains">Method <code>does_includesubdomains</code></h5>
+<blockquote>
+<p><code>def does_includesubdomains(self) -&gt; bool</code></p>
+</blockquote>
+<p>Verify if this rule applies to all of the site&rsquo;s subdomains.</p>
+<h5 id="kiss_headers.builder.StrictTransportSecurity.get_max_age">Method <code>get_max_age</code></h5>
+<blockquote>
+<p><code>def get_max_age(self) -&gt; Union[int, NoneType]</code></p>
+</blockquote>
+<p>Get the time, in seconds, if set, that the browser should remember.</p>
+<h5 id="kiss_headers.builder.StrictTransportSecurity.should_preload">Method <code>should_preload</code></h5>
+<blockquote>
+<p><code>def should_preload(self) -&gt; bool</code></p>
+</blockquote>
+<p>Verify if Preloading Strict Transport Security should be set.</p>
+<h3 id="kiss_headers.builder.TransferEncoding">Class <code>TransferEncoding</code></h3>
+<blockquote>
+<p><code>class TransferEncoding(method: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Transfer-Encoding header specifies the form of encoding used to safely transfer the payload body to the user.</p>
+<p>:param method: Either chunked, compress, deflate, gzip, identity or br.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_40">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="descendants_4">Descendants</h4>
+<ul>
+<li><a href="#kiss_headers.builder.AcceptEncoding">kiss_headers.builder.AcceptEncoding</a></li>
+<li><a href="#kiss_headers.builder.ContentEncoding">kiss_headers.builder.ContentEncoding</a></li>
+</ul>
+<h3 id="kiss_headers.builder.UpgradeInsecureRequests">Class <code>UpgradeInsecureRequests</code></h3>
+<blockquote>
+<p><code>class UpgradeInsecureRequests(**kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The HTTP Upgrade-Insecure-Requests request header sends a signal to the server expressing
+the client’s preference for an encrypted and authenticated response, and that it
+can successfully handle the upgrade-insecure-requests CSP directive.</p>
+<p>:param initial_content: Initial content of the Header if any.
+:param kwargs: Provided args. Any key that associate a None value are just ignored.</p>
+<h4 id="ancestors-in-mro_41">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.UserAgent">Class <code>UserAgent</code></h3>
+<blockquote>
+<p><code>class UserAgent(characteristics: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The User-Agent request header is a characteristic string that lets servers and network
+peers identify the application, operating system, vendor, and/or version of the requesting user agent.</p>
+<p>:param initial_content: Initial content of the Header if any.
+:param kwargs: Provided args. Any key that associate a None value are just ignored.</p>
+<h4 id="ancestors-in-mro_42">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.Vary">Class <code>Vary</code></h3>
+<blockquote>
+<p><code>class Vary(header_name: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The Vary HTTP response header determines how to match future request headers to decide whether a cached response
+can be used rather than requesting a fresh one from the origin server.</p>
+<p>:param header_name: An header name to take into account when deciding whether or not a cached response can be used.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_43">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.WwwAuthenticate">Class <code>WwwAuthenticate</code></h3>
+<blockquote>
+<p><code>class WwwAuthenticate(auth_type: Union[str, NoneType] = None, challenge: str = 'realm', value: str = 'Secured area', **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The HTTP WWW-Authenticate response header defines the authentication
+method that should be used to gain access to a resource.
+Fair-Warning : This header is like none other and is harder to parse. It need a specific case.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">www_authenticate</span> <span class="o">=</span> <span class="n">WwwAuthenticate</span><span class="p">(</span><span class="s2">&quot;Basic&quot;</span><span class="p">,</span> <span class="s2">&quot;realm&quot;</span><span class="p">,</span> <span class="s2">&quot;Secured area&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">www_authenticate</span><span class="p">)</span>
+<span class="s1">&#39;Www-Authenticate: Basic realm=&quot;Secured area&quot;&#39;</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="n">www_authenticate</span> <span class="o">+</span> <span class="n">WwwAuthenticate</span><span class="p">(</span><span class="n">challenge</span><span class="o">=</span><span class="s2">&quot;charset&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+<span class="s1">&#39;Www-Authenticate: Basic realm=&quot;Secured area&quot;, charset=&quot;UTF-8&quot;&#39;</span>
+<span class="n">www_authenticate</span><span class="o">.</span><span class="n">get_challenge</span><span class="p">()</span>
+<span class="p">(</span><span class="s1">&#39;realm&#39;</span><span class="p">,</span> <span class="s1">&#39;Secured area&#39;</span><span class="p">)</span>
+<span class="n">www_authenticate</span><span class="o">.</span><span class="n">get_auth_type</span><span class="p">()</span>
+<span class="s1">&#39;Basic&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_44">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h4 id="methods_13">Methods</h4>
+<h5 id="kiss_headers.builder.WwwAuthenticate.get_auth_type">Method <code>get_auth_type</code></h5>
+<blockquote>
+<p><code>def get_auth_type(self) -&gt; Union[str, NoneType]</code></p>
+</blockquote>
+<p>Retrieve given authentication method if defined.</p>
+<h5 id="kiss_headers.builder.WwwAuthenticate.get_challenge">Method <code>get_challenge</code></h5>
+<blockquote>
+<p><code>def get_challenge(self) -&gt; Tuple[str, str]</code></p>
+</blockquote>
+<p>Output a tuple containing the challenge and the associated value. Raises :ValueError:</p>
+<h3 id="kiss_headers.builder.XContentTypeOptions">Class <code>XContentTypeOptions</code></h3>
+<blockquote>
+<p><code>class XContentTypeOptions(nosniff: bool = True, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The X-Content-Type-Options response HTTP header is a marker used by the server to indicate that
+the MIME types advertised in the Content-Type headers should not be changed and be followed.
+This allows to opt-out of MIME type sniffing, or, in other words, it is a way to say that
+the webmasters knew what they were doing.</p>
+<p>:param nosniff: see <a href="https://fetch.spec.whatwg.org/#x-content-type-options-header">https://fetch.spec.whatwg.org/#x-content-type-options-header</a>
+:param kwargs:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">XContentTypeOptions</span><span class="p">(</span><span class="n">nosniff</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+<span class="s1">&#39;X-Content-Type-Options: nosniff&#39;</span>
+</code></pre></div>
+
+
+<h4 id="ancestors-in-mro_45">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.XDnsPrefetchControl">Class <code>XDnsPrefetchControl</code></h3>
+<blockquote>
+<p><code>class XDnsPrefetchControl(enable: bool = True, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The X-DNS-Prefetch-Control HTTP response header controls DNS prefetching, a feature by which browsers proactively
+perform domain name resolution on both links that the user may choose to follow as well as URLs
+for items referenced by the document, including images, CSS, JavaScript, and so forth.</p>
+<p>:param enable: Toggle the specified behaviour.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_46">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.XFrameOptions">Class <code>XFrameOptions</code></h3>
+<blockquote>
+<p><code>class XFrameOptions(policy: str, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The X-Frame-Options HTTP response header can be used to indicate whether or not a browser
+should be allowed to render a page in a <frame>, <iframe>, <embed> or <object>. Sites can use this to
+avoid clickjacking attacks, by ensuring that their content is not embedded into other sites.</p>
+<p>:param policy: Can be either DENY or SAMEORIGIN.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_47">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+<h3 id="kiss_headers.builder.XXssProtection">Class <code>XXssProtection</code></h3>
+<blockquote>
+<p><code>class XXssProtection(enable_filtering: bool = True, enable_block_rendering: bool = False, report_uri: Union[str, NoneType] = None, **kwargs: Union[str, NoneType])</code></p>
+</blockquote>
+<p>The HTTP X-XSS-Protection response header is a feature of Internet Explorer, Chrome and Safari that
+stops pages from loading when they detect reflected cross-site scripting (XSS) attacks.
+Although these protections are largely unnecessary in modern browsers when sites implement a strong
+Content-Security-Policy that disables the use of inline JavaScript</p>
+<p>:param enable_filtering: Enables XSS filtering (usually default in browsers). If a cross-site scripting attack is detected, the browser will sanitize the page (remove the unsafe parts).
+:param enable_block_rendering: Rather than sanitizing the page, the browser will prevent rendering of the page if an attack is detected.
+:param report_uri: (Chromium only) If a cross-site scripting attack is detected, the browser will sanitize the page and report the violation. This uses the functionality of the CSP report-uri directive to send a report.
+:param kwargs:</p>
+<h4 id="ancestors-in-mro_48">Ancestors (in MRO)</h4>
+<ul>
+<li><a href="#kiss_headers.builder.CustomHeader">kiss_headers.builder.CustomHeader</a></li>
+<li><a href="#kiss_headers.models.Header">kiss_headers.models.Header</a></li>
+</ul>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../models/" title="Models" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Models
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../others/" title="Utils" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Utils
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.a0c4167b.min.js"></script>
+      <script src="../../assets/javascripts/bundle.fb26dd1d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: [],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.37585f48.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

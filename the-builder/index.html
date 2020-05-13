@@ -11,7 +11,7 @@
         <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
       
       
-        <link rel="canonical" href="https://kiss-headers.tech/advanced-headers/">
+        <link rel="canonical" href="https://kiss-headers.tech/the-builder/">
       
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
@@ -19,7 +19,7 @@
     
     
       
-        <title>Headers - Kiss-Headers</title>
+        <title>The Builder - Kiss-Headers</title>
       
     
     
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#setup" class="md-skip">
+        <a href="#build-headers" class="md-skip">
           Skip to content
         </a>
       
@@ -90,7 +90,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Headers
+              The Builder
             
           </span>
         </div>
@@ -212,12 +212,10 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
     
     <label class="md-nav__link" for="nav-3">
       Usages
@@ -251,12 +249,10 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+  <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2" checked>
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3-2" type="checkbox" id="nav-3-2">
     
     <label class="md-nav__link" for="nav-3-2">
       Advanced Tips
@@ -278,131 +274,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Headers
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
-        </span>
-      </label>
-    
-    <a href="./" title="Headers" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../advanced-headers/" title="Headers" class="md-nav__link">
       Headers
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    Setup
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#check-for-existence-of-a-header" class="md-nav__link">
-    Check for existence of a header
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#accessing-a-header" class="md-nav__link">
-    Accessing a header
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#removing-the-header" class="md-nav__link">
-    Removing the header
-  </a>
-  
-    <nav class="md-nav" aria-label="Removing the header">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-del" class="md-nav__link">
-    Using del
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-native-subtract" class="md-nav__link">
-    Using native subtract
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-header" class="md-nav__link">
-    Adding a header
-  </a>
-  
-    <nav class="md-nav" aria-label="Adding a header">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-native-addition" class="md-nav__link">
-    Using native addition
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-assignments" class="md-nav__link">
-    Using assignments
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compare-content" class="md-nav__link">
-    Compare content
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cast-to-dict" class="md-nav__link">
-    Cast to dict
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -444,11 +320,67 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="../the-builder/" title="The Builder" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        The Builder
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="The Builder" class="md-nav__link md-nav__link--active">
       The Builder
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#use-it-for-your-http-request" class="md-nav__link">
+    Use it for your HTTP request
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-raw-headers-from-objects" class="md-nav__link">
+    Create raw headers from objects
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-yours" class="md-nav__link">
+    Create yours
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -580,6 +512,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -590,90 +524,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
-    Setup
+  <a href="#use-it-for-your-http-request" class="md-nav__link">
+    Use it for your HTTP request
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#check-for-existence-of-a-header" class="md-nav__link">
-    Check for existence of a header
+  <a href="#create-raw-headers-from-objects" class="md-nav__link">
+    Create raw headers from objects
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#accessing-a-header" class="md-nav__link">
-    Accessing a header
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#removing-the-header" class="md-nav__link">
-    Removing the header
-  </a>
-  
-    <nav class="md-nav" aria-label="Removing the header">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-del" class="md-nav__link">
-    Using del
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-native-subtract" class="md-nav__link">
-    Using native subtract
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#adding-a-header" class="md-nav__link">
-    Adding a header
-  </a>
-  
-    <nav class="md-nav" aria-label="Adding a header">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#using-native-addition" class="md-nav__link">
-    Using native addition
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#using-assignments" class="md-nav__link">
-    Using assignments
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#compare-content" class="md-nav__link">
-    Compare content
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cast-to-dict" class="md-nav__link">
-    Cast to dict
+  <a href="#create-yours" class="md-nav__link">
+    Create yours
   </a>
   
 </li>
@@ -690,7 +556,7 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/Ousret/kiss-headers/tree/master/docs/advanced-headers.md" title="Edit this page" class="md-content__button md-icon">
+                  <a href="https://github.com/Ousret/kiss-headers/tree/master/docs/the-builder.md" title="Edit this page" class="md-content__button md-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
                   </a>
                 
@@ -698,92 +564,88 @@
                   
                 
                 
-                  <h1>Headers</h1>
-                
-                <h3 id="setup">Setup</h3>
-<p>If you wish to run bellow examples, first do :</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="n">parse_it</span>
+                <h1 id="build-headers">Build headers</h1>
+<p>This library also permits you to create headers using ready-to-use classes.</p>
+<h2 id="use-it-for-your-http-request">Use it for your HTTP request</h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="n">Headers</span><span class="p">,</span> <span class="n">Authorization</span>
 <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span>
 
-<span class="n">headers</span> <span class="o">=</span> <span class="n">parse_it</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.python.org&#39;</span><span class="p">))</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/bearer&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">Headers</span><span class="p">(</span><span class="n">Authorization</span><span class="p">(</span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span> <span class="s2">&quot;qwerty&quot;</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>  <span class="c1"># 200</span>
 </code></pre></div>
 
 
-<h3 id="check-for-existence-of-a-header">Check for existence of a header</h3>
-<div class="codehilite"><pre><span></span><code><span class="s1">&#39;Content-Type&#39;</span> <span class="ow">in</span> <span class="n">headers</span>
-<span class="c1"># OR</span>
-<span class="s1">&#39;Content-Type&#39;</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="c1"># OR</span>
-<span class="nb">hasattr</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="s1">&#39;content-type&#39;</span><span class="p">)</span>
-<span class="c1"># OR</span>
-<span class="n">headers</span><span class="o">.</span><span class="n">has</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span>
+<h2 id="create-raw-headers-from-objects">Create raw headers from objects</h2>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">Host</span><span class="p">(</span><span class="s2">&quot;developer.mozilla.org&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">UserAgent</span><span class="p">(</span>
+        <span class="s2">&quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0&quot;</span>
+    <span class="p">)</span>
+    <span class="o">+</span> <span class="n">Accept</span><span class="p">(</span><span class="s2">&quot;text/html&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Accept</span><span class="p">(</span><span class="s2">&quot;application/xhtml+xml&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Accept</span><span class="p">(</span><span class="s2">&quot;application/xml&quot;</span><span class="p">,</span> <span class="n">qualifier</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Accept</span><span class="p">(</span><span class="n">qualifier</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">AcceptLanguage</span><span class="p">(</span><span class="s2">&quot;en-US&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">AcceptLanguage</span><span class="p">(</span><span class="s2">&quot;en&quot;</span><span class="p">,</span> <span class="n">qualifier</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">AcceptEncoding</span><span class="p">(</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">AcceptEncoding</span><span class="p">(</span><span class="s2">&quot;deflate&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">AcceptEncoding</span><span class="p">(</span><span class="s2">&quot;br&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Referer</span><span class="p">(</span><span class="s2">&quot;https://developer.mozilla.org/testpage.html&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">Connection</span><span class="p">(</span><span class="n">should_keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">UpgradeInsecureRequests</span><span class="p">()</span>
+    <span class="o">+</span> <span class="n">IfModifiedSince</span><span class="p">(</span><span class="s2">&quot;Mon, 18 Jul 2016 02:36:04 GMT&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">IfNoneMatch</span><span class="p">(</span><span class="s2">&quot;c561c68d0ba92bbeb8b0fff2a9199f722e3a621a&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">CacheControl</span><span class="p">(</span><span class="n">max_age</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">raw_headers</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
 </code></pre></div>
 
 
-<h3 id="accessing-a-header">Accessing a header</h3>
-<div class="codehilite"><pre><span></span><code><span class="n">headers</span><span class="o">.</span><span class="n">content_type</span>
-<span class="c1"># OR</span>
-<span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span>
-<span class="c1"># OR</span>
-<span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;content-type&#39;</span><span class="p">)</span>
+<p><code>raw_headers</code> now retain the following :</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Host</span><span class="o">:</span> <span class="n">developer</span><span class="o">.</span><span class="na">mozilla</span><span class="o">.</span><span class="na">org</span>
+<span class="n">User</span><span class="o">-</span><span class="n">Agent</span><span class="o">:</span> <span class="n">Mozilla</span><span class="sr">/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/</span><span class="mf">50.0</span>
+<span class="n">Accept</span><span class="o">:</span> <span class="n">text</span><span class="sr">/html, application/xhtml+xml, application/xml; q=&quot;0.9&quot;, */</span><span class="o">*;</span> <span class="n">q</span><span class="o">=</span><span class="s2">&quot;0.8&quot;</span>
+<span class="n">Accept</span><span class="o">-</span><span class="n">Language</span><span class="o">:</span> <span class="n">en</span><span class="o">-</span><span class="n">US</span><span class="o">,</span> <span class="n">en</span><span class="o">;</span> <span class="n">q</span><span class="o">=</span><span class="s2">&quot;0.5&quot;</span>
+<span class="n">Accept</span><span class="o">-</span><span class="n">Encoding</span><span class="o">:</span> <span class="n">gzip</span><span class="o">,</span> <span class="n">deflate</span><span class="o">,</span> <span class="n">br</span>
+<span class="n">Referer</span><span class="o">:</span> <span class="n">https</span><span class="o">://</span><span class="n">developer</span><span class="o">.</span><span class="na">mozilla</span><span class="o">.</span><span class="na">org</span><span class="o">/</span><span class="n">testpage</span><span class="o">.</span><span class="na">html</span>
+<span class="n">Connection</span><span class="o">:</span> <span class="n">keep</span><span class="o">-</span><span class="n">alive</span>
+<span class="n">Upgrade</span><span class="o">-</span><span class="n">Insecure</span><span class="o">-</span><span class="n">Requests</span><span class="o">:</span> <span class="mi">1</span>
+<span class="n">If</span><span class="o">-</span><span class="n">Modified</span><span class="o">-</span><span class="n">Since</span><span class="o">:</span> <span class="n">Mon</span><span class="o">,</span> <span class="mi">18</span> <span class="n">Jul</span> <span class="mi">2016</span> <span class="mi">02</span><span class="o">:</span><span class="mi">36</span><span class="o">:</span><span class="mi">04</span> <span class="n">GMT</span>
+<span class="n">If</span><span class="o">-</span><span class="n">None</span><span class="o">-</span><span class="n">Match</span><span class="o">:</span> <span class="s2">&quot;c561c68d0ba92bbeb8b0fff2a9199f722e3a621a&quot;</span>
+<span class="n">Cache</span><span class="o">-</span><span class="n">Control</span><span class="o">:</span> <span class="n">max</span><span class="o">-</span><span class="n">age</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
 </code></pre></div>
 
 
-<h3 id="removing-the-header">Removing the header</h3>
-<p>It is possible to remove an header in multiple ways. 
-<em>e.g.</em> If you would like to remove <code>Content-Type</code> header.</p>
-<h4 id="using-del">Using del</h4>
-<div class="codehilite"><pre><span></span><code><span class="k">del</span> <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">]</span>
-<span class="c1"># OR</span>
-<span class="k">del</span> <span class="n">headers</span><span class="o">.</span><span class="n">content_type</span>
+<p>See the complete list of available header class in the full documentation. </p>
+<h2 id="create-yours">Create yours</h2>
+<p>Also, you can create your own custom header object using the class <code>kiss_headers.CustomHeader</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="n">CustomHeader</span>
+
+<span class="k">class</span> <span class="nc">MyExtraHeader</span><span class="p">(</span><span class="n">CustomHeader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;My extra header purpose is to...&quot;&quot;&quot;</span>
+
+    <span class="n">__squash__</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Determine if multiple instance of MyExtraHeader should be squashed into one entry using coma.</span>
+    <span class="n">__override__</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># Replace it by a string if the default &quot;class to header name&quot; does suit you.  </span>
+    <span class="c1"># Here MyExtraHeader class would be named &#39;My-Extra-Header&#39;.</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checksum</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">param_1</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">checksum</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;param_1&quot;</span><span class="p">:</span> <span class="n">param_1</span><span class="p">})</span>
 </code></pre></div>
 
 
-<h4 id="using-native-subtract">Using native subtract</h4>
-<div class="codehilite"><pre><span></span><code><span class="n">headers</span> <span class="o">-=</span> <span class="s1">&#39;Content-Type&#39;</span>
-<span class="c1"># OR</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="n">headers</span> <span class="o">-</span> <span class="s1">&#39;Content-Type&#39;</span>
+<p>Now you can instance <code>MyExtraHeader</code> like this :</p>
+<div class="codehilite"><pre><span></span><code><span class="n">header</span> <span class="o">=</span> <span class="n">MyExtraHeader</span><span class="p">(</span><span class="s2">&quot;azerty&quot;</span><span class="p">,</span> <span class="n">param_1</span><span class="o">=</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>  <span class="c1"># output: &#39;My-Extra-Header: azerty; param_1=&quot;abc&quot;&#39;</span>
 </code></pre></div>
 
 
-<h3 id="adding-a-header">Adding a header</h3>
-<p>It is possible to add an header in multiple ways. 
-eg. If you would like to add <code>Content-Type</code> header.</p>
-<p>You will have to import the <code>Header</code> class, in addition to <code>parse_it</code>, as done below.</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="n">Header</span>
-</code></pre></div>
-
-
-<h4 id="using-native-addition">Using native addition</h4>
-<div class="codehilite"><pre><span></span><code><span class="n">headers</span> <span class="o">+=</span> <span class="n">Header</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
-</code></pre></div>
-
-
-<h4 id="using-assignments">Using assignments</h4>
-<div class="codehilite"><pre><span></span><code><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
-<span class="c1"># OR</span>
-<span class="n">headers</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s1">&#39;application/json&#39;</span>
-</code></pre></div>
-
-
-<h3 id="compare-content">Compare content</h3>
-<p>Consider this : <code>Content-Type</code> content is <code>application/json; charset=utf-8</code>.</p>
-<p>The following would result in a <code>True</code> statement.</p>
-<div class="codehilite"><pre><span></span><code><span class="n">headers</span><span class="o">.</span><span class="n">content_type</span> <span class="o">==</span> <span class="s1">&#39;application/json&#39;</span>
-<span class="s1">&#39;application/json&#39;</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">content_type</span>
-<span class="s1">&#39;charset&#39;</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">content_type</span>
-</code></pre></div>
-
-
-<p>The following would result in a <code>False</code> statement.</p>
-<div class="codehilite"><pre><span></span><code><span class="n">headers</span><span class="o">.</span><span class="n">content_type</span> <span class="o">==</span> <span class="s1">&#39;application&#39;</span>
-<span class="s1">&#39;application&#39;</span> <span class="ow">in</span> <span class="n">headers</span><span class="o">.</span><span class="n">content_type</span>
-</code></pre></div>
-
-
-<h3 id="cast-to-dict">Cast to dict</h3>
-<p>You could use <code>to_dict()</code> method to obtain a <code>CaseInsensibleDict</code> from a <code>Headers</code> object.
-Any headers that are OneToMany will be concatenated into one entry, separated with a comma.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can implement your own methods in a <code>CustomHeader</code> subclass but you cannot create properties, attributes as this behavior  (get/set) is overridden by the library.</p>
+</div>
                 
               
               
@@ -802,7 +664,7 @@ Any headers that are OneToMany will be concatenated into one entry, separated wi
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../quickstart/" title="Quick Start" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../polymorphism/" title="Polymorphism" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -811,19 +673,19 @@ Any headers that are OneToMany will be concatenated into one entry, separated wi
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Quick Start
+                Polymorphism
               </div>
             </div>
           </a>
         
         
-          <a href="../advanced-header/" title="Header" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../explain-headers/" title="Explain Headers" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Header
+                Explain Headers
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">
