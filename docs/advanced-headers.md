@@ -1,5 +1,6 @@
 ### Setup
-Consider this :
+
+If you wish to run bellow examples, first do :
 
 ```python
 from kiss_headers import parse_it

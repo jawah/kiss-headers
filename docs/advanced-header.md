@@ -1,6 +1,21 @@
+# Header Class
+
+This class is used to represent a single header as an object. An Header can be casted to `str`, `bytes` and `dict`.
+Given this :
+
+```python
+from kiss_headers import Header
+
+header = Header("Content-Type", "text/html; charset=UTF-8")
+
+str(header)  # output: 'text/html; charset=UTF-8'
+repr(header)  # output: 'Content-Type: text/html; charset=UTF-8'
+bytes(header)  # output: b'Content-Type: text/html; charset=UTF-8'
+```
+
 ### Setup
 
-To import `kiss_headers` :
+If you wish to run bellow examples, first do :
 
 ```python
 from kiss_headers import parse_it

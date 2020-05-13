@@ -4,34 +4,42 @@ site_url: https://kiss-headers.tech/
 
 theme:
     name: 'material'
-    logo:
-      icon: 'local_florist'
+    icon:
+      logo: material/library
+      repo: fontawesome/brands/git-alt
     palette:
       primary: 'teal'
       accent: 'deep orange'
 
 repo_name: ousret/kiss-headers
 repo_url: https://github.com/Ousret/kiss-headers/
-edit_uri: ""
+edit_uri: "https://github.com/Ousret/kiss-headers/tree/master/docs"
 
 nav:
-    - Introduction: 'index.md'
-    - The Theory: 'the-theory.md'
-    - Basic Usage: 'quickstart.md'
-    - Headers: 'advanced-headers.md'
-    - Header: 'advanced-header.md'
-    - The Builder: 'the-builder.md'
-    - Explain Headers: 'explain-headers.md'
-    - Email: 'imap.md'
-    - API: 'api.md'
-    - Contributing: 'contributing.md'
+  - Introduction: 'index.md'
+  - The Theory: 'the-theory.md'
+  - Usages :
+    - Quick Start: 'quickstart.md'
+    - Advanced Tips:
+      - Headers: 'advanced-headers.md'
+      - Header: 'advanced-header.md'
+      - Polymorphism: 'polymorphism.md'
+  - The Builder: 'the-builder.md'
+  - Explain Headers: 'explain-headers.md'
+  - Email: 'imap.md'
+  - Developer Interface:
+    - API: 'APIs/functions.md'
+    - Models: 'APIs/models.md'
+    - Custom Headers: 'APIs/custom-headers.md'
+    - Utils: 'APIs/others.md'
+  - Contributing: 'contributing.md'
 
 markdown_extensions:
-    - extra
-    - smarty
-    - codehilite
-    - admonition
-    - mkautodoc
+  - extra
+  - smarty
+  - codehilite
+  - admonition
+  - mkautodoc
 
 extra_css:
   - custom.css
