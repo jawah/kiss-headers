@@ -51,6 +51,7 @@ setup(
     },
     keywords=["headers", "http", "mail", "text", "imap", "header", "https", "imap4"],
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
+    package_data={"kiss_headers": ["py.typed"]},
     install_requires=[],  # We shall not require anything. This will remain the same.
     extras_require=EXTRAS,
     include_package_data=True,
