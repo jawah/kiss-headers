@@ -417,15 +417,15 @@ class Header(object):
 
     def __bytes__(self) -> bytes:
         """
-        Provide a bytes repr of header. Warning, this output does not have a RC at the end. Any error encountered
+        Provide a bytes repr of header. Warning, this output does not have an RC at the end. Any error encountered
         in encoder would be treated by 'surrogateescape' clause.
         """
         return repr(self).encode("utf-8", errors="surrogateescape")
 
     def __dir__(self) -> Iterable[str]:
         """
-        Provide a better auto-completion when using python interpreter. We are feeding __dir__ so Python can be aware
-        of what properties are callable. In other word, more precise auto-completion when not using IDE.
+        Provide a better auto-completion when using Python interpreter. We are feeding __dir__ so Python can be aware
+        of what properties are callable. In other words, more precise auto-completion when not using IDE.
         """
         return list(super().__dir__()) + [normalize_str(key) for key in self._valued_attrs.keys()]
 
@@ -479,7 +479,7 @@ class Header(object):
 
     def __getitem__(self, item: Union[str, int]) -> Union[str, List[str]]:
         """
-        This method will allow you to retrieve attribute value using the bracket syntax, list-like or dict-like.
+        This method will allow you to retrieve attribute value using the bracket syntax, list-like, or dict-like.
         """
         if isinstance(item, int):
             return (
@@ -506,7 +506,7 @@ class Header(object):
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:
         """
-        All the magic happen here, this method should be invoked when trying to call (not declared) properties.
+        All the magic happens here, this method should be invoked when trying to call (not declared) properties.
         For instance, calling self.charset should end up here and be replaced by self['charset'].
         """
         item = unpack_protected_keyword(item)
@@ -536,9 +536,9 @@ class Header(object):
 
 class Headers(object):
     """
-    Object oriented representation for Headers. Contains a list of Header with some level of abstraction.
-    Combine advantages of dict, CaseInsensibleDict and native objects.
-    Headers does not inherit of the Mapping type, but it does borrow some concept from it.
+    Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
+    Combine advantages of dict, CaseInsensibleDict, and native objects.
+    Headers do not inherit of the Mapping type, but it does borrow some concept from it.
     """
 
     # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
@@ -611,13 +611,13 @@ class Headers(object):
 
     def has(self, header: str) -> bool:
         """
-        Safely check if header name is in headers
+        Safely check if header name is in headers.
         """
         return header in self
 
     def get(self, header: str) -> Optional[Union[Header, List[Header]]]:
         """
-        Retrieve header from headers if exists
+        Retrieve header from headers if exists.
         """
         if header not in self:
             return None
@@ -625,7 +625,7 @@ class Headers(object):
 
     def has_many(self, name: str) -> bool:
         """
-        Determine if an header name has multiple entries in Headers. Detect OneToMany entries.
+        Determine if a header name has multiple entries in Headers. Detect OneToMany entries.
         >>> headers = Header("A", "0") + Header("A", "1") + Header("B", "sad")
         >>> headers.has_many("a")
         True
@@ -649,7 +649,7 @@ class Headers(object):
     def keys(self) -> List[str]:
         """
         Return a list of distinct header name set in headers.
-        Be aware that it wont return a typing.KeysView
+        Be aware that it won't return a typing.KeysView
         """
         keys = list()
 
@@ -662,16 +662,16 @@ class Headers(object):
 
     def values(self) -> NotImplemented:
         """
-        I choose not to implement values() on Headers as it would bring more confusion..
-        Either we make it the same len as keys() or we don't. Either way don't please me. Hope to ear from the
+        I choose not to implement values() on Headers as it would bring more confusion...
+        Either we make it the same len as keys() or we don't. Either way don't please me. Hope to hear from the
         community about this.
         """
         return NotImplemented
 
     def items(self) -> List[Tuple[str, str]]:
         """
-        Provide an iterator witch each entry contain a tuple of header name and content.
-        This wont return a ItemView.
+        Provide a list witch each entry contains a tuple of header name and content.
+        This won't return an ItemView as Headers does not inherit from Mapping.
         >>> headers = Header("X-Hello-World", "1") + Header("Content-Type", "happiness=True") + Header("Content-Type", "happiness=False")
         >>> headers.items()
         [('X-Hello-World', '1'), ('Content-Type', 'happiness=True'), ('Content-Type', 'happiness=False')]
@@ -686,8 +686,8 @@ class Headers(object):
     def to_dict(self) -> CaseInsensitiveDict:
         """
         Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
-        If one header appear multiple times, if would be concatenated into the same value, separated by comma.
-        Be aware that this repr could lead to mistake.
+        If one header appears multiple times, it would be concatenated into the same value, separated by a comma.
+        Be aware that this repr could lead to a mistake.
         """
         dict_headers = CaseInsensitiveDict()
 
@@ -702,7 +702,7 @@ class Headers(object):
 
     def __deepcopy__(self, memodict: Dict) -> "Headers":
         """
-        Just provide a deepcopy of current Headers object. Pointer/reference free of the current instance.
+        Just provide a deepcopy of the current Headers object. Pointer/reference is free of the current instance.
         """
         return Headers(deepcopy(self._headers))
 
@@ -774,7 +774,7 @@ class Headers(object):
 
     def __eq__(self, other: object) -> bool:
         """
-        Basically compare if one Headers instance equal to another. Order does not matter and instance length matter.
+        Essentially compare if one Headers instance equal to another. The order does not matter and instance length matter.
         """
         if not isinstance(other, Headers):
             raise NotImplementedError(
@@ -793,7 +793,7 @@ class Headers(object):
 
     def __len__(self) -> int:
         """
-        Return number of headers. If one header appear multiple time, it is not reduced to one in this count.
+        Return number of headers. If one header appears multiple time, it is not reduced to one in this count.
         """
         return len(self._headers)
 
@@ -805,7 +805,7 @@ class Headers(object):
 
     def __repr__(self) -> str:
         """
-        Non-ambiguous representation of an Headers instance. Using CRLF as described in rfc2616.
+        Non-ambiguous representation of a Headers instance. Using CRLF as described in rfc2616.
         The repr of Headers will not end with blank(s) line(s). You have to add it yourself, depending on your needs.
         """
         result: List[str] = []
@@ -882,7 +882,7 @@ class Headers(object):
 
     def __isub__(self, other: Union[Header, str]) -> "Headers":
         """
-        Inline subtract, using operator '-'. If a str is subtracted to it,
+        Inline subtract, using the operator '-'. If str is subtracted to it,
         would be looking for header named like provided str.
         Would remove any entries named 'Set-Cookies'. eg :
         >>> headers = Header("Set-Cookies", "HELLO=WORLD") + Header("Allow", "POST")
@@ -938,7 +938,7 @@ class Headers(object):
 
     def __getattr__(self, item: str) -> Union[Header, List[Header]]:
         """
-        Where the magic happen, every header are accessible via the property notation.
+        Where the magic happens, every header is accessible via the property notation.
         The result is either a single Header or a list of Header.
         eg.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST") + Header("From", "john-doe@gmail.com")
@@ -958,7 +958,7 @@ class Headers(object):
 
     def to_json(self) -> str:
         """
-        Provide a JSON representation of Headers
+        Provide a JSON representation of Headers. JSON is by definition a string.
         """
         return dumps(self.items())
 
@@ -985,7 +985,7 @@ class Headers(object):
 
     def __contains__(self, item: Union[Header, str]) -> bool:
         """
-        This method will allow you to test if a header, based on it's string name, is present or not in headers.
+        This method will allow you to test if a header, based on its string name, is present or not in headers.
         You could also use a Header object to verify it's presence.
         """
         item = normalize_str(item) if isinstance(item, str) else item
@@ -1017,7 +1017,7 @@ class Headers(object):
         raise TypeError
 
     def popitem(self) -> Tuple[str, str]:
-        """Pop last header as a tuple (header name, header content)."""
+        """Pop the last header as a tuple (header name, header content)."""
         header: Header = self.pop()  # type: ignore
         return header.name, header.content
 
