@@ -339,7 +339,7 @@ class ContentDisposition(CustomHeader):
 
     def get_filename_decoded(self) -> Optional[str]:
         """Retrieve and decode if necessary the associated filename."""
-        if 'filename*' in self:
+        if "filename*" in self:
             try:
                 encoding, encoded_filename = tuple(str(self["filename*"]).split("''"))
                 return url_unquote(encoded_filename, encoding)
