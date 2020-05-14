@@ -427,7 +427,9 @@ class Header(object):
         Provide a better auto-completion when using Python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other words, more precise auto-completion when not using IDE.
         """
-        return list(super().__dir__()) + [normalize_str(key) for key in self._valued_attrs.keys()]
+        return list(super().__dir__()) + [
+            normalize_str(key) for key in self._valued_attrs.keys()
+        ]
 
     @property
     def attrs(self) -> List[str]:
@@ -1018,7 +1020,9 @@ class Headers(object):
 
         return False
 
-    def index(self, __value: Union[Header, str], __start: int = 0, __stop: int = -1) -> int:
+    def index(
+        self, __value: Union[Header, str], __start: int = 0, __stop: int = -1
+    ) -> int:
         """
         Search for the first appearance of an header based on its name or instance in Headers.
         Same method signature as list().index().
@@ -1041,14 +1045,18 @@ class Headers(object):
         """
 
         value_is_header: bool = isinstance(__value, Header)
-        normalized_value: Optional[str] = normalize_str(__value) if not value_is_header else None
+        normalized_value: Optional[str] = normalize_str(
+            __value  # type: ignore
+        ) if not value_is_header else None
         headers_len: int = len(self)
 
         # Convert indices to positive indices
         __start = __start % headers_len if __start < 0 else __start
         __stop = __stop % headers_len if __stop < 0 else __stop
 
-        for header, index in zip(self._headers[__start:__stop+1], range(__start, __stop+1)):
+        for header, index in zip(
+            self._headers[__start : __stop + 1], range(__start, __stop + 1)
+        ):
             if value_is_header and __value == header:
                 return index
             elif normalized_value == header.normalized_name:
@@ -1080,7 +1088,9 @@ class Headers(object):
 
             return headers
 
-        raise TypeError(f"Type {type(__index_or_name)} is not supported by pop() method on Headers.")
+        raise TypeError(
+            f"Type {type(__index_or_name)} is not supported by pop() method on Headers."
+        )
 
     def popitem(self) -> Tuple[str, str]:
         """Pop the last header as a tuple (header name, header content)."""
