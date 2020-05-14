@@ -97,7 +97,7 @@ class Header(object):
     @property
     def name(self) -> str:
         """
-        Output the original header name as it was captured initially
+        Output the original header name as it was captured initially.
         """
         return self._name
 
@@ -111,14 +111,14 @@ class Header(object):
     @property
     def pretty_name(self) -> str:
         """
-        Output a prettified name of the header. First letter capitalized of each word.
+        Output a prettified name of the header. The first letter capitalized on each word.
         """
         return self._pretty_name
 
     @property
     def content(self) -> str:
         """
-        Output associated content to header as it was captured initially.
+        Output associated content to the header as it was captured initially.
         >>> header = Header("ETag", '"33a64df551425fcc55e4d42a148795d9f25f89d4"')
         >>> header.content
         '33a64df551425fcc55e4d42a148795d9f25f89d4'
@@ -131,7 +131,7 @@ class Header(object):
 
     @property
     def unfolded_content(self) -> str:
-        """Output unfolded associated content to header. Meaning that every LF + n space(s) would be properly
+        """Output unfolded associated content to the header. Meaning that every LF + n space(s) would be properly
         replaced."""
         return unfold(self.content)
 
@@ -163,12 +163,12 @@ class Header(object):
         return self.normalized_name > other.normalized_name
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
-        """Simply provide a deepcopy of an Header object. Pointer/Reference free of the initial reference."""
+        """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
 
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
         """
-        Allow you to assign-add any string to an Header instance. The string will be a new member of your header.
+        Allow you to assign-add any string to a Header instance. The string will be a new member of your header.
         >>> header = Header("X-Hello-World", "")
         >>> repr(header)
         'X-Hello-World: '
@@ -198,9 +198,9 @@ class Header(object):
 
     def __add__(self, other: Union[str, "Header"]) -> Union["Header", "Headers"]:
         """
-        This implementation permit to add either a string or a Header to your Header instance.
-        When you add string to your Header instance, it will create another instance with a new
-        member in it using the string; see iadd doc about it. But when its another Header the result is an Headers
+        This implementation permits to add either a string or a Header to your Header instance.
+        When you add a string to your Header instance, it will create another instance with a new
+        member in it using the string; see iadd doc about it. But when its another Header the result is a Headers
         object containing both Header object.
         >>> headers = Header("X-Hello-World", "1") + Header("Content-Type", "happiness=True")
         >>> len(headers)
@@ -234,7 +234,7 @@ class Header(object):
 
     def __isub__(self, other: str) -> "Header":
         """
-        This method should allow you to remove attribute or member from header.
+        This method should allow you to remove attributes or members from the header.
         """
         if not isinstance(other, str):
             raise TypeError(
@@ -273,7 +273,7 @@ class Header(object):
 
     def __sub__(self, other: str) -> "Header":
         """
-        This method should allow you to remove attribute or member from header.
+        This method should allow you to remove attributes or members from the header.
         """
         header_ = deepcopy(self)
         header_ -= other
@@ -304,8 +304,8 @@ class Header(object):
 
     def __setitem__(self, key: str, value: str) -> None:
         """
-        Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
-        Any value that are not a str are casted to str.
+        Set an attribute bracket syntax like. This will erase the previously set attribute named after the key.
+        Any values that are not str are cast to str.
         """
 
         if key in self:
@@ -323,7 +323,7 @@ class Header(object):
 
     def __delitem__(self, key: str) -> None:
         """
-        Remove any attribute named after the key in header using the bracket syntax.
+        Remove any attribute named after the key in the header using the bracket syntax.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
         >>> str(headers.content_type)
         'text/html; charset=UTF-8'
@@ -349,7 +349,7 @@ class Header(object):
 
     def __delattr__(self, item: str) -> None:
         """
-        Remove any attribute named after the key in header using the property notation.
+        Remove any attribute named after the key in the header using the property notation.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
         >>> repr(headers.content_type)
         'Content-Type: text/html; charset=UTF-8'
@@ -369,8 +369,8 @@ class Header(object):
         del self[item]
 
     def __iter__(self) -> Iterator[Tuple[str, Optional[Union[str, List[str]]]]]:
-        """Provide a way to iter over an Header object. This will yield a Tuple of key, value.
-        Value would be None if the key is a member without associated value."""
+        """Provide a way to iter over a Header object. This will yield a Tuple of key, value.
+        The value would be None if the key is a member without associated value."""
         for key in self._valued_attrs:
             yield key, self[key]
         for adjective in self._not_valued_attrs:
@@ -405,7 +405,7 @@ class Header(object):
 
     def __str__(self) -> str:
         """
-        Allow to cast a single header to a string. Only content would be exposed here.
+        Allow casting a single header to a string. Only content would be exposed here.
         """
         return self._content
 
@@ -424,7 +424,7 @@ class Header(object):
 
     def __dir__(self) -> Iterable[str]:
         """
-        Provide a better auto-completion when using Python interpreter. We are feeding __dir__ so Python can be aware
+        Provide a better auto-completion when using a Python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other words, more precise auto-completion when not using IDE.
         """
         return list(super().__dir__()) + [
@@ -442,13 +442,13 @@ class Header(object):
 
     def has(self, attr: str) -> bool:
         """
-        Safely check is current header has an attribute or adjective in it.
+        Safely check if the current header has an attribute or adjective in it.
         """
         return attr in self
 
     def get(self, attr: str) -> Optional[Union[str, List[str]]]:
         """
-        Retrieve associated value of an attribute.
+        Retrieve the associated value of an attribute.
         >>> header = Header("Content-Type", "application/json; charset=UTF-8; format=flowed")
         >>> header.charset
         'UTF-8'
@@ -524,7 +524,7 @@ class Header(object):
 
     def __contains__(self, item: str) -> bool:
         """
-        Verify if a string match a member or an attribute name of an Header.
+        Verify if a string matches a member or an attribute-name of a Header.
         """
         if item in self.attrs:
             return True
@@ -539,8 +539,8 @@ class Header(object):
 class Headers(object):
     """
     Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
-    Combine advantages of dict, CaseInsensibleDict, list, multi-dict and native objects.
-    Headers do not inherit of the Mapping type, but it does borrow some concept from it.
+    Combine advantages of dict, CaseInsensibleDict, list, multi-dict, and native objects.
+    Headers do not inherit the Mapping type, but it does borrow some concepts from it.
     """
 
     # Most common headers that you may or may not find. This should be appreciated when having auto-completion.

@@ -36,9 +36,9 @@ def normalize_str(string: str) -> str:
 
 def unpack_protected_keyword(name: str) -> str:
     """
-    By choice this project aim to allow developper to access header or attribute in header by using the property
-    notation. Some keyword are protected by the language itself. So :
-    When starting by a number, prepend a underscore to it. When using a protected keyword, append a underscore to it.
+    By choice, this project aims to allow developers to access header or attribute in header by using the property
+    notation. Some keywords are protected by the language itself. So :
+    When starting by a number, prepend an underscore to it. When using a protected keyword, append an underscore to it.
     >>> unpack_protected_keyword("_3to1")
     '3to1'
     >>> unpack_protected_keyword("from_")
@@ -73,8 +73,8 @@ def extract_class_name(type_: Type) -> Optional[str]:
 def header_content_split(string: str, delimiter: str) -> List[str]:
     """
     Take a string and split it according to the passed delimiter.
-    It will ignore delimiter if inside between double quote, inside a value or in parenthesis.
-    The input string is considered perfectly formed. This function do not split coma on a day
+    It will ignore delimiter if inside between double quote, inside a value, or in parenthesis.
+    The input string is considered perfectly formed. This function does not split coma on a day
     when attached, see "RFC 7231, section 7.1.1.2: Date".
     >>> header_content_split("Wed, 15-Apr-2020 21:27:31 GMT, Fri, 01-Jan-2038 00:00:00 GMT", ",")
     ['Wed, 15-Apr-2020 21:27:31 GMT', 'Fri, 01-Jan-2038 00:00:00 GMT']
@@ -233,7 +233,7 @@ def prettify_header_name(name: str) -> str:
 
 def decode_partials(items: Iterable[Tuple[str, Any]]) -> List[Tuple[str, str]]:
     """
-    This function takes a list of tuple, representing headers by key, value. Where value is bytes or string containing
+    This function takes a list of tuples, representing headers by key, value. Where value is bytes or string containing
     (RFC 2047 encoded) partials fragments like the following :
     >>> decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
     [('Subject', 'pöstal')]
@@ -281,7 +281,7 @@ def unquote(string: str) -> str:
 
 def quote(string: str) -> str:
     """
-    Surround string by double quote.
+    Surround string by a double quote char.
     >>> quote("hello")
     '"hello"'
     >>> quote('"hello')
@@ -294,7 +294,7 @@ def quote(string: str) -> str:
 
 def count_leftover_space(content: str) -> int:
     """
-    Recursive function that count trailing white space at the end of given string.
+    A recursive function that counts trailing white space at the end of the given string.
     >>> count_leftover_space("hello   ")
     3
     >>> count_leftover_space("byebye ")
@@ -389,8 +389,8 @@ def extract_comments(content: str) -> List[str]:
 
 
 def unfold(content: str) -> str:
-    """Some header content may have folded content (LF + 9 spaces, LF + 7 spaces or LF + 1 spaces) in it, making your job at reading them a little more difficult.
-    This function undo the folding in given content.
+    """Some header content may have folded content (LF + 9 spaces, LF + 7 spaces, or LF + 1 spaces) in it, making your job at reading them a little more difficult.
+    This function undoes the folding in the given content.
     >>> unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\\n         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s")
     'eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s'
     """
@@ -402,7 +402,7 @@ def unfold(content: str) -> str:
 
 
 def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
-    """This function purpose is to extract lines that can be decoded using utf-8.
+    """This function's purpose is to extract lines that can be decoded using the UTF-8 decoder.
     >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\n".encode("utf-8"))
     ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'')
     >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\nThat IS totally random.".encode("utf-8"))

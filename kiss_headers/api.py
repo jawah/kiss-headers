@@ -126,8 +126,8 @@ def explain(headers: Headers) -> CaseInsensitiveDict:
 def get_polymorphic(
     target: Union[Headers, Header], desired_output: Type[T]
 ) -> Union[T, List[T], None]:
-    """Experimental. Transform an Header or Headers object to its target `CustomHeader` subclass
-    in order to access more ready-to-use methods. eg. You have an Header object named 'Set-Cookie' and you wish
+    """Experimental. Transform a Header or Headers object to its target `CustomHeader` subclass
+    to access more ready-to-use methods. eg. You have a Header object named 'Set-Cookie' and you wish
     to extract the expiration date as a datetime.
     >>> header = Header("Set-Cookie", "1P_JAR=2020-03-16-21; expires=Wed, 15-Apr-2020 21:27:31 GMT")
     >>> header["expires"]
