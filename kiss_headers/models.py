@@ -1068,6 +1068,25 @@ class Headers(object):
         """
         Pop header instance(s) from headers. By default the last one. Accept index as integer or header name.
         If you pass a header name, it will pop from Headers every entry named likewise.
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle")
+        >>> header = headers.pop()
+        >>> repr(header)
+        'C: funny; riddle'
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle")
+        >>> header = headers.pop(1)
+        >>> repr(header)
+        'B: world'
+        >>> header = headers.pop("A")
+        >>> repr(header)
+        'A: hello'
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle") + Header("B", "ending")
+        >>> headers = headers.pop("B")
+        >>> len(headers)
+        2
+        >>> headers[0].name
+        'B'
+        >>> (str(headers[0]), str(headers[1]))
+        ('world', 'ending')
         """
         if isinstance(__index_or_name, int):
             return self._headers.pop(__index_or_name)
