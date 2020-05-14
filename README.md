@@ -207,6 +207,8 @@ Feel free to check [issues page](https://github.com/Ousret/kiss-headers/issues) 
 Firstly, after getting your own local copy, run `./scripts/install` to initialize your virtual environment.
 Then run `./scripts/check` before you commit, make sure everything is still working.
 
+Remember to keep it sweet and simple when contributing to this project.
+
 ## 📝 License
 
 Copyright © 2020 [Ahmed TAHRI @Ousret](https://github.com/Ousret).<br />

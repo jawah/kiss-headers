@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from email import utils
 from re import findall, fullmatch
 from typing import Dict, List, Optional, Tuple, Union
-from urllib.parse import quote as url_quote
+from urllib.parse import quote as url_quote, unquote as url_unquote
 
 from kiss_headers.models import Header
 from kiss_headers.utils import (
@@ -154,6 +154,10 @@ class Accept(CustomHeader):
         'text/html; q="0.8"'
         >>> repr(header)
         'Accept: text/html; q="0.8"'
+        >>> header.get_qualifier()
+        0.8
+        >>> header.get_mime()
+        'text/html'
         """
         if len(mime.split("/")) != 2:
             raise ValueError(
@@ -284,21 +288,28 @@ class ContentDisposition(CustomHeader):
         :param disposition: Could be either inline, form-data, attachment or empty. Choose one. Default to inline.
         :param name: Is a string containing the name of the HTML field in the form that the content of this subpart refers to.
         :param filename: Is a string containing the original name of the file transmitted. The filename is always optional and must not be used blindly by the application. ASCII-US Only.
-        :param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987.
+        :param fallback_filename: Fallback filename if filename parameter does not uses the encoding defined in RFC 5987. Will be UTF-8 (url-quote) encoded.
         :param boundary: For multipart entities the boundary directive is required, which consists of 1 to 70 characters from a set of characters known to be very robust through email gateways, and not ending with white space. It is used to encapsulate the boundaries of the multiple parts of the message.
         :param kwargs:
+        >>> header = ContentDisposition("attachment", filename="hello-world.pdf", fallback_filename="こんにちは世界.pdf")
+        >>> repr(header)
+        'Content-Disposition: attachment; filename="hello-world.pdf"; filename*="UTF-8\\'\\'%E3%81%93%E3%82%93%E3%81%AB%E3%81%A1%E3%81%AF%E4%B8%96%E7%95%8C.pdf"'
+        >>> header.get_disposition()
+        'attachment'
+        >>> header.get_filename_decoded()
+        'こんにちは世界.pdf'
         """
         if disposition not in ["attachment", "inline", "form-data", ""]:
             raise ValueError(
                 "Disposition should be either inline, form-data, attachment or empty. Choose one."
             )
 
-        if fallback_filename:
+        if filename:
             try:
-                fallback_filename.encode("ASCII")
+                filename.encode("ASCII")
             except UnicodeEncodeError:
                 raise ValueError(
-                    "The fallback filename should only contain valid ASCII characters. Not '{fb_filename}'. Use fallback_filename instead.".format(
+                    "The filename should only contain valid ASCII characters. Not '{fb_filename}'. Use fallback_filename instead.".format(
                         fb_filename=fallback_filename
                     )
                 )
@@ -306,7 +317,7 @@ class ContentDisposition(CustomHeader):
         args: Dict = {
             "name": name,
             "filename": filename,
-            "filename*": ("UTF-8''" + url_quote(fallback_filename))
+            "filename*": ("UTF-8''" + url_quote(fallback_filename, encoding="utf-8"))
             if fallback_filename
             else None,
             "boundary": boundary,
@@ -317,6 +328,25 @@ class ContentDisposition(CustomHeader):
         super().__init__(
             disposition, **args,
         )
+
+    def get_disposition(self) -> Optional[str]:
+        """Extract set disposition from Content-Disposition"""
+        for attr in self.attrs:
+            if attr.lower() in ["attachment", "inline", "form-data"]:
+                return attr
+
+        return None
+
+    def get_filename_decoded(self) -> Optional[str]:
+        """Retrieve and decode if necessary the associated filename."""
+        if "filename*" in self:
+            try:
+                encoding, encoded_filename = tuple(str(self["filename*"]).split("''"))
+                return url_unquote(encoded_filename, encoding)
+            except ValueError:
+                pass
+
+        return str(self["filename"]) if "filename" in self else None
 
 
 class Authorization(CustomHeader):

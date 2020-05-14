@@ -1,7 +1,9 @@
 
-### Using `parse_it` for the first time
+### Using `parse_it`
 
-`parse_it()` method takes `bytes`, `str`, `fp`, `dict` or even `requests.Response` itself and returns a `Headers` object.
+The most common thing you'd do is to parse raw headers and turn them to objects.
+
+`parse_it()` method takes `bytes`, `str`, `fp`, `dict`, `email.Message`, `requests.Response` and `httpx._models.Response` itself and returns a `Headers` object.
 
 ```python
 from requests import get
@@ -29,6 +31,45 @@ type(headers.set_cookie)  # output: list
 headers.set_cookie[0].expires # output Wed, 15-Apr-2020 21:27:31 GMT
 ```
 
+### ManySquashedIntoOne
+
+There is an edge case (__Not only Set-Cookie__) where one header content could contain multiple entries (usually) separated by a comma.
+Take the `Accept` header for instance. 
+
+```
+Accept: text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8
+```
+
+The library will split this entry into five entries/headers/objects.
+
+```python
+from kiss_headers import parse_it
+
+headers = parse_it("Accept: text/html, application/xhtml+xml, application/xml;q=0.9, image/webp, */*;q=0.8")
+
+len(headers)  # output: 5
+headers.has_many("accept")  # output: True
+len(headers.accept)  # output: 5 
+
+repr(headers.accept[0])  # output: 'Accept: text/html'
+repr(headers.accept[3])  # output: 'Accept: application/xml;q=0.9'
+
+# What if we want to verify that text/html is available in Accept ?
+"text/html" in headers.accept  # output: True
+"text/htm" in headers.accept  # output: False
+
+# How to extract the qualifier ?
+headers.accept[0].has("q")  # output: False
+"q" in headers.accept[0]  # output: False
+
+headers.accept[3].has("q")  # output: True
+"q" in headers.accept[3]  # output: True
+
+headers.accept[3]["q"]  # output: 0.9
+```
+
+This behavior is global to all headers.
+
 ### Using protected keyword
 
 Just a note: Accessing a header that has the same name as a reserved keyword must be done this way :
@@ -40,4 +81,15 @@ headers = parse_it('From: Ousret; origin=www.github.com\nIS: 1\nWhile: Not-True'
 headers.from_ # to access From, just add a single underscore to it
 # or..
 headers['from']
+```
+
+### Lock the output type entropy
+
+You might not like that some functions/methods in `Header` and `Headers` classes return type-hint is `Union[Header, List[Header]]`.
+There is a quick way to enforce the return type to `List[Header]` only.
+
+```python
+from kiss_headers import lock_output_type
+
+lock_output_type(True)
 ```
