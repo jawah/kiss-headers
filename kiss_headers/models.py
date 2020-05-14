@@ -123,7 +123,7 @@ class Header(object):
         >>> header.content
         '33a64df551425fcc55e4d42a148795d9f25f89d4'
         """
-        # Unquote content if their is only one value/attribute in it. Like the ETag header.
+        # Unquote content if there is only one value/attribute in it. Like the ETag header.
         if len(self.attrs) == 1:
             return unquote(self._content)
 
@@ -537,7 +537,7 @@ class Header(object):
 class Headers(object):
     """
     Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
-    Combine advantages of dict, CaseInsensibleDict, and native objects.
+    Combine advantages of dict, CaseInsensibleDict, list, multi-dict and native objects.
     Headers do not inherit of the Mapping type, but it does borrow some concept from it.
     """
 
