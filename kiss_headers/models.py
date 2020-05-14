@@ -734,6 +734,14 @@ class Headers(object):
     def __setitem__(self, key: str, value: str) -> None:
         """
         Set header using the bracket syntax. This operation would remove any existing header named after the key.
+        Warning, if your value contain comma separated entries, it will split it into multiple Header instance.
+        >>> headers = Headers()
+        >>> headers.content_type = "application/json"
+        >>> len(headers)
+        1
+        >>> headers.accept = "text/html, application/json;q=1.0"
+        >>> len(headers)
+        3
         """
         if not isinstance(value, str):
             raise TypeError(
@@ -743,6 +751,18 @@ class Headers(object):
             )
         if key in self:
             del self[key]
+
+        # Permit to detect multiple entries.
+        if normalize_str(key) != "subject":
+
+            entries: List[str] = header_content_split(value, ",")
+
+            if len(entries) > 1:
+
+                for entry in entries:
+                    self._headers.append(Header(key, entry))
+
+                return
 
         self._headers.append(Header(key, value))
 
