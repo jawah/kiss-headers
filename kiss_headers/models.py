@@ -1018,6 +1018,44 @@ class Headers(object):
 
         return False
 
+    def index(self, __value: Union[Header, str], __start: int = 0, __stop: int = -1) -> int:
+        """
+        Search for the first appearance of an header based on its name or instance in Headers.
+        Same method signature as list().index().
+        Raises IndexError if not found.
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle")
+        >>> headers.index("A")
+        0
+        >>> headers.index("A", 1)
+        Traceback (most recent call last):
+        ...
+        IndexError: Value 'A' is not present within Headers.
+        >>> headers.index("A", 0, 1)
+        0
+        >>> headers.index("C")
+        2
+        >>> headers.index(headers[0])
+        0
+        >>> headers.index(headers[1])
+        1
+        """
+
+        value_is_header: bool = isinstance(__value, Header)
+        normalized_value: Optional[str] = normalize_str(__value) if not value_is_header else None
+        headers_len: int = len(self)
+
+        # Convert indices to positive indices
+        __start = __start % headers_len if __start < 0 else __start
+        __stop = __stop % headers_len if __stop < 0 else __stop
+
+        for header, index in zip(self._headers[__start:__stop+1], range(__start, __stop+1)):
+            if value_is_header and __value == header:
+                return index
+            elif normalized_value == header.normalized_name:
+                return index
+
+        raise IndexError(f"Value '{__value}' is not present within Headers.")
+
     def pop(self, __index_or_name: Union[str, int] = -1) -> Union[Header, List[Header]]:
         """
         Pop header instance(s) from headers. By default the last one. Accept index as integer or header name.
