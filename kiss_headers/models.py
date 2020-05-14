@@ -1019,7 +1019,10 @@ class Headers(object):
         return False
 
     def pop(self, __index_or_name: Union[str, int] = -1) -> Union[Header, List[Header]]:
-        """Pop header from headers. By default the last one."""
+        """
+        Pop header instance(s) from headers. By default the last one. Accept index as integer or header name.
+        If you pass a header name, it will pop from Headers every entry named likewise.
+        """
         if isinstance(__index_or_name, int):
             return self._headers.pop(__index_or_name)
         if isinstance(__index_or_name, str):
@@ -1033,8 +1036,13 @@ class Headers(object):
                     self._headers.remove(header)
             else:
                 self._headers.remove(headers)
+
+            if OUTPUT_LOCK_TYPE is True and isinstance(headers, Header):
+                return [headers]
+
             return headers
-        raise TypeError
+
+        raise TypeError(f"Type {type(__index_or_name)} is not supported by pop() method on Headers.")
 
     def popitem(self) -> Tuple[str, str]:
         """Pop the last header as a tuple (header name, header content)."""
