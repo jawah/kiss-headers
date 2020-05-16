@@ -1020,6 +1020,13 @@ class Headers(object):
 
         return False
 
+    def insert(self, __index: int, __header: Header) -> None:
+        """Insert header before the given index."""
+        if not isinstance(__header, Header):
+            raise TypeError(f"Cannot insert element of type {type(__header)} in Headers.")
+
+        self._headers.insert(__index, __header)
+
     def index(
         self, __value: Union[Header, str], __start: int = 0, __stop: int = -1
     ) -> int:
