@@ -977,13 +977,14 @@ class Headers(object):
                 return True
             if isinstance(item, Header) and header == item:
                 return True
-
         return False
 
     def insert(self, __index: int, __header: Header) -> None:
         """Insert header before the given index."""
         if not isinstance(__header, Header):
-            raise TypeError(f"Cannot insert element of type {type(__header)} in Headers.")
+            raise TypeError(
+                f"Cannot insert element of type {type(__header)} in Headers."
+            )
 
         self._headers.insert(__index, __header)
 
