@@ -127,6 +127,34 @@ class Header(object):
         """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
 
+    def pop(self, __index: int) -> Tuple[str, Optional[str]]:
+        """Experimental."""
+
+        __index = __index if __index >= 0 else __index % len(self._attrs)
+
+        key, value = self._attrs[__index]
+
+        self._attrs.remove(key, __index)
+        self._content = str(self._attrs)
+
+        return key, value
+
+    def insert(
+        self, __index: int, *__members: str, **__attributes: Optional[str]
+    ) -> None:
+        """Experimental."""
+
+        __index = __index if __index >= 0 else __index % len(self._attrs)
+
+        for member in __members:
+            self._attrs.insert(member, None, __index)
+            __index += 1
+        for key, value in __attributes.items():
+            self._attrs.insert(key, value, __index)
+            __index += 1
+
+        self._content = str(self._attrs)
+
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
         """
         Allow you to assign-add any string to a Header instance. The string will be a new member of your header.
