@@ -1,24 +1,12 @@
 from copy import deepcopy
 from json import dumps
-from re import IGNORECASE, escape, findall
-from typing import (
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    MutableMapping,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Type, Union
 
-from kiss_headers.structures import CaseInsensitiveDict
+from kiss_headers.structures import AttributeBag, CaseInsensitiveDict
 from kiss_headers.utils import (
     extract_comments,
     header_content_split,
     header_name_to_class,
-    header_strip,
     is_legal_header_name,
     normalize_str,
     prettify_header_name,
@@ -65,34 +53,7 @@ class Header(object):
 
         self._members: List[str] = header_content_split(self._content, ";")
 
-        self._not_valued_attrs: List[str] = list()
-        self._valued_attrs: MutableMapping[
-            str, Union[str, List[str]]
-        ] = CaseInsensitiveDict()
-
-        for member in self._members:
-            if member == "":
-                continue
-
-            if "=" in member:
-                key, value = tuple(member.split("=", maxsplit=1))
-
-                # avoid confusing base64 look alike single value for (key, value)
-                if value.count("=") == len(value) or len(value) == 0 or " " in key:
-                    self._not_valued_attrs.append(unquote(member))
-                    continue
-
-                if key not in self._valued_attrs:
-                    self._valued_attrs[key] = value
-                else:
-                    if isinstance(self._valued_attrs[key], str):
-                        self._valued_attrs[key] = [self._valued_attrs[key], value]  # type: ignore
-                    else:
-                        self._valued_attrs[key].append(value)  # type: ignore
-
-                continue
-
-            self._not_valued_attrs.append(unquote(member))
+        self._attrs: Attributes = Attributes(self._members)
 
     @property
     def name(self) -> str:
@@ -190,9 +151,8 @@ class Header(object):
                 )
             )
 
-        self._not_valued_attrs.append(other)
-
-        self._content += "; " + other if self._content.lstrip() != "" else other
+        self._attrs.insert(other, None)
+        self._content = str(self._attrs)
 
         return self
 
@@ -250,24 +210,8 @@ class Header(object):
                 )
             )
 
-        other = normalize_str(other)
-
-        if other in self._valued_attrs:
-            del self[other]
-
-        if other in self._not_valued_attrs:
-            self._not_valued_attrs.remove(other)
-            while True:
-                try:
-                    self._not_valued_attrs.remove(other)
-                except ValueError:
-                    break
-            for elem in findall(
-                r"{member_name}(?=[;\n])".format(member_name=escape(other)),
-                self._content + "\n",
-                IGNORECASE,
-            ):
-                self._content = header_strip(self._content, elem)
+        self._attrs.remove(other)
+        self._content = str(self._attrs)
 
         return self
 
@@ -292,8 +236,7 @@ class Header(object):
             "_pretty_name",
             "_content",
             "_members",
-            "_not_valued_attrs",
-            "_valued_attrs",
+            "_attrs",
             "__class__",
         }:
             return super().__setattr__(key, value)
@@ -313,13 +256,8 @@ class Header(object):
         if not isinstance(value, str):
             value = str(value)
 
-        self._valued_attrs[key] = value
-
-        self._content += '{semi_colon_r}{key}="{value}"'.format(
-            key=key,
-            value=value,
-            semi_colon_r="; " if self._content.lstrip() != "" else "",
-        )
+        self._attrs.insert(key, value)
+        self._content = str(self._attrs)
 
     def __delitem__(self, key: str) -> None:
         """
@@ -331,21 +269,15 @@ class Header(object):
         >>> str(headers.content_type)
         'text/html'
         """
-        if key not in self._valued_attrs:
+        if key not in self._attrs:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=key, header=self.name
                 )
             )
 
-        del self._valued_attrs[key]
-
-        for elem in findall(
-            r"{key_name}=.*?(?=[;\n])".format(key_name=escape(key)),
-            self._content + "\n",
-            IGNORECASE,
-        ):
-            self._content = header_strip(self._content, elem)
+        self._attrs.remove(key)
+        self._content = str(self._attrs)
 
     def __delattr__(self, item: str) -> None:
         """
@@ -359,7 +291,7 @@ class Header(object):
         """
         item = normalize_str(item)
 
-        if item not in self._valued_attrs:
+        if item not in self._attrs:
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=item, header=self.name
@@ -371,10 +303,8 @@ class Header(object):
     def __iter__(self) -> Iterator[Tuple[str, Optional[Union[str, List[str]]]]]:
         """Provide a way to iter over a Header object. This will yield a Tuple of key, value.
         The value would be None if the key is a member without associated value."""
-        for key in self._valued_attrs:
-            yield key, self[key]
-        for adjective in self._not_valued_attrs:
-            yield adjective, None
+        for i in range(0, len(self._attrs)):
+            yield self._attrs[i]
 
     def __eq__(self, other: object) -> bool:
         """
@@ -382,20 +312,12 @@ class Header(object):
         If testing against str, the first thing is to match it to raw content, if not equal verify if not in members.
         """
         if isinstance(other, str):
-            return self.content == other or other in self._not_valued_attrs
+            return self.content == other or other in self._attrs
         if isinstance(other, Header):
-            if (
-                self.normalized_name == other.normalized_name
-                and len(self._not_valued_attrs) == len(other._not_valued_attrs)
-                and len(self._valued_attrs) == len(other._valued_attrs)
-            ):
-                for adjective in self._not_valued_attrs:
-                    if adjective not in other._not_valued_attrs:
-                        return False
-                for key in self._valued_attrs:
-                    if key not in other or self[key] != other[key]:
-                        return False
-                return True
+            if self.normalized_name == other.normalized_name and len(
+                self._attrs
+            ) == len(other._attrs):
+                return self._attrs == other._attrs
             return False
         raise NotImplementedError(
             "Cannot compare type {type_} to an Header. Use str or Header.".format(
@@ -428,7 +350,7 @@ class Header(object):
         of what properties are callable. In other words, more precise auto-completion when not using IDE.
         """
         return list(super().__dir__()) + [
-            normalize_str(key) for key in self._valued_attrs.keys()
+            normalize_str(key) for key in self._attrs.keys()
         ]
 
     @property
@@ -438,7 +360,16 @@ class Header(object):
         eg. Content-Type: application/json; charset=utf-8; format=origin
         Would output : ['application/json', 'charset', 'format']
         """
-        return list(self._valued_attrs.keys()) + self._not_valued_attrs
+        attrs: List[str] = []
+
+        if len(self._attrs) == 0:
+            return attrs
+
+        for i in range(0, len(self._attrs)):
+            attr, value = self._attrs[i]
+            attrs.append(attr)
+
+        return attrs
 
     def has(self, attr: str) -> bool:
         """
@@ -459,9 +390,10 @@ class Header(object):
         >>> header.format
         'flowed'
         """
-        if attr not in self._valued_attrs:
+        if attr not in self._attrs:
             return None
-        return self._valued_attrs[attr]
+
+        return self._attrs[attr]
 
     def has_many(self, name: str) -> bool:
         """
@@ -488,8 +420,8 @@ class Header(object):
                 self._members[item] if not OUTPUT_LOCK_TYPE else [self._members[item]]
             )
 
-        if item in self._valued_attrs:
-            value = self._valued_attrs[item]
+        if item in self._attrs:
+            value = self._attrs[item]
         else:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
@@ -513,7 +445,7 @@ class Header(object):
         """
         item = unpack_protected_keyword(item)
 
-        if item not in self._valued_attrs:
+        if item not in self._attrs:
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=item, header=self.name
@@ -1131,6 +1063,209 @@ class Headers(object):
         return list(super().__dir__()) + list(
             set([header.normalized_name for header in self])
         )
+
+
+class Attributes(object):
+    """
+    Dedicated class to handle attributes within a Header. Wrap an AttributeBag and offer methods to manipulate it
+    with ease.
+    Store advanced info on attributes, case insensitive on keys and keep attrs ordering.
+    """
+
+    def __init__(self, members: List[str]):
+        self._bag: AttributeBag = CaseInsensitiveDict()
+
+        for member, index in zip(members, range(0, len(members))):
+
+            if member == "":
+                continue
+
+            if "=" in member:
+                key, value = tuple(member.split("=", maxsplit=1))
+
+                # avoid confusing base64 look alike single value for (key, value)
+                if value.count("=") == len(value) or len(value) == 0 or " " in key:
+                    self.insert(unquote(member), None)
+                    continue
+
+                self.insert(key, unquote(value))
+                continue
+
+            self.insert(unquote(member), None)
+
+    def __str__(self) -> str:
+        """"""
+        content: str = ""
+
+        if len(self._bag) == 0:
+            return content
+
+        for i in range(0, len(self)):
+            key, value = self[i]
+
+            if value is not None:
+                content += '{semi_colon_r}{key}="{value}"'.format(
+                    key=key, value=value, semi_colon_r="; " if content != "" else "",
+                )
+            else:
+                content += "; " + key if content != "" else key
+
+        return content
+
+    def keys(self) -> List[str]:
+        """"""
+        keys: List[str] = []
+
+        for index, key, value in self:
+            if key not in keys and value is not None:
+                keys.append(key)
+
+        return keys
+
+    def __eq__(self, other: object) -> bool:
+        """"""
+        if not isinstance(other, Attributes):
+            raise NotImplementedError
+
+        if len(self._bag) != len(other._bag):
+            return False
+
+        list_repr_a: List[Tuple[int, str, Optional[str]]] = list(self)
+        list_repr_b: List[Tuple[int, str, Optional[str]]] = list(other)
+
+        list_check: List[Tuple[int, str, Optional[str]]] = []
+
+        for index_a, key_a, value_a in list_repr_a:
+
+            key_a = normalize_str(key_a)
+
+            for index_b, key_b, value_b in list_repr_b:
+
+                key_b = normalize_str(key_b)
+
+                if (
+                    key_a == key_b
+                    and value_a == value_b
+                    and (index_a, key_a, key_b) not in list_check
+                ):
+
+                    list_check.append((index_a, key_a, key_b))
+
+        return len(list_check) == len(list_repr_a)
+
+    def __getitem__(
+        self, item: Union[int, str]
+    ) -> Union[Tuple[str, Optional[str]], Union[str, List[str]]]:
+        """"""
+
+        if isinstance(item, str):
+            values: List[str] = [
+                value for value in self._bag[item][0] if value is not None
+            ]
+            return values if len(values) > 1 else values[0]
+
+        for attr in self._bag:
+            if item in self._bag[attr][1]:
+                pos: int = self._bag[attr][1].index(item)
+                return attr, self._bag[attr][0][pos]
+
+        raise IndexError(f"{item} not in defined indexes.")
+
+    def insert(
+        self, key: str, value: Optional[str], index: Optional[int] = None
+    ) -> None:
+        """"""
+        to_be_inserted: int = index if index is not None else len(self._bag)
+
+        if index is not None:
+            for attr in self._bag:
+                values, indexes = self._bag[attr]
+
+                for index_, cur in zip(indexes, range(0, len(indexes))):
+                    if index_ >= index:
+                        self._bag[attr][1][cur] += 1
+
+        if key not in self._bag:
+            self._bag[key] = ([value], [to_be_inserted])
+        else:
+            self._bag[key][0].append(value)
+            self._bag[key][1].append(to_be_inserted)
+
+    def remove(self, key: str, index: Optional[int] = None) -> None:
+        """"""
+        if key not in self._bag:
+            return
+
+        freed_indexes: List[int] = []
+
+        if index is not None:
+            index = index if index >= 0 else index % (len(self))
+
+            pos: int = self._bag[key][1].index(index)
+
+            self._bag[key][0].pop(pos)
+
+            freed_indexes.append(self._bag[key][1].pop(pos))
+
+        if index is None or len(self._bag[key][0]) == 0:
+            freed_indexes += self._bag[key][1]
+            del self._bag[key]
+
+        for attr in self._bag:
+
+            values, indexes = self._bag[attr]
+            max_freed_index: int = max(freed_indexes)
+
+            for index_, cur in zip(indexes, range(0, len(indexes))):
+                if index_ - 1 in freed_indexes:
+                    self._bag[attr][1][cur] -= 1
+                elif index_ > max_freed_index:
+                    self._bag[attr][1][cur] -= 1
+
+    def __contains__(self, item: Union[str, Dict[str, List[str]]]) -> bool:
+        """"""
+        if len(self._bag) == 0:
+            return False
+
+        if isinstance(item, str):
+            return item in self._bag
+
+        target_key, target_value = item.popitem()
+        target_key = normalize_str(target_key)
+
+        for i in range(0, len(self)):
+            key, value = self[i]
+
+            if target_key == key and target_value == value:
+                return True
+
+        return False
+
+    @property
+    def last_index(self) -> Optional[int]:
+        if len(self._bag) == 0:
+            return None
+
+        max_index: int = 0
+
+        for key in self._bag:
+            values, indexes = self._bag[key]
+
+            maximum_ind_key: int = max(indexes)
+
+            if maximum_ind_key > max_index:
+                max_index = maximum_ind_key
+
+        return max_index
+
+    def __len__(self) -> int:
+        last_index: Optional[int] = self.last_index
+        return last_index + 1 if last_index is not None else 0
+
+    def __iter__(self) -> Iterator[Tuple[int, str, Optional[str]]]:
+        for i in range(0, len(self)):
+            key, value = self[i]
+            yield i, key, value
 
 
 def lock_output_type(lock: bool = True) -> None:
