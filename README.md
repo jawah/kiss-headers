@@ -48,19 +48,20 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 
 * A backwards-compatible syntax using bracket style.
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
-* Flexibility if headers are from IMAP4 or HTTP, use as you need with one library.
-* Ability to parse any object and extract recognized headers from it, it also support UTF-8 encoded headers.
+* Flexibility if headers are from an email or HTTP, use as you need with one library.
+* Ability to parse any object and extract recognized headers from it, it also supports UTF-8 encoded headers.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
-* Absolutely no dependencies.
+* No dependencies. And never will be.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
 * Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
-* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response` and `httpx._models.Response`.
-* Automatically unquote and unfold value of an attribute when retrieving it.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response`, `httpx._models.Response` and `urllib3.HTTPResponse`.
+* Automatically unquote and unfold the value of an attribute when retrieving it.
+* Keep headers and attributes ordering.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.
@@ -104,7 +105,7 @@ headers.set_cookie[0]._1p_jar # output: 2020-03-16-21
 headers.set_cookie[0]["1P_JAR"] # output: 2020-03-16-21
 ```
 
-Since v2.1 you can transform an Header object to its target `CustomHeader` subclass in order to access more methods.
+Since v2.1 you can transform an Header object to its target `CustomHeader` subclass to access more methods.
 
 ```python
 from kiss_headers import parse_it, get_polymorphic, SetCookie
