@@ -142,7 +142,7 @@ class Header(object):
     def insert(
         self, __index: int, *__members: str, **__attributes: Optional[str]
     ) -> None:
-        """Experimental."""
+        """This method allows you to properly insert attributes into a Header instance."""
 
         __index = __index if __index >= 0 else __index % len(self._attrs)
 
@@ -1123,7 +1123,7 @@ class Attributes(object):
             self.insert(unquote(member), None)
 
     def __str__(self) -> str:
-        """"""
+        """Convert an Attributes instance to its string repr."""
         content: str = ""
 
         if len(self._bag) == 0:
@@ -1142,7 +1142,7 @@ class Attributes(object):
         return content
 
     def keys(self) -> List[str]:
-        """"""
+        """This method return a list of attribute name that have at least one value associated to them."""
         keys: List[str] = []
 
         for index, key, value in self:
@@ -1152,7 +1152,7 @@ class Attributes(object):
         return keys
 
     def __eq__(self, other: object) -> bool:
-        """"""
+        """Verify if two instance of Attributes are equal. We don't care about ordering."""
         if not isinstance(other, Attributes):
             raise NotImplementedError
 
@@ -1251,8 +1251,18 @@ class Attributes(object):
                 elif index_ > max_freed_index:
                     self._bag[attr][1][cur] -= 1
 
-    def __contains__(self, item: Union[str, Dict[str, List[str]]]) -> bool:
-        """"""
+    def __contains__(self, item: Union[str, Dict[str, Union[List[str], str]]]) -> bool:
+        """Verify if a member/attribute/value is in an Attributes instance. See examples bellow :
+        >>> attributes = Attributes(["application/xml", "q=0.9", "q=0.1"])
+        >>> "q" in attributes
+        True
+        >>> {"Q": "0.9"} in attributes
+        True
+        >>> "z" in attributes
+        False
+        >>> {"Q": "0.2"} in attributes
+        False
+        """
         if len(self._bag) == 0:
             return False
 
@@ -1272,6 +1282,7 @@ class Attributes(object):
 
     @property
     def last_index(self) -> Optional[int]:
+        """Simply output the latest index used in attributes. Index start from zero."""
         if len(self._bag) == 0:
             return None
 
@@ -1288,10 +1299,13 @@ class Attributes(object):
         return max_index
 
     def __len__(self) -> int:
+        """The length of an Attributes instance is equal to the last index plus one. Not by keys() length."""
         last_index: Optional[int] = self.last_index
         return last_index + 1 if last_index is not None else 0
 
     def __iter__(self) -> Iterator[Tuple[int, str, Optional[str]]]:
+        """Provide an iterator over all attributes with or without associated value.
+        For each entry, output a tuple of index, attribute and a optional value."""
         for i in range(0, len(self)):
             key, value = self[i]
             yield i, key, value
