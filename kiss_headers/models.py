@@ -127,14 +127,26 @@ class Header(object):
         """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
 
-    def pop(self, __index: int) -> Tuple[str, Optional[str]]:
-        """Experimental."""
+    def pop(self, __index: Union[int, str] = -1) -> Tuple[str, Optional[Union[str, List[str]]]]:
+        """Permit to pop an element from a Header with a given index.
+        >>> header = Header("X", "a; b=k; h; h; z=0; y=000")
+        >>> header.pop(1)
+        ('b', 'k')
+        >>> header.pop()
+        ('y', '000')
+        >>> header.pop('z')
+        ('z', '0')
+        """
 
-        __index = __index if __index >= 0 else __index % len(self._attrs)
+        if isinstance(__index, int):
+            __index = __index if __index >= 0 else __index % len(self._attrs)
+            key, value = self._attrs[__index]
+        elif isinstance(__index, str):
+            key, value = __index, self._attrs[__index]
+        else:
+            raise ValueError(f"Cannot pop from Header using type {type(__index)}.")
 
-        key, value = self._attrs[__index]
-
-        self._attrs.remove(key, __index)
+        self._attrs.remove(key, __index if isinstance(__index, int) else None)
         self._content = str(self._attrs)
 
         return key, value
