@@ -10,26 +10,14 @@ class AttributesTestCase(unittest.TestCase):
         attr_d = Attributes(["p=8a", "a", "A", "Xx", "XX=a"])
         attr_e = Attributes(["p=8A", "a", "A", "Xx"])
 
-        self.assertEqual(
-            attr_a,
-            attr_b
-        )
+        self.assertEqual(attr_a, attr_b)
 
-        self.assertEqual(
-            attr_a,
-            attr_c
-        )
+        self.assertEqual(attr_a, attr_c)
 
-        self.assertNotEqual(
-            attr_a,
-            attr_d
-        )
+        self.assertNotEqual(attr_a, attr_d)
 
-        self.assertNotEqual(
-            attr_a,
-            attr_e
-        )
+        self.assertNotEqual(attr_a, attr_e)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

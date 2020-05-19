@@ -87,5 +87,5 @@ from kiss_headers.builder import (
     XFrameOptions,
     XXssProtection,
 )
-from kiss_headers.models import Header, Headers, Attributes, lock_output_type
+from kiss_headers.models import Attributes, Header, Headers, lock_output_type
 from kiss_headers.version import VERSION, __version__

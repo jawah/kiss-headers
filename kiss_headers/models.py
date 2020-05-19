@@ -127,7 +127,9 @@ class Header(object):
         """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
 
-    def pop(self, __index: Union[int, str] = -1) -> Tuple[str, Optional[Union[str, List[str]]]]:
+    def pop(
+        self, __index: Union[int, str] = -1
+    ) -> Tuple[str, Optional[Union[str, List[str]]]]:
         """Permit to pop an element from a Header with a given index.
         >>> header = Header("X", "a; b=k; h; h; z=0; y=000")
         >>> header.pop(1)

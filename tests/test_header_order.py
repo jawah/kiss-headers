@@ -3,24 +3,17 @@ from kiss_headers import Header
 
 
 class HeaderOrderingTest(unittest.TestCase):
-
     def test_keep_initial_order(self):
         header = Header("Content-Type", "a; b=k; h; h; z=0")
 
-        self.assertEqual(
-            ["a", "b", "h", "h", "z"],
-            header.attrs
-        )
+        self.assertEqual(["a", "b", "h", "h", "z"], header.attrs)
 
     def test_insertion_in_ordered_header(self):
         header = Header("Content-Type", "a; b=k; h; h; z=0")
 
         header.insert(2, ppp="nt")
 
-        self.assertEqual(
-            ["a", "b", "ppp", "h", "h", "z"],
-            header.attrs
-        )
+        self.assertEqual(["a", "b", "ppp", "h", "h", "z"], header.attrs)
 
     def test_pop_in_ordered_header(self):
 
@@ -28,40 +21,23 @@ class HeaderOrderingTest(unittest.TestCase):
 
         key, value = header.pop(2)
 
-        self.assertEqual(
-            key,
-            "h"
-        )
+        self.assertEqual(key, "h")
 
-        self.assertIsNone(
-            value
-        )
+        self.assertIsNone(value)
 
-        self.assertEqual(
-            ["a", "b", "h", "z"],
-            header.attrs
-        )
+        self.assertEqual(["a", "b", "h", "z"], header.attrs)
 
     def test_pop_negative_index(self):
         header = Header("Content-Type", "a; b=k; h; h; z=0")
 
         key, value = header.pop(-1)
 
-        self.assertEqual(
-            key,
-            "z"
-        )
+        self.assertEqual(key, "z")
 
-        self.assertEqual(
-            value,
-            "0"
-        )
+        self.assertEqual(value, "0")
 
-        self.assertEqual(
-            ["a", "b", "h", "h"],
-            header.attrs
-        )
+        self.assertEqual(["a", "b", "h", "h"], header.attrs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
