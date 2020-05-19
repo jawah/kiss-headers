@@ -1156,7 +1156,7 @@ class Attributes(object):
         if not isinstance(other, Attributes):
             raise NotImplementedError
 
-        if len(self._bag) != len(other._bag):
+        if len(self) != len(other):
             return False
 
         list_repr_a: List[Tuple[int, str, Optional[str]]] = list(self)
@@ -1204,7 +1204,7 @@ class Attributes(object):
         self, key: str, value: Optional[str], index: Optional[int] = None
     ) -> None:
         """"""
-        to_be_inserted: int = index if index is not None else len(self._bag)
+        to_be_inserted: int = index if index is not None else len(self)
 
         if index is not None:
             for attr in self._bag:
