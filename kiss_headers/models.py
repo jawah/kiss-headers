@@ -170,6 +170,8 @@ class Header(object):
             __index += 1
 
         self._content = str(self._attrs)
+        # We need to update our list of members
+        self._members = header_content_split(self._content, ";")
 
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
         """
@@ -198,6 +200,7 @@ class Header(object):
         self._attrs.insert(other, None)
         # No need to rebuild the content completely.
         self._content += "; " + other if self._content.lstrip() != "" else other
+        self._members.append(other)
 
         return self
 
@@ -257,6 +260,7 @@ class Header(object):
 
         self._attrs.remove(other)
         self._content = str(self._attrs)
+        self._members = header_content_split(self._content, ";")
 
         return self
 
@@ -305,6 +309,7 @@ class Header(object):
         self._attrs.insert(key, value)
 
         self._content = str(self._attrs)
+        self._members = header_content_split(self._content, ";")
 
     def __delitem__(self, key: str) -> None:
         """
@@ -325,6 +330,7 @@ class Header(object):
 
         self._attrs.remove(key)
         self._content = str(self._attrs)
+        self._members = header_content_split(self._content, ";")
 
     def __delattr__(self, item: str) -> None:
         """
