@@ -2,7 +2,7 @@
 Kiss-Headers
 ~~~~~~~~~~~~~~
 
-Kiss-Headers is a headers, HTTP or IMAP4 _(message, email)_ flavour, utility, written in Python, for humans.
+Kiss-Headers is a headers, HTTP or IMAP4 _(message, email)_ flavour, utility, written in pure Python, for humans.
 Object oriented headers. Keep it sweet and simple.
 Basic usage:
 
@@ -87,5 +87,5 @@ from kiss_headers.builder import (
     XFrameOptions,
     XXssProtection,
 )
-from kiss_headers.models import Header, Headers, lock_output_type
+from kiss_headers.models import Attributes, Header, Headers, lock_output_type
 from kiss_headers.version import VERSION, __version__
