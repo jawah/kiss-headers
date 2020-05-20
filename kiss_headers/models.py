@@ -298,7 +298,9 @@ class Header(object):
         if not isinstance(value, str):
             value = str(value)
 
+        self._attrs.remove(key)
         self._attrs.insert(key, value)
+
         self._content = str(self._attrs)
 
     def __delitem__(self, key: str) -> None:
