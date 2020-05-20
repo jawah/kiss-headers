@@ -1,24 +1,12 @@
 from copy import deepcopy
 from json import dumps
-from re import IGNORECASE, escape, findall
-from typing import (
-    Dict,
-    Iterable,
-    Iterator,
-    List,
-    MutableMapping,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Type, Union
 
-from kiss_headers.structures import CaseInsensitiveDict
+from kiss_headers.structures import AttributeBag, CaseInsensitiveDict
 from kiss_headers.utils import (
     extract_comments,
     header_content_split,
     header_name_to_class,
-    header_strip,
     is_legal_header_name,
     normalize_str,
     prettify_header_name,
@@ -65,39 +53,12 @@ class Header(object):
 
         self._members: List[str] = header_content_split(self._content, ";")
 
-        self._not_valued_attrs: List[str] = list()
-        self._valued_attrs: MutableMapping[
-            str, Union[str, List[str]]
-        ] = CaseInsensitiveDict()
-
-        for member in self._members:
-            if member == "":
-                continue
-
-            if "=" in member:
-                key, value = tuple(member.split("=", maxsplit=1))
-
-                # avoid confusing base64 look alike single value for (key, value)
-                if value.count("=") == len(value) or len(value) == 0 or " " in key:
-                    self._not_valued_attrs.append(unquote(member))
-                    continue
-
-                if key not in self._valued_attrs:
-                    self._valued_attrs[key] = value
-                else:
-                    if isinstance(self._valued_attrs[key], str):
-                        self._valued_attrs[key] = [self._valued_attrs[key], value]  # type: ignore
-                    else:
-                        self._valued_attrs[key].append(value)  # type: ignore
-
-                continue
-
-            self._not_valued_attrs.append(unquote(member))
+        self._attrs: Attributes = Attributes(self._members)
 
     @property
     def name(self) -> str:
         """
-        Output the original header name as it was captured initially
+        Output the original header name as it was captured initially.
         """
         return self._name
 
@@ -111,14 +72,14 @@ class Header(object):
     @property
     def pretty_name(self) -> str:
         """
-        Output a prettified name of the header. First letter capitalized of each word.
+        Output a prettified name of the header. The first letter capitalized on each word.
         """
         return self._pretty_name
 
     @property
     def content(self) -> str:
         """
-        Output associated content to header as it was captured initially.
+        Output associated content to the header as it was captured initially.
         >>> header = Header("ETag", '"33a64df551425fcc55e4d42a148795d9f25f89d4"')
         >>> header.content
         '33a64df551425fcc55e4d42a148795d9f25f89d4'
@@ -131,7 +92,7 @@ class Header(object):
 
     @property
     def unfolded_content(self) -> str:
-        """Output unfolded associated content to header. Meaning that every LF + n space(s) would be properly
+        """Output unfolded associated content to the header. Meaning that every LF + n space(s) would be properly
         replaced."""
         return unfold(self.content)
 
@@ -148,7 +109,7 @@ class Header(object):
         True
         """
         if not isinstance(other, Header):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.normalized_name < other.normalized_name
 
     def __gt__(self, other: object) -> bool:
@@ -159,16 +120,60 @@ class Header(object):
         False
         """
         if not isinstance(other, Header):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.normalized_name > other.normalized_name
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
-        """Simply provide a deepcopy of an Header object. Pointer/Reference free of the initial reference."""
+        """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
         return Header(deepcopy(self.name), deepcopy(self.content))
+
+    def pop(
+        self, __index: Union[int, str] = -1
+    ) -> Tuple[str, Optional[Union[str, List[str]]]]:
+        """Permit to pop an element from a Header with a given index.
+        >>> header = Header("X", "a; b=k; h; h; z=0; y=000")
+        >>> header.pop(1)
+        ('b', 'k')
+        >>> header.pop()
+        ('y', '000')
+        >>> header.pop('z')
+        ('z', '0')
+        """
+
+        if isinstance(__index, int):
+            __index = __index if __index >= 0 else __index % len(self._attrs)
+            key, value = self._attrs[__index]
+        elif isinstance(__index, str):
+            key, value = __index, self._attrs[__index]  # type: ignore
+        else:
+            raise ValueError(
+                f"Cannot pop from Header using type {type(__index)}."
+            )  # pragma: no cover
+
+        self._attrs.remove(key, __index if isinstance(__index, int) else None)
+        self._content = str(self._attrs)
+
+        return key, value
+
+    def insert(
+        self, __index: int, *__members: str, **__attributes: Optional[str]
+    ) -> None:
+        """This method allows you to properly insert attributes into a Header instance."""
+
+        __index = __index if __index >= 0 else __index % len(self._attrs)
+
+        for member in __members:
+            self._attrs.insert(member, None, __index)
+            __index += 1
+        for key, value in __attributes.items():
+            self._attrs.insert(key, value, __index)
+            __index += 1
+
+        self._content = str(self._attrs)
 
     def __iadd__(self, other: Union[str, "Header"]) -> "Header":
         """
-        Allow you to assign-add any string to an Header instance. The string will be a new member of your header.
+        Allow you to assign-add any string to a Header instance. The string will be a new member of your header.
         >>> header = Header("X-Hello-World", "")
         >>> repr(header)
         'X-Hello-World: '
@@ -190,17 +195,16 @@ class Header(object):
                 )
             )
 
-        self._not_valued_attrs.append(other)
-
-        self._content += "; " + other if self._content.lstrip() != "" else other
+        self._attrs.insert(other, None)
+        self._content = str(self._attrs)
 
         return self
 
     def __add__(self, other: Union[str, "Header"]) -> Union["Header", "Headers"]:
         """
-        This implementation permit to add either a string or a Header to your Header instance.
-        When you add string to your Header instance, it will create another instance with a new
-        member in it using the string; see iadd doc about it. But when its another Header the result is an Headers
+        This implementation permits to add either a string or a Header to your Header instance.
+        When you add a string to your Header instance, it will create another instance with a new
+        member in it using the string; see iadd doc about it. But when its another Header the result is a Headers
         object containing both Header object.
         >>> headers = Header("X-Hello-World", "1") + Header("Content-Type", "happiness=True")
         >>> len(headers)
@@ -234,7 +238,7 @@ class Header(object):
 
     def __isub__(self, other: str) -> "Header":
         """
-        This method should allow you to remove attribute or member from header.
+        This method should allow you to remove attributes or members from the header.
         """
         if not isinstance(other, str):
             raise TypeError(
@@ -250,30 +254,14 @@ class Header(object):
                 )
             )
 
-        other = normalize_str(other)
-
-        if other in self._valued_attrs:
-            del self[other]
-
-        if other in self._not_valued_attrs:
-            self._not_valued_attrs.remove(other)
-            while True:
-                try:
-                    self._not_valued_attrs.remove(other)
-                except ValueError:
-                    break
-            for elem in findall(
-                r"{member_name}(?=[;\n])".format(member_name=escape(other)),
-                self._content + "\n",
-                IGNORECASE,
-            ):
-                self._content = header_strip(self._content, elem)
+        self._attrs.remove(other)
+        self._content = str(self._attrs)
 
         return self
 
     def __sub__(self, other: str) -> "Header":
         """
-        This method should allow you to remove attribute or member from header.
+        This method should allow you to remove attributes or members from the header.
         """
         header_ = deepcopy(self)
         header_ -= other
@@ -292,8 +280,7 @@ class Header(object):
             "_pretty_name",
             "_content",
             "_members",
-            "_not_valued_attrs",
-            "_valued_attrs",
+            "_attrs",
             "__class__",
         }:
             return super().__setattr__(key, value)
@@ -304,8 +291,8 @@ class Header(object):
 
     def __setitem__(self, key: str, value: str) -> None:
         """
-        Set an attribute bracket syntax like. This will erase previously set attribute named after the key.
-        Any value that are not a str are casted to str.
+        Set an attribute bracket syntax like. This will erase the previously set attribute named after the key.
+        Any values that are not str are cast to str.
         """
 
         if key in self:
@@ -313,17 +300,14 @@ class Header(object):
         if not isinstance(value, str):
             value = str(value)
 
-        self._valued_attrs[key] = value
+        self._attrs.remove(key)
+        self._attrs.insert(key, value)
 
-        self._content += '{semi_colon_r}{key}="{value}"'.format(
-            key=key,
-            value=value,
-            semi_colon_r="; " if self._content.lstrip() != "" else "",
-        )
+        self._content = str(self._attrs)
 
     def __delitem__(self, key: str) -> None:
         """
-        Remove any attribute named after the key in header using the bracket syntax.
+        Remove any attribute named after the key in the header using the bracket syntax.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Allow", "POST")
         >>> str(headers.content_type)
         'text/html; charset=UTF-8'
@@ -331,25 +315,19 @@ class Header(object):
         >>> str(headers.content_type)
         'text/html'
         """
-        if key not in self._valued_attrs:
+        if key not in self._attrs:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=key, header=self.name
                 )
             )
 
-        del self._valued_attrs[key]
-
-        for elem in findall(
-            r"{key_name}=.*?(?=[;\n])".format(key_name=escape(key)),
-            self._content + "\n",
-            IGNORECASE,
-        ):
-            self._content = header_strip(self._content, elem)
+        self._attrs.remove(key)
+        self._content = str(self._attrs)
 
     def __delattr__(self, item: str) -> None:
         """
-        Remove any attribute named after the key in header using the property notation.
+        Remove any attribute named after the key in the header using the property notation.
         >>> headers = Header("Content-Type", "text/html; charset=UTF-8") + Header("Vary", "Content-Type")
         >>> repr(headers.content_type)
         'Content-Type: text/html; charset=UTF-8'
@@ -359,7 +337,7 @@ class Header(object):
         """
         item = normalize_str(item)
 
-        if item not in self._valued_attrs:
+        if item not in self._attrs:
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=item, header=self.name
@@ -369,12 +347,10 @@ class Header(object):
         del self[item]
 
     def __iter__(self) -> Iterator[Tuple[str, Optional[Union[str, List[str]]]]]:
-        """Provide a way to iter over an Header object. This will yield a Tuple of key, value.
-        Value would be None if the key is a member without associated value."""
-        for key in self._valued_attrs:
-            yield key, self[key]
-        for adjective in self._not_valued_attrs:
-            yield adjective, None
+        """Provide a way to iter over a Header object. This will yield a Tuple of key, value.
+        The value would be None if the key is a member without associated value."""
+        for i in range(0, len(self._attrs)):
+            yield self._attrs[i]  # type: ignore
 
     def __eq__(self, other: object) -> bool:
         """
@@ -382,20 +358,12 @@ class Header(object):
         If testing against str, the first thing is to match it to raw content, if not equal verify if not in members.
         """
         if isinstance(other, str):
-            return self.content == other or other in self._not_valued_attrs
+            return self.content == other or other in self._attrs
         if isinstance(other, Header):
-            if (
-                self.normalized_name == other.normalized_name
-                and len(self._not_valued_attrs) == len(other._not_valued_attrs)
-                and len(self._valued_attrs) == len(other._valued_attrs)
-            ):
-                for adjective in self._not_valued_attrs:
-                    if adjective not in other._not_valued_attrs:
-                        return False
-                for key in self._valued_attrs:
-                    if key not in other or self[key] != other[key]:
-                        return False
-                return True
+            if self.normalized_name == other.normalized_name and len(
+                self._attrs
+            ) == len(other._attrs):
+                return self._attrs == other._attrs
             return False
         raise NotImplementedError(
             "Cannot compare type {type_} to an Header. Use str or Header.".format(
@@ -405,7 +373,7 @@ class Header(object):
 
     def __str__(self) -> str:
         """
-        Allow to cast a single header to a string. Only content would be exposed here.
+        Allow casting a single header to a string. Only content would be exposed here.
         """
         return self._content
 
@@ -424,31 +392,62 @@ class Header(object):
 
     def __dir__(self) -> Iterable[str]:
         """
-        Provide a better auto-completion when using Python interpreter. We are feeding __dir__ so Python can be aware
+        Provide a better auto-completion when using a Python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other words, more precise auto-completion when not using IDE.
         """
         return list(super().__dir__()) + [
-            normalize_str(key) for key in self._valued_attrs.keys()
+            normalize_str(key) for key in self._attrs.keys()
         ]
 
     @property
     def attrs(self) -> List[str]:
         """
-        List of members or attributes found in provided content.
+        List of members or attributes found in provided content. This list is ordered.
         eg. Content-Type: application/json; charset=utf-8; format=origin
         Would output : ['application/json', 'charset', 'format']
         """
-        return list(self._valued_attrs.keys()) + self._not_valued_attrs
+        attrs: List[str] = []
+
+        if len(self._attrs) == 0:
+            return attrs
+
+        for i in range(0, len(self._attrs)):
+            attr, value = self._attrs[i]
+            attrs.append(attr)
+
+        return attrs
+
+    @property
+    def valued_attrs(self) -> List[str]:
+        """
+        List of distinct attributes that have at least one value associated with them. This list is ordered.
+        This property could have been written under the keys() method, but implementing it would interfere with dict()
+        cast and the __iter__() method.
+        eg. Content-Type: application/json; charset=utf-8; format=origin
+        Would output : ['charset', 'format']
+        """
+        attrs: List[str] = []
+
+        if len(self._attrs) == 0:
+            return attrs
+
+        for i in range(0, len(self._attrs)):
+            attr, value = self._attrs[i]
+
+            if value is not None and attr not in attrs:
+                attrs.append(attr)
+
+        return attrs
 
     def has(self, attr: str) -> bool:
         """
-        Safely check is current header has an attribute or adjective in it.
+        Safely check if the current header has an attribute or adjective in it.
         """
         return attr in self
 
     def get(self, attr: str) -> Optional[Union[str, List[str]]]:
         """
-        Retrieve associated value of an attribute.
+        Retrieve the associated value of an attribute.
         >>> header = Header("Content-Type", "application/json; charset=UTF-8; format=flowed")
         >>> header.charset
         'UTF-8'
@@ -459,9 +458,10 @@ class Header(object):
         >>> header.format
         'flowed'
         """
-        if attr not in self._valued_attrs:
+        if attr not in self._attrs:
             return None
-        return self._valued_attrs[attr]
+
+        return self._attrs[attr]  # type: ignore
 
     def has_many(self, name: str) -> bool:
         """
@@ -488,8 +488,8 @@ class Header(object):
                 self._members[item] if not OUTPUT_LOCK_TYPE else [self._members[item]]
             )
 
-        if item in self._valued_attrs:
-            value = self._valued_attrs[item]
+        if item in self._attrs:
+            value = self._attrs[item]  # type: ignore
         else:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
@@ -497,13 +497,13 @@ class Header(object):
                 )
             )
 
-        if OUTPUT_LOCK_TYPE and not isinstance(value, list):
+        if OUTPUT_LOCK_TYPE and isinstance(value, str):
             value = [value]
 
         return (
-            unfold(unquote(value))
-            if not isinstance(value, list)
-            else [unfold(unquote(v)) for v in value]
+            unfold(unquote(value))  # type: ignore
+            if isinstance(value, str)
+            else [unfold(unquote(v)) for v in value]  # type: ignore
         )
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:
@@ -513,7 +513,7 @@ class Header(object):
         """
         item = unpack_protected_keyword(item)
 
-        if item not in self._valued_attrs:
+        if item not in self._attrs:
             raise AttributeError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
                     item=item, header=self.name
@@ -524,7 +524,7 @@ class Header(object):
 
     def __contains__(self, item: str) -> bool:
         """
-        Verify if a string match a member or an attribute name of an Header.
+        Verify if a string matches a member or an attribute-name of a Header.
         """
         if item in self.attrs:
             return True
@@ -539,8 +539,8 @@ class Header(object):
 class Headers(object):
     """
     Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
-    Combine advantages of dict, CaseInsensibleDict, list, multi-dict and native objects.
-    Headers do not inherit of the Mapping type, but it does borrow some concept from it.
+    Combine advantages of dict, CaseInsensibleDict, list, multi-dict, and native objects.
+    Headers do not inherit the Mapping type, but it does borrow some concepts from it.
     """
 
     # Most common headers that you may or may not find. This should be appreciated when having auto-completion.
@@ -651,7 +651,8 @@ class Headers(object):
     def keys(self) -> List[str]:
         """
         Return a list of distinct header name set in headers.
-        Be aware that it won't return a typing.KeysView
+        Be aware that it won't return a typing.KeysView.
+        Also this method allows you to create a case sensitive dict.
         """
         keys = list()
 
@@ -689,7 +690,8 @@ class Headers(object):
         """
         Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
         If one header appears multiple times, it would be concatenated into the same value, separated by a comma.
-        Be aware that this repr could lead to a mistake.
+        Be aware that this repr could lead to a mistake. You could also cast a Headers instance to dict() to get a
+        case sensitive one. see method keys().
         """
         dict_headers = CaseInsensitiveDict()
 
@@ -1017,8 +1019,16 @@ class Headers(object):
                 return True
             if isinstance(item, Header) and header == item:
                 return True
-
         return False
+
+    def insert(self, __index: int, __header: Header) -> None:
+        """Insert header before the given index."""
+        if not isinstance(__header, Header):
+            raise TypeError(
+                f"Cannot insert element of type {type(__header)} in Headers."
+            )
+
+        self._headers.insert(__index, __header)
 
     def index(
         self, __value: Union[Header, str], __start: int = 0, __stop: int = -1
@@ -1068,6 +1078,25 @@ class Headers(object):
         """
         Pop header instance(s) from headers. By default the last one. Accept index as integer or header name.
         If you pass a header name, it will pop from Headers every entry named likewise.
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle")
+        >>> header = headers.pop()
+        >>> repr(header)
+        'C: funny; riddle'
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle")
+        >>> header = headers.pop(1)
+        >>> repr(header)
+        'B: world'
+        >>> header = headers.pop("A")
+        >>> repr(header)
+        'A: hello'
+        >>> headers = Header("A", "hello") + Header("B", "world") + Header("C", "funny; riddle") + Header("B", "ending")
+        >>> headers = headers.pop("B")
+        >>> len(headers)
+        2
+        >>> headers[0].name
+        'B'
+        >>> (str(headers[0]), str(headers[1]))
+        ('world', 'ending')
         """
         if isinstance(__index_or_name, int):
             return self._headers.pop(__index_or_name)
@@ -1105,6 +1134,223 @@ class Headers(object):
         return list(super().__dir__()) + list(
             set([header.normalized_name for header in self])
         )
+
+
+class Attributes(object):
+    """
+    Dedicated class to handle attributes within a Header. Wrap an AttributeBag and offer methods to manipulate it
+    with ease.
+    Store advanced info on attributes, case insensitive on keys and keep attrs ordering.
+    """
+
+    def __init__(self, members: List[str]):
+        self._bag: AttributeBag = CaseInsensitiveDict()
+
+        for member, index in zip(members, range(0, len(members))):
+
+            if member == "":
+                continue
+
+            if "=" in member:
+                key, value = tuple(member.split("=", maxsplit=1))
+
+                # avoid confusing base64 look alike single value for (key, value)
+                if value.count("=") == len(value) or len(value) == 0 or " " in key:
+                    self.insert(unquote(member), None)
+                    continue
+
+                self.insert(key, unquote(value))
+                continue
+
+            self.insert(unquote(member), None)
+
+    def __str__(self) -> str:
+        """Convert an Attributes instance to its string repr."""
+        content: str = ""
+
+        if len(self._bag) == 0:
+            return content
+
+        for i in range(0, len(self)):
+            key, value = self[i]
+
+            if value is not None:
+                content += '{semi_colon_r}{key}="{value}"'.format(
+                    key=key, value=value, semi_colon_r="; " if content != "" else "",
+                )
+            else:
+                content += "; " + key if content != "" else key
+
+        return content
+
+    def keys(self) -> List[str]:
+        """This method return a list of attribute name that have at least one value associated to them."""
+        keys: List[str] = []
+
+        for index, key, value in self:
+            if key not in keys and value is not None:
+                keys.append(key)
+
+        return keys
+
+    def __eq__(self, other: object) -> bool:
+        """Verify if two instance of Attributes are equal. We don't care about ordering."""
+        if not isinstance(other, Attributes):
+            raise NotImplementedError
+
+        if len(self) != len(other):
+            return False
+
+        list_repr_a: List[Tuple[int, str, Optional[str]]] = list(self)
+        list_repr_b: List[Tuple[int, str, Optional[str]]] = list(other)
+
+        list_check: List[Tuple[int, str, Optional[str]]] = []
+
+        for index_a, key_a, value_a in list_repr_a:
+
+            key_a = normalize_str(key_a)
+
+            for index_b, key_b, value_b in list_repr_b:
+
+                key_b = normalize_str(key_b)
+
+                if (
+                    key_a == key_b
+                    and value_a == value_b
+                    and (index_a, key_a, key_b) not in list_check
+                ):
+
+                    list_check.append((index_a, key_a, key_b))
+
+        return len(list_check) == len(list_repr_a)
+
+    def __getitem__(
+        self, item: Union[int, str]
+    ) -> Union[Tuple[str, Optional[str]], Union[str, List[str]]]:
+        """"""
+
+        if isinstance(item, str):
+            values: List[str] = [
+                value for value in self._bag[item][0] if value is not None
+            ]
+            return values if len(values) > 1 else values[0]
+
+        for attr in self._bag:
+            if item in self._bag[attr][1]:
+                pos: int = self._bag[attr][1].index(item)
+                return attr, self._bag[attr][0][pos]
+
+        raise IndexError(f"{item} not in defined indexes.")
+
+    def insert(
+        self, key: str, value: Optional[str], index: Optional[int] = None
+    ) -> None:
+        """"""
+        to_be_inserted: int = index if index is not None else len(self)
+
+        if index is not None:
+            for attr in self._bag:
+                values, indexes = self._bag[attr]
+
+                for index_, cur in zip(indexes, range(0, len(indexes))):
+                    if index_ >= index:
+                        self._bag[attr][1][cur] += 1
+
+        if key not in self._bag:
+            self._bag[key] = ([value], [to_be_inserted])
+        else:
+            self._bag[key][0].append(value)
+            self._bag[key][1].append(to_be_inserted)
+
+    def remove(self, key: str, index: Optional[int] = None) -> None:
+        """"""
+        if key not in self._bag:
+            return
+
+        freed_indexes: List[int] = []
+
+        if index is not None:
+            index = index if index >= 0 else index % (len(self))
+
+            pos: int = self._bag[key][1].index(index)
+
+            self._bag[key][0].pop(pos)
+
+            freed_indexes.append(self._bag[key][1].pop(pos))
+
+        if index is None or len(self._bag[key][0]) == 0:
+            freed_indexes += self._bag[key][1]
+            del self._bag[key]
+
+        for attr in self._bag:
+
+            values, indexes = self._bag[attr]
+            max_freed_index: int = max(freed_indexes)
+
+            for index_, cur in zip(indexes, range(0, len(indexes))):
+                if index_ - 1 in freed_indexes:
+                    self._bag[attr][1][cur] -= 1
+                elif index_ > max_freed_index:
+                    self._bag[attr][1][cur] -= 1
+
+    def __contains__(self, item: Union[str, Dict[str, Union[List[str], str]]]) -> bool:
+        """Verify if a member/attribute/value is in an Attributes instance. See examples bellow :
+        >>> attributes = Attributes(["application/xml", "q=0.9", "q=0.1"])
+        >>> "q" in attributes
+        True
+        >>> {"Q": "0.9"} in attributes
+        True
+        >>> "z" in attributes
+        False
+        >>> {"Q": "0.2"} in attributes
+        False
+        """
+        if len(self._bag) == 0:
+            return False
+
+        if isinstance(item, str):
+            return item in self._bag
+
+        target_key, target_value = item.popitem()
+        target_key = normalize_str(target_key)
+
+        for i in range(0, len(self)):
+            key, value = self[i]
+
+            if target_key == key and target_value == value:
+                return True
+
+        return False
+
+    @property
+    def last_index(self) -> Optional[int]:
+        """Simply output the latest index used in attributes. Index start from zero."""
+        if len(self._bag) == 0:
+            return None
+
+        max_index: int = 0
+
+        for key in self._bag:
+            values, indexes = self._bag[key]
+
+            maximum_ind_key: int = max(indexes)
+
+            if maximum_ind_key > max_index:
+                max_index = maximum_ind_key
+
+        return max_index
+
+    def __len__(self) -> int:
+        """The length of an Attributes instance is equal to the last index plus one. Not by keys() length."""
+        last_index: Optional[int] = self.last_index
+        return last_index + 1 if last_index is not None else 0
+
+    def __iter__(self) -> Iterator[Tuple[int, str, Optional[str]]]:
+        """Provide an iterator over all attributes with or without associated value.
+        For each entry, output a tuple of index, attribute and a optional value."""
+        for i in range(0, len(self)):
+            key, value = self[i]
+            yield i, key, value
 
 
 def lock_output_type(lock: bool = True) -> None:

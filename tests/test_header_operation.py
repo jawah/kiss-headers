@@ -118,6 +118,22 @@ class MyKissHeaderOperation(unittest.TestCase):
 
         self.assertEqual('text/html; charset="utf-8"; format="flowed"', content_type)
 
+    def test_contain_space_delimiter(self):
+
+        authorization = Header("Authorization", "Bearer mysupersecrettoken")
+
+        self.assertIn("Bearer", authorization)
+
+        self.assertIn("beaRer", authorization)
+
+        self.assertNotIn("beare", authorization)
+
+        self.assertFalse(authorization == "Bearer")
+
+        self.assertTrue(authorization == "bearer mysupersecrettoken")
+
+        self.assertFalse(authorization == "basic mysupersecrettoken")
+
 
 if __name__ == "__main__":
     unittest.main()

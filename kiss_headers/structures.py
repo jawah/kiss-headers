@@ -1,6 +1,13 @@
 from collections import OrderedDict
 from collections.abc import Mapping, MutableMapping
-from typing import Any, Iterator, Optional, Tuple
+from typing import (
+    Any,
+    Iterator,
+    List,
+    MutableMapping as MutableMappingType,
+    Optional,
+    Tuple,
+)
 
 from kiss_headers.utils import normalize_str
 
@@ -79,3 +86,7 @@ class CaseInsensitiveDict(MutableMapping):
 
     def __repr__(self) -> str:
         return str(dict(self.items()))
+
+
+AttributeDescription = Tuple[List[Optional[str]], List[int]]
+AttributeBag = MutableMappingType[str, AttributeDescription]
