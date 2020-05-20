@@ -400,7 +400,7 @@ class Header(object):
     @property
     def attrs(self) -> List[str]:
         """
-        List of members or attributes found in provided content.
+        List of members or attributes found in provided content. This list is ordered.
         eg. Content-Type: application/json; charset=utf-8; format=origin
         Would output : ['application/json', 'charset', 'format']
         """
@@ -649,7 +649,8 @@ class Headers(object):
     def keys(self) -> List[str]:
         """
         Return a list of distinct header name set in headers.
-        Be aware that it won't return a typing.KeysView
+        Be aware that it won't return a typing.KeysView.
+        Also this method allows you to create a case sensitive dict.
         """
         keys = list()
 
@@ -687,7 +688,8 @@ class Headers(object):
         """
         Provide a CaseInsensitiveDict output of current headers. This output type has been borrowed from psf/requests.
         If one header appears multiple times, it would be concatenated into the same value, separated by a comma.
-        Be aware that this repr could lead to a mistake.
+        Be aware that this repr could lead to a mistake. You could also cast a Headers instance to dict() to get a
+        case sensitive one. see method keys().
         """
         dict_headers = CaseInsensitiveDict()
 
