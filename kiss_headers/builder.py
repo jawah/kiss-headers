@@ -639,7 +639,7 @@ class Cookie(CustomHeader):
         self, cookie_name: str, __default: Optional[str] = None
     ) -> Optional[str]:
         """Retrieve associated value with a given cookie name."""
-        return str(self[cookie_name]) if cookie_name in self else __default
+        return str(self[cookie_name]).replace('\\"', "") if cookie_name in self else __default
 
 
 class SetCookie(CustomHeader):
@@ -735,7 +735,7 @@ class SetCookie(CustomHeader):
 
     def get_cookie_value(self) -> str:
         """Extract the cookie value."""
-        return str(self[self.get_cookie_name()])
+        return str(self[self.get_cookie_name()]).replace('\\"', "")
 
 
 class StrictTransportSecurity(CustomHeader):
