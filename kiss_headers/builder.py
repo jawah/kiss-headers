@@ -639,7 +639,11 @@ class Cookie(CustomHeader):
         self, cookie_name: str, __default: Optional[str] = None
     ) -> Optional[str]:
         """Retrieve associated value with a given cookie name."""
-        return str(self[cookie_name]).replace('\\"', "") if cookie_name in self else __default
+        return (
+            str(self[cookie_name]).replace('\\"', "")
+            if cookie_name in self
+            else __default
+        )
 
 
 class SetCookie(CustomHeader):

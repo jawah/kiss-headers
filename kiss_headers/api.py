@@ -47,7 +47,10 @@ def parse_it(raw_headers: Any) -> Headers:
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
                         headers.append((header_name, header_content))
-            elif r in ["httpx._models.Response", "urllib3.response.HTTPResponse"]:  # pragma: no cover
+            elif r in [
+                "httpx._models.Response",
+                "urllib3.response.HTTPResponse",
+            ]:  # pragma: no cover
                 headers = raw_headers.headers.items()
 
     if headers is None:

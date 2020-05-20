@@ -146,7 +146,9 @@ class Header(object):
         elif isinstance(__index, str):
             key, value = __index, self._attrs[__index]  # type: ignore
         else:
-            raise ValueError(f"Cannot pop from Header using type {type(__index)}.")  # pragma: no cover
+            raise ValueError(
+                f"Cannot pop from Header using type {type(__index)}."
+            )  # pragma: no cover
 
         self._attrs.remove(key, __index if isinstance(__index, int) else None)
         self._content = str(self._attrs)
