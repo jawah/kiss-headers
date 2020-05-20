@@ -144,7 +144,7 @@ class Header(object):
             __index = __index if __index >= 0 else __index % len(self._attrs)
             key, value = self._attrs[__index]
         elif isinstance(__index, str):
-            key, value = __index, self._attrs[__index]
+            key, value = __index, self._attrs[__index]  # type: ignore
         else:
             raise ValueError(f"Cannot pop from Header using type {type(__index)}.")
 
@@ -346,7 +346,7 @@ class Header(object):
         """Provide a way to iter over a Header object. This will yield a Tuple of key, value.
         The value would be None if the key is a member without associated value."""
         for i in range(0, len(self._attrs)):
-            yield self._attrs[i]
+            yield self._attrs[i]  # type: ignore
 
     def __eq__(self, other: object) -> bool:
         """
@@ -435,7 +435,7 @@ class Header(object):
         if attr not in self._attrs:
             return None
 
-        return self._attrs[attr]
+        return self._attrs[attr]  # type: ignore
 
     def has_many(self, name: str) -> bool:
         """
@@ -463,7 +463,7 @@ class Header(object):
             )
 
         if item in self._attrs:
-            value = self._attrs[item]
+            value = self._attrs[item]  # type: ignore
         else:
             raise KeyError(
                 "'{item}' attribute is not defined within '{header}' header.".format(
@@ -471,13 +471,13 @@ class Header(object):
                 )
             )
 
-        if OUTPUT_LOCK_TYPE and not isinstance(value, list):
+        if OUTPUT_LOCK_TYPE and isinstance(value, str):
             value = [value]
 
         return (
-            unfold(unquote(value))
-            if not isinstance(value, list)
-            else [unfold(unquote(v)) for v in value]
+            unfold(unquote(value))  # type: ignore
+            if isinstance(value, str)
+            else [unfold(unquote(v)) for v in value]  # type: ignore
         )
 
     def __getattr__(self, item: str) -> Union[str, List[str]]:
