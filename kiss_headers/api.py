@@ -47,11 +47,11 @@ def parse_it(raw_headers: Any) -> Headers:
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
                         headers.append((header_name, header_content))
-            elif r in ["httpx._models.Response", "urllib3.response.HTTPResponse"]:
+            elif r in ["httpx._models.Response", "urllib3.response.HTTPResponse"]:  # pragma: no cover
                 headers = raw_headers.headers.items()
 
     if headers is None:
-        raise TypeError(
+        raise TypeError(  # pragma: no cover
             "Cannot parse type {type_} as it is not supported by kiss-header.".format(
                 type_=type(raw_headers)
             )
@@ -98,7 +98,7 @@ def explain(headers: Headers) -> CaseInsensitiveDict:
     Return a brief explanation of each header present in headers if available.
     """
     if not Header.__subclasses__():
-        raise LookupError(
+        raise LookupError(  # pragma: no cover
             "You cannot use explain() function without properly importing the public package."
         )
 

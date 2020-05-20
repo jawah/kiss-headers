@@ -109,7 +109,7 @@ class Header(object):
         True
         """
         if not isinstance(other, Header):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.normalized_name < other.normalized_name
 
     def __gt__(self, other: object) -> bool:
@@ -120,7 +120,7 @@ class Header(object):
         False
         """
         if not isinstance(other, Header):
-            raise NotImplementedError
+            raise NotImplementedError  # pragma: no cover
         return self.normalized_name > other.normalized_name
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
@@ -146,7 +146,7 @@ class Header(object):
         elif isinstance(__index, str):
             key, value = __index, self._attrs[__index]  # type: ignore
         else:
-            raise ValueError(f"Cannot pop from Header using type {type(__index)}.")
+            raise ValueError(f"Cannot pop from Header using type {type(__index)}.")  # pragma: no cover
 
         self._attrs.remove(key, __index if isinstance(__index, int) else None)
         self._content = str(self._attrs)
