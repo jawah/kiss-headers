@@ -170,9 +170,13 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
 
         self.assertEqual(1, len(headers.host))
 
+        self.assertEqual(list, type(headers.accept[-1].q))
+
         lock_output_type(False)
 
         self.assertEqual(Header, type(headers.host))
+
+        self.assertEqual(str, type(headers.accept[-1].q))
 
 
 if __name__ == "__main__":
