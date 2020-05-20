@@ -196,7 +196,8 @@ class Header(object):
             )
 
         self._attrs.insert(other, None)
-        self._content = str(self._attrs)
+        # No need to rebuild the content completely.
+        self._content += "; " + other if self._content.lstrip() != "" else other
 
         return self
 
