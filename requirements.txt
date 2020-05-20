@@ -1,5 +1,4 @@
 requests>=2.10
-httpx>=0.10
 black
 pytest
 pytest-cov
