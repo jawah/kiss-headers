@@ -415,6 +415,28 @@ class Header(object):
 
         return attrs
 
+    @property
+    def valued_attrs(self) -> List[str]:
+        """
+        List of distinct attributes that have at least one value associated with them. This list is ordered.
+        This property could have been written under the keys() method, but implementing it would interfere with dict()
+        cast and the __iter__() method.
+        eg. Content-Type: application/json; charset=utf-8; format=origin
+        Would output : ['charset', 'format']
+        """
+        attrs: List[str] = []
+
+        if len(self._attrs) == 0:
+            return attrs
+
+        for i in range(0, len(self._attrs)):
+            attr, value = self._attrs[i]
+
+            if value is not None and attr not in attrs:
+                attrs.append(attr)
+
+        return attrs
+
     def has(self, attr: str) -> bool:
         """
         Safely check if the current header has an attribute or adjective in it.
