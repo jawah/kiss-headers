@@ -34,6 +34,11 @@ def normalize_str(string: str) -> str:
     return string.lower().replace("-", "_")
 
 
+def normalize_list(strings: List[str]) -> List[str]:
+    """Normalize a list of string by applying fn normalize_str over each element."""
+    return list(map(normalize_str, strings))
+
+
 def unpack_protected_keyword(name: str) -> str:
     """
     By choice, this project aims to allow developers to access header or attribute in header by using the property

@@ -134,6 +134,26 @@ class MyKissHeaderOperation(unittest.TestCase):
 
         self.assertFalse(authorization == "basic mysupersecrettoken")
 
+    def test_illegal_delitem_operation(self):
+        content_type = Header("Content-Type", 'text/html; charset="utf-8"')
+
+        with self.subTest("Forbid to remove non-valued attr using delitem"):
+            with self.assertRaises(KeyError):
+                del content_type["text/html"]
+
+    def test_attrs_access_case_insensitive(self):
+
+        content_type = Header("Content-Type", 'text/html; charset="utf-8"')
+
+        with self.subTest("Verify that attrs can be accessed no matter case"):
+            self.assertEqual("utf-8", content_type.charset)
+            self.assertEqual("utf-8", content_type.charseT)
+            self.assertEqual("utf-8", content_type.CHARSET)
+
+        with self.subTest("Using del on attr using case insensitive key"):
+            del content_type.CHARSET
+            self.assertNotIn("charset", content_type)
+
 
 if __name__ == "__main__":
     unittest.main()

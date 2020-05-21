@@ -39,6 +39,16 @@ class HeaderOrderingTest(unittest.TestCase):
 
         self.assertEqual(["a", "b", "h", "h"], header.attrs)
 
+    def test_attrs_original_case(self):
+        header = Header("Content-Type", "aA; bc=k; hA; h; zZzZ=0")
+
+        with self.subTest(
+            "Ensure that attrs and valued_attrs properties keep the original case."
+        ):
+            self.assertEqual(["aA", "bc", "hA", "h", "zZzZ"], header.attrs)
+
+            self.assertEqual(["bc", "zZzZ"], header.valued_attrs)
+
 
 if __name__ == "__main__":
     unittest.main()
