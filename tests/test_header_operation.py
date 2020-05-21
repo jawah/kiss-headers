@@ -150,6 +150,10 @@ class MyKissHeaderOperation(unittest.TestCase):
             self.assertEqual("utf-8", content_type.charseT)
             self.assertEqual("utf-8", content_type.CHARSET)
 
+        with self.subTest("Using del on attr using case insensitive key"):
+            del content_type.CHARSET
+            self.assertNotIn("charset", content_type)
+
 
 if __name__ == "__main__":
     unittest.main()

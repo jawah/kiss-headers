@@ -322,7 +322,8 @@ class Header(object):
         >>> str(headers.content_type)
         'text/html'
         """
-        if key not in normalize_list(self.valued_attrs):
+
+        if normalize_str(key) not in normalize_list(self.valued_attrs):
             raise KeyError(
                 "'{item}' attribute is not defined or have at least one value associated within '{header}' header.".format(
                     item=key, header=self.name
