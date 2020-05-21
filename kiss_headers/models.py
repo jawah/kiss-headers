@@ -13,6 +13,7 @@ from kiss_headers.utils import (
     unfold,
     unpack_protected_keyword,
     unquote,
+    normalize_list,
 )
 
 OUTPUT_LOCK_TYPE: bool = False
@@ -321,9 +322,9 @@ class Header(object):
         >>> str(headers.content_type)
         'text/html'
         """
-        if key not in self._attrs:
+        if key not in normalize_list(self.valued_attrs):
             raise KeyError(
-                "'{item}' attribute is not defined within '{header}' header.".format(
+                "'{item}' attribute is not defined or have at least one value associated within '{header}' header.".format(
                     item=key, header=self.name
                 )
             )
@@ -344,9 +345,9 @@ class Header(object):
         """
         item = normalize_str(item)
 
-        if item not in self._attrs:
+        if item not in normalize_list(self.valued_attrs):
             raise AttributeError(
-                "'{item}' attribute is not defined within '{header}' header.".format(
+                "'{item}' attribute is not defined or have at least one value associated within '{header}' header.".format(
                     item=item, header=self.name
                 )
             )
@@ -402,14 +403,12 @@ class Header(object):
         Provide a better auto-completion when using a Python interpreter. We are feeding __dir__ so Python can be aware
         of what properties are callable. In other words, more precise auto-completion when not using IDE.
         """
-        return list(super().__dir__()) + [
-            normalize_str(key) for key in self._attrs.keys()
-        ]
+        return list(super().__dir__()) + normalize_list(self._attrs.keys())
 
     @property
     def attrs(self) -> List[str]:
         """
-        List of members or attributes found in provided content. This list is ordered.
+        List of members or attributes found in provided content. This list is ordered and normalized.
         eg. Content-Type: application/json; charset=utf-8; format=origin
         Would output : ['application/json', 'charset', 'format']
         """
@@ -427,7 +426,7 @@ class Header(object):
     @property
     def valued_attrs(self) -> List[str]:
         """
-        List of distinct attributes that have at least one value associated with them. This list is ordered.
+        List of distinct attributes that have at least one value associated with them. This list is ordered and normalized.
         This property could have been written under the keys() method, but implementing it would interfere with dict()
         cast and the __iter__() method.
         eg. Content-Type: application/json; charset=utf-8; format=origin
@@ -465,7 +464,7 @@ class Header(object):
         >>> header.format
         'flowed'
         """
-        if attr not in self._attrs:
+        if normalize_str(attr) not in normalize_list(self.valued_attrs):
             return None
 
         return self._attrs[attr]  # type: ignore
@@ -495,11 +494,11 @@ class Header(object):
                 self._members[item] if not OUTPUT_LOCK_TYPE else [self._members[item]]
             )
 
-        if item in self._attrs:
+        if normalize_str(item) in normalize_list(self.valued_attrs):
             value = self._attrs[item]  # type: ignore
         else:
             raise KeyError(
-                "'{item}' attribute is not defined within '{header}' header.".format(
+                "'{item}' attribute is not defined or does not have at least one value within the '{header}' header.".format(
                     item=item, header=self.name
                 )
             )
@@ -520,9 +519,9 @@ class Header(object):
         """
         item = unpack_protected_keyword(item)
 
-        if item not in self._attrs:
+        if normalize_str(item) not in normalize_list(self.valued_attrs):
             raise AttributeError(
-                "'{item}' attribute is not defined within '{header}' header.".format(
+                "'{item}' attribute is not defined or have at least one value within '{header}' header.".format(
                     item=item, header=self.name
                 )
             )
