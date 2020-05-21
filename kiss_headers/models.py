@@ -8,12 +8,12 @@ from kiss_headers.utils import (
     header_content_split,
     header_name_to_class,
     is_legal_header_name,
+    normalize_list,
     normalize_str,
     prettify_header_name,
     unfold,
     unpack_protected_keyword,
     unquote,
-    normalize_list,
 )
 
 OUTPUT_LOCK_TYPE: bool = False
