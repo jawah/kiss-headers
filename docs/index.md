@@ -28,7 +28,7 @@
   </a>
 </p>
 
-*kiss-headers* stand for, headers, keep it sweet and simple. [Principe KISS](https://fr.wikipedia.org/wiki/Principe_KISS).
+*kiss-headers* stand for, headers, keep it sweet and simple. [Principle KISS](https://fr.wikipedia.org/wiki/Principe_KISS).
 It's a basic library, small and concise to help you get things done regarding headers in a better way.
 
 ## 🔪 Features
@@ -37,19 +37,20 @@ It's a basic library, small and concise to help you get things done regarding he
 
 * A backwards-compatible syntax using bracket style.
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
-* Flexibility if headers are from IMAP4 or HTTP, use as you need with one library.
-* Ability to parse any object and extract recognized headers from it, it also support UTF-8 encoded headers.
+* Flexibility if headers are from an email or HTTP, use as you need with one library.
+* Ability to parse any object and extract recognized headers from it, it also supports UTF-8 encoded headers.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
-* Absolutely no dependencies.
+* No dependencies. And never will be.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in header.
 * Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
-* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response` and `httpx._models.Response`.
-* Automatically unquote and unfold value of an attribute when retrieving it.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response`, `httpx._models.Response` and `urllib3.HTTPResponse`.
+* Automatically unquote and unfold the value of an attribute when retrieving it.
+* Keep headers and attributes ordering.
 * Case insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.

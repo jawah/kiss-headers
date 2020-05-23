@@ -75,6 +75,7 @@ pip install kiss-headers --upgrade
 
 ### 🍰 Usage
 
+#### Quick start
 `parse_it()` method takes `bytes`, `str`, `fp`, `dict`, `email.Message` or even a `requests.Response` or `httpx._models.Response` itself and returns a `Headers` object.
 
 ```python
@@ -135,7 +136,7 @@ headers.from_ # to access From, just add a single underscore to it
 headers['from']
 ```
 
-## 🛠️ The builder
+#### 🛠️ Create headers from objects
 
 Introduced in the version 2.0, kiss-headers now allow you to create headers with more than 40+ ready-to-use, fully documented, header objects.
 

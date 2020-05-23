@@ -1,3 +1,23 @@
+# Headers Class
+
+Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
+Combine advantages of dict, CaseInsensibleDict, list, multi-dict, and native objects. Headers do not inherit the Mapping type, but it does borrow some concepts from it.
+A Headers can be casted to `str`, `bytes` and `dict`.
+
+Given this :
+
+```python
+from kiss_headers import Headers, Header
+
+headers = Headers(Header("Content-Type", "application/json"), Header("Allow", "POST"), Header("Accept", "text/html,application/json;q=0.8"))
+
+str(headers)  # output: 'Content-Type: application/json\r\nAllow: POST\r\nAccept: text/html,application/json;q=0.8'
+repr(headers)  # output: 'Content-Type: application/json\r\nAllow: POST\r\nAccept: text/html,application/json;q=0.8'
+bytes(headers)  # output: b'Content-Type: application/json\r\nAllow: POST\r\nAccept: text/html,application/json;q=0.8'
+dict(headers)  # output: {'Content-Type': Content-Type: application/json, 'Allow': Allow: POST, 'Accept': Accept: text/html,application/json;q=0.8}
+headers.to_dict()  # output: {'Content-Type': 'application/json', 'Allow': 'POST', 'Accept': 'text/html,application/json;q=0.8'}
+```
+
 ### Setup
 
 If you wish to run bellow examples, first do :
@@ -98,3 +118,5 @@ headers.content_type == 'application'
 
 You could use `to_dict()` method to obtain a `CaseInsensibleDict` from a `Headers` object.
 Any headers that are OneToMany will be concatenated into one entry, separated with a comma.
+
+You could also directly cast a Headers instance to dict using `dict(headers)`, the values are of type `Union[Header, List[Header]]`. Keys won't be case insensitive.

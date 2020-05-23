@@ -11,6 +11,7 @@ header = Header("Content-Type", "text/html; charset=UTF-8")
 str(header)  # output: 'text/html; charset=UTF-8'
 repr(header)  # output: 'Content-Type: text/html; charset=UTF-8'
 bytes(header)  # output: b'Content-Type: text/html; charset=UTF-8'
+dict(header)  # output: {'text/html': None, 'charset': 'UTF-8'}
 ```
 
 ### Setup
@@ -54,6 +55,14 @@ If attribute exists multiple times, this removes all entries.
 del headers.content_type.charset
 # OR
 del headers.content_type['charset']
+```
+
+### Remove a member from it
+
+If adjective/member exists multiple times, this removes all entries.
+
+```python
+headers.content_type -= 'text/html'
 ```
 
 ### Create an attribute on the fly
