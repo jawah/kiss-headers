@@ -8,7 +8,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
+        <meta name="description" content="Python package for object oriented headers, HTTP/1.1 style. Parse headers to objects.">
       
       
         <link rel="canonical" href="https://kiss-headers.tech/the-theory/">
@@ -207,6 +207,8 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
         The Theory
@@ -223,6 +225,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -233,16 +237,23 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-theory" class="md-nav__link">
-    The theory
+  <a href="#roots-concepts" class="md-nav__link">
+    Roots concepts
   </a>
   
-    <nav class="md-nav" aria-label="The theory">
+    <nav class="md-nav" aria-label="Roots concepts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#roots-concepts" class="md-nav__link">
-    Roots concepts
+  <a href="#bases" class="md-nav__link">
+    Bases
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cases" class="md-nav__link">
+    Cases
   </a>
   
 </li>
@@ -507,6 +518,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -517,16 +530,23 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#the-theory" class="md-nav__link">
-    The theory
+  <a href="#roots-concepts" class="md-nav__link">
+    Roots concepts
   </a>
   
-    <nav class="md-nav" aria-label="The theory">
+    <nav class="md-nav" aria-label="Roots concepts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#roots-concepts" class="md-nav__link">
-    Roots concepts
+  <a href="#bases" class="md-nav__link">
+    Bases
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cases" class="md-nav__link">
+    Cases
   </a>
   
 </li>
@@ -556,20 +576,37 @@
                   
                 
                 
-                  <h1>The Theory</h1>
-                
-                <h3 id="the-theory">The theory</h3>
+                <h1 id="the-theory">The theory</h1>
 <p>Headers are <em>kind</em> of complicated, so many RFCs to study, so many forms to comprehend. This package offers the possibility to 
 handle most of the forms you could encounter.</p>
 <p>So, after my researches on Mozilla MDN and IETF websites, I have elaborated a new way to handle them.</p>
-<h4 id="roots-concepts">Roots concepts</h4>
-<p>What you should know before, before getting started :</p>
+<h2 id="roots-concepts">Roots concepts</h2>
+<h3 id="bases">Bases</h3>
+<p>What you should know before getting started :</p>
 <p>Content-Type: <em>text/html</em>; <strong>charset</strong>=UTF-8</p>
 <p>Here <code>text/html</code> is a member of <code>Content-Type</code>, also <code>charset</code> is an attribute and its associated with the value <code>UTF-8</code>.</p>
 <div class="admonition note">
 <p class="admonition-title">TL;DR</p>
 <p>Provided models, <code>Headers</code> and <code>Header</code> does not inherit from <code>Mapping</code> nor does it from <code>List</code>. Some package prefers to inherit from them, we do not. </p>
 </div>
+<p>In most headers, the semi-colon <code>;</code> character is used as a separator. But you can also see some headers using a single comma <code>,</code> as a separator.</p>
+<p>Here&rsquo;s how I understand those two separators.</p>
+<ul>
+<li>The single comma indicate that their is multiple entries for the same headers.</li>
+<li>The semi-colon separate members inside the same entry and therefor cannot be interpreted separately.</li>
+</ul>
+<p>Writing <code>Accept: text/html, application/json;q=0.8</code> is another way to write :</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Accept</span><span class="o">:</span> <span class="n">text</span><span class="o">/</span><span class="n">html</span>
+<span class="n">Accept</span><span class="o">:</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span><span class="o">;</span><span class="n">q</span><span class="o">=</span><span class="mf">0.8</span>
+</code></pre></div>
+
+
+<h3 id="cases">Cases</h3>
+<p>In this project case insensitive mean no distinction between lower and upper letters plus the character <code>-</code> eq <code>_</code>.</p>
+<ul>
+<li>The header name is case insensitive.</li>
+<li>Every member of an header is case insensitive except the value associated with an attribute.</li>
+</ul>
                 
               
               

@@ -8,7 +8,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
+        <meta name="description" content="Python package for object oriented headers, HTTP/1.1 style. Parse headers to objects.">
       
       
         <link rel="canonical" href="https://kiss-headers.tech/advanced-header/">
@@ -355,6 +355,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#remove-a-member-from-it" class="md-nav__link">
+    Remove a member from it
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#create-an-attribute-on-the-fly" class="md-nav__link">
     Create an attribute on the fly
   </a>
@@ -570,6 +577,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#remove-a-member-from-it" class="md-nav__link">
+    Remove a member from it
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#create-an-attribute-on-the-fly" class="md-nav__link">
     Create an attribute on the fly
   </a>
@@ -606,6 +620,7 @@ Given this :</p>
 <span class="nb">str</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>  <span class="c1"># output: &#39;text/html; charset=UTF-8&#39;</span>
 <span class="nb">repr</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>  <span class="c1"># output: &#39;Content-Type: text/html; charset=UTF-8&#39;</span>
 <span class="nb">bytes</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>  <span class="c1"># output: b&#39;Content-Type: text/html; charset=UTF-8&#39;</span>
+<span class="nb">dict</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>  <span class="c1"># output: {&#39;text/html&#39;: None, &#39;charset&#39;: &#39;UTF-8&#39;}</span>
 </code></pre></div>
 
 
@@ -642,6 +657,12 @@ Given this :</p>
 <div class="codehilite"><pre><span></span><code><span class="k">del</span> <span class="n">headers</span><span class="o">.</span><span class="n">content_type</span><span class="o">.</span><span class="n">charset</span>
 <span class="c1"># OR</span>
 <span class="k">del</span> <span class="n">headers</span><span class="o">.</span><span class="n">content_type</span><span class="p">[</span><span class="s1">&#39;charset&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+
+<h3 id="remove-a-member-from-it">Remove a member from it</h3>
+<p>If adjective/member exists multiple times, this removes all entries.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">headers</span><span class="o">.</span><span class="n">content_type</span> <span class="o">-=</span> <span class="s1">&#39;text/html&#39;</span>
 </code></pre></div>
 
 

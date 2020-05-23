@@ -8,7 +8,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
+        <meta name="description" content="Python package for object oriented headers, HTTP/1.1 style. Parse headers to objects.">
       
       
         <link rel="canonical" href="https://kiss-headers.tech/">
@@ -588,26 +588,27 @@
   </a>
 </p>
 
-<p><em>kiss-headers</em> stand for, headers, keep it sweet and simple. <a href="https://fr.wikipedia.org/wiki/Principe_KISS">Principe KISS</a>.
+<p><em>kiss-headers</em> stand for, headers, keep it sweet and simple. <a href="https://fr.wikipedia.org/wiki/Principe_KISS">Principle KISS</a>.
 It&rsquo;s a basic library, small and concise to help you get things done regarding headers in a better way.</p>
 <h2 id="features">🔪 Features</h2>
 <p><code>kiss-headers</code> is a basic library that allows you to handle headers as objects.</p>
 <ul>
 <li>A backwards-compatible syntax using bracket style.</li>
 <li>Capability to alter headers using simple, human-readable operator notation <code>+</code> and <code>-</code>.</li>
-<li>Flexibility if headers are from IMAP4 or HTTP, use as you need with one library.</li>
-<li>Ability to parse any object and extract recognized headers from it, it also support UTF-8 encoded headers.</li>
+<li>Flexibility if headers are from an email or HTTP, use as you need with one library.</li>
+<li>Ability to parse any object and extract recognized headers from it, it also supports UTF-8 encoded headers.</li>
 <li>Fully type-annotated.</li>
 <li>Provide great auto-completion in Python interpreter or any capable IDE.</li>
-<li>Absolutely no dependencies.</li>
+<li>No dependencies. And never will be.</li>
 <li>90% test coverage.</li>
 </ul>
 <p>Plus all the features that you would expect from handling headers&hellip;</p>
 <ul>
 <li>Properties syntax for headers and attribute in header.</li>
 <li>Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.</li>
-<li>Capable of parsing <code>bytes</code>, <code>fp</code>, <code>str</code>, <code>dict</code>, <code>email.Message</code>, <code>requests.Response</code> and <code>httpx._models.Response</code>.</li>
-<li>Automatically unquote and unfold value of an attribute when retrieving it.</li>
+<li>Capable of parsing <code>bytes</code>, <code>fp</code>, <code>str</code>, <code>dict</code>, <code>email.Message</code>, <code>requests.Response</code>, <code>httpx._models.Response</code> and <code>urllib3.HTTPResponse</code>.</li>
+<li>Automatically unquote and unfold the value of an attribute when retrieving it.</li>
+<li>Keep headers and attributes ordering.</li>
 <li>Case insensitive with header name and attribute key.</li>
 <li>Character <code>-</code> equal <code>_</code> in addition of above feature.</li>
 <li>Any syntax you like, we like.</li>

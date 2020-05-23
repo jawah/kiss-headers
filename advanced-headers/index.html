@@ -8,7 +8,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A stupidly simple way to handle headers, object oriented, HTTP or IMAP !">
+        <meta name="description" content="Python package for object oriented headers, HTTP/1.1 style. Parse headers to objects.">
       
       
         <link rel="canonical" href="https://kiss-headers.tech/advanced-headers/">
@@ -62,7 +62,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#setup" class="md-skip">
+        <a href="#headers-class" class="md-skip">
           Skip to content
         </a>
       
@@ -285,6 +285,8 @@
     
     <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
         Headers
@@ -300,6 +302,8 @@
       
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
+  
+    
   
   
     <label class="md-nav__title" for="__toc">
@@ -580,6 +584,8 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon">
@@ -698,9 +704,24 @@
                   
                 
                 
-                  <h1>Headers</h1>
-                
-                <h3 id="setup">Setup</h3>
+                <h1 id="headers-class">Headers Class</h1>
+<p>Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
+Combine advantages of dict, CaseInsensibleDict, list, multi-dict, and native objects. Headers do not inherit the Mapping type, but it does borrow some concepts from it.
+A Headers can be casted to <code>str</code>, <code>bytes</code> and <code>dict</code>.</p>
+<p>Given this :</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="n">Headers</span><span class="p">,</span> <span class="n">Header</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="n">Headers</span><span class="p">(</span><span class="n">Header</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">,</span> <span class="s2">&quot;application/json&quot;</span><span class="p">),</span> <span class="n">Header</span><span class="p">(</span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">),</span> <span class="n">Header</span><span class="p">(</span><span class="s2">&quot;Accept&quot;</span><span class="p">,</span> <span class="s2">&quot;text/html,application/json;q=0.8&quot;</span><span class="p">))</span>
+
+<span class="nb">str</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>  <span class="c1"># output: &#39;Content-Type: application/json\r\nAllow: POST\r\nAccept: text/html,application/json;q=0.8&#39;</span>
+<span class="nb">repr</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>  <span class="c1"># output: &#39;Content-Type: application/json\r\nAllow: POST\r\nAccept: text/html,application/json;q=0.8&#39;</span>
+<span class="nb">bytes</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>  <span class="c1"># output: b&#39;Content-Type: application/json\r\nAllow: POST\r\nAccept: text/html,application/json;q=0.8&#39;</span>
+<span class="nb">dict</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>  <span class="c1"># output: {&#39;Content-Type&#39;: Content-Type: application/json, &#39;Allow&#39;: Allow: POST, &#39;Accept&#39;: Accept: text/html,application/json;q=0.8}</span>
+<span class="n">headers</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>  <span class="c1"># output: {&#39;Content-Type&#39;: &#39;application/json&#39;, &#39;Allow&#39;: &#39;POST&#39;, &#39;Accept&#39;: &#39;text/html,application/json;q=0.8&#39;}</span>
+</code></pre></div>
+
+
+<h3 id="setup">Setup</h3>
 <p>If you wish to run bellow examples, first do :</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">kiss_headers</span> <span class="kn">import</span> <span class="n">parse_it</span>
 <span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">get</span>
@@ -784,6 +805,7 @@ eg. If you would like to add <code>Content-Type</code> header.</p>
 <h3 id="cast-to-dict">Cast to dict</h3>
 <p>You could use <code>to_dict()</code> method to obtain a <code>CaseInsensibleDict</code> from a <code>Headers</code> object.
 Any headers that are OneToMany will be concatenated into one entry, separated with a comma.</p>
+<p>You could also directly cast a Headers instance to dict using <code>dict(headers)</code>, the values are of type <code>Union[Header, List[Header]]</code>. Keys won&rsquo;t be case insensitive.</p>
                 
               
               
