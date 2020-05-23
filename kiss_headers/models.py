@@ -259,7 +259,8 @@ class Header(object):
                 )
             )
 
-        self._attrs.remove(other)
+        self._attrs.remove(other, with_value=False)
+
         self._content = str(self._attrs)
         self._members = header_content_split(self._content, ";")
 
@@ -330,7 +331,7 @@ class Header(object):
                 )
             )
 
-        self._attrs.remove(key)
+        self._attrs.remove(key, with_value=True)
         self._content = str(self._attrs)
         self._members = header_content_split(self._content, ";")
 
@@ -939,11 +940,14 @@ class Headers(object):
         if isinstance(other, Header):
             if other in self:
                 self._headers.remove(other)
-                return self
+            return self
 
-        raise TypeError(
-            'Cannot subtract type "{type_}" to Headers.'.format(type_=str(type(other)))
-        )
+        else:
+            raise TypeError(
+                'Cannot subtract type "{type_}" to Headers.'.format(
+                    type_=str(type(other))
+                )
+            )
 
     def __getitem__(self, item: Union[str, int]) -> Union[Header, List[Header]]:
         """
@@ -1269,7 +1273,9 @@ class Attributes(object):
             self._bag[key][0].append(value)
             self._bag[key][1].append(to_be_inserted)
 
-    def remove(self, key: str, index: Optional[int] = None) -> None:
+    def remove(
+        self, key: str, index: Optional[int] = None, with_value: Optional[bool] = None
+    ) -> None:
         """"""
         if key not in self._bag:
             return
@@ -1277,6 +1283,12 @@ class Attributes(object):
         freed_indexes: List[int] = []
 
         if index is not None:
+
+            if with_value is not None:
+                raise ValueError(
+                    "Cannot set both index and with_value in the remove method."
+                )
+
             index = index if index >= 0 else index % (len(self))
 
             pos: int = self._bag[key][1].index(index)
@@ -1285,8 +1297,26 @@ class Attributes(object):
 
             freed_indexes.append(self._bag[key][1].pop(pos))
 
-        if index is None or len(self._bag[key][0]) == 0:
-            freed_indexes += self._bag[key][1]
+        if index is None:
+
+            if with_value is not None:
+
+                for index_, value_ in zip(self._bag[key][1], self._bag[key][0]):
+                    if with_value is True and value_ is not None:
+                        freed_indexes.append(index_)
+                    elif with_value is False and value_ is None:
+                        freed_indexes.append(index_)
+
+                for index_ in freed_indexes:
+                    pos = self._bag[key][1].index(index_)
+
+                    self._bag[key][0].pop(pos)
+                    self._bag[key][1].pop(pos)
+
+            else:
+                freed_indexes += self._bag[key][1]
+
+        if len(self._bag[key][0]) == 0:
             del self._bag[key]
 
         for attr in self._bag:

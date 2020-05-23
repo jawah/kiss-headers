@@ -154,6 +154,22 @@ class MyKissHeaderOperation(unittest.TestCase):
             del content_type.CHARSET
             self.assertNotIn("charset", content_type)
 
+    def test_remove_exclusively_none_attrs(self):
+        content_type = Header(
+            "Content-Type", 'text/html; charset="utf-8"; text/html=Ahah'
+        )
+
+        with self.subTest("Trying to subtract 'text/html' member ONLY."):
+            content_type -= "text/html"
+            self.assertEqual('charset="utf-8"; text/html="Ahah"', str(content_type))
+
+    def test_remove_exclusively_valued_attrs(self):
+        content_type = Header("Content-Type", 'text/html; charset="utf-8"; charset')
+
+        with self.subTest("Trying to subtract 'charset' attrs ONLY."):
+            del content_type.charset
+            self.assertEqual("text/html; charset", str(content_type))
+
 
 if __name__ == "__main__":
     unittest.main()

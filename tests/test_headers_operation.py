@@ -6,7 +6,7 @@ from kiss_headers import Header, parse_it
 class KissHeadersOperationTest(unittest.TestCase):
     def test_isub(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
@@ -23,7 +23,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
         self.assertNotIn("Received", headers)
 
-        headers -= Header("X-My-Second-Test", "Precisly")
+        headers -= Header("X-My-Second-Test", "Precisely")
 
         self.assertEqual(1, len(headers))
 
@@ -31,7 +31,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
     def test_sub(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
@@ -44,7 +44,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
     def test_add(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
@@ -59,7 +59,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
     def test_remove_by_del(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
@@ -72,7 +72,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
     def test_remove_by_del_attr(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
@@ -85,7 +85,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
     def test_by_setitem(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
@@ -98,7 +98,7 @@ class KissHeadersOperationTest(unittest.TestCase):
 
     def test_by_setattr(self):
         headers = parse_it(
-            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisly\nReceived: outpost\nReceived: outpost"""
+            """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
         )
 
         self.assertEqual(5, len(headers))
