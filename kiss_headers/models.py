@@ -113,6 +113,18 @@ class Header(object):
             raise NotImplementedError  # pragma: no cover
         return self.normalized_name < other.normalized_name
 
+    def __le__(self, other: object) -> bool:
+        """
+        >>> Header("A", "") <= Header("Z", "")
+        True
+        >>> Header("A", "") <= Header("A", "")
+        True
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError  # pragma: no cover
+
+        return self.normalized_name <= other.normalized_name
+
     def __gt__(self, other: object) -> bool:
         """
         This method is only implemented to make sorted work with Header.
@@ -122,7 +134,20 @@ class Header(object):
         """
         if not isinstance(other, Header):
             raise NotImplementedError  # pragma: no cover
+
         return self.normalized_name > other.normalized_name
+
+    def __ge__(self, other: object) -> bool:
+        """
+        >>> Header("A", "") >= Header("Z", "")
+        False
+        >>> Header("A", "") >= Header("A", "")
+        True
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError  # pragma: no cover
+
+        return self.normalized_name >= other.normalized_name
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
         """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
