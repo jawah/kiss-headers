@@ -424,7 +424,9 @@ class BasicAuthorization(Authorization):
         ('azerty', 'qwerty')
         """
         if ":" in username:
-            raise ValueError("The username cannot contain a single colon in it.")  # pragma: no cover
+            raise ValueError(  # pragma: no cover
+                "The username cannot contain a single colon in it."
+            )
 
         b64_auth_content: str = b64encode(
             (username + ":" + password).encode(charset)
@@ -1309,7 +1311,9 @@ class From(CustomHeader):
             fullmatch(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
             is None
         ):
-            raise ValueError(f"'{email}' is not a valid RFC 5322 email.")  # pragma: no cover
+            raise ValueError(  # pragma: no cover
+                f"'{email}' is not a valid RFC 5322 email."
+            )
 
         super().__init__(email, **kwargs)
 
