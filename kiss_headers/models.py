@@ -1282,6 +1282,7 @@ class Attributes(object):
         self, key: str, value: Optional[str], index: Optional[int] = None
     ) -> None:
         """"""
+        index = index % len(self) if index is not None and index < 0 else index
         to_be_inserted: int = index if index is not None else len(self)
 
         if index is not None:
