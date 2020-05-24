@@ -113,6 +113,18 @@ class Header(object):
             raise NotImplementedError  # pragma: no cover
         return self.normalized_name < other.normalized_name
 
+    def __le__(self, other: object) -> bool:
+        """
+        >>> Header("A", "") <= Header("Z", "")
+        True
+        >>> Header("A", "") <= Header("A", "")
+        True
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError  # pragma: no cover
+
+        return self.normalized_name <= other.normalized_name
+
     def __gt__(self, other: object) -> bool:
         """
         This method is only implemented to make sorted work with Header.
@@ -122,7 +134,20 @@ class Header(object):
         """
         if not isinstance(other, Header):
             raise NotImplementedError  # pragma: no cover
+
         return self.normalized_name > other.normalized_name
+
+    def __ge__(self, other: object) -> bool:
+        """
+        >>> Header("A", "") >= Header("Z", "")
+        False
+        >>> Header("A", "") >= Header("A", "")
+        True
+        """
+        if not isinstance(other, Header):
+            raise NotImplementedError  # pragma: no cover
+
+        return self.normalized_name >= other.normalized_name
 
     def __deepcopy__(self, memodict: Dict) -> "Header":
         """Simply provide a deepcopy of a Header object. Pointer/Reference is free of the initial reference."""
@@ -159,7 +184,15 @@ class Header(object):
     def insert(
         self, __index: int, *__members: str, **__attributes: Optional[str]
     ) -> None:
-        """This method allows you to properly insert attributes into a Header instance."""
+        """
+        This method allows you to properly insert attributes into a Header instance. Insert before provided index.
+        >>> header = Header("Content-Type", "application/json; format=flowed")
+        >>> repr(header)
+        'Content-Type: application/json; format=flowed'
+        >>> header.insert(1, charset="UTF-8")
+        >>> repr(header)
+        'Content-Type: application/json; charset="UTF-8"; format="flowed"'
+        """
 
         __index = __index if __index >= 0 else __index % len(self._attrs)
 
@@ -1151,7 +1184,7 @@ class Attributes(object):
     """
     Dedicated class to handle attributes within a Header. Wrap an AttributeBag and offer methods to manipulate it
     with ease.
-    Store advanced info on attributes, case insensitive on keys and keep attrs ordering.
+    Store advanced info on attributes, members/adjectives, case insensitive on keys and keep attrs ordering.
     """
 
     def __init__(self, members: List[str]):
@@ -1238,7 +1271,9 @@ class Attributes(object):
     def __getitem__(
         self, item: Union[int, str]
     ) -> Union[Tuple[str, Optional[str]], Union[str, List[str]]]:
-        """"""
+        """
+        Extract item from an Attributes instance using its (integer) index or key string name (case insensible).
+        """
 
         if isinstance(item, str):
             values: List[str] = [
@@ -1254,9 +1289,26 @@ class Attributes(object):
         raise IndexError(f"{item} not in defined indexes.")
 
     def insert(
-        self, key: str, value: Optional[str], index: Optional[int] = None
+        self, key: str, value: Optional[str] = None, index: Optional[int] = None
     ) -> None:
-        """"""
+        """
+        Insert an attribute into the Attributes instance. If no value is provided, adding it at the end.
+        If an index is specified, insert it just before specified index.
+        >>> attributes = Attributes(["text/html", "charset=UTF-8"])
+        >>> str(attributes)
+        'text/html; charset="UTF-8"'
+        >>> attributes.insert("charset")
+        >>> str(attributes)
+        'text/html; charset="UTF-8"; charset'
+        >>> attributes = Attributes(["text/html", "charset"])
+        >>> attributes.insert("charset", "UTF-8", 1)
+        >>> str(attributes)
+        'text/html; charset="UTF-8"; charset'
+        >>> attributes.insert("hello", None, -1)
+        >>> str(attributes)
+        'text/html; charset="UTF-8"; hello; charset'
+        """
+        index = index % len(self) if index is not None and index < 0 else index
         to_be_inserted: int = index if index is not None else len(self)
 
         if index is not None:
@@ -1276,7 +1328,26 @@ class Attributes(object):
     def remove(
         self, key: str, index: Optional[int] = None, with_value: Optional[bool] = None
     ) -> None:
-        """"""
+        """
+        Remove attribute from an Attributes instance. If no index is provided, will remove every entry, member/adjective
+        and attribute. When index is not specified, you may want to limit its focus to attribute (aka. with value) or
+        the opposite by setting **with_value** to either True or False. Be cautious that setting a specific index cannot
+        be used in addition to **with_value**.
+        >>> attributes = Attributes(["text/html", "charset=UTF-8", "charset"])
+        >>> str(attributes)
+        'text/html; charset="UTF-8"; charset'
+        >>> attributes.remove("charset", 1)
+        >>> str(attributes)
+        'text/html; charset'
+        >>> attributes = Attributes(["text/html", "charset=UTF-8", "charset"])
+        >>> attributes.remove("charset", with_value=False)
+        >>> str(attributes)
+        'text/html; charset="UTF-8"'
+        >>> attributes = Attributes(["text/html", "charset=UTF-8", "charset"])
+        >>> attributes.remove("charset")
+        >>> str(attributes)
+        'text/html'
+        """
         if key not in self._bag:
             return
 
@@ -1315,6 +1386,8 @@ class Attributes(object):
 
             else:
                 freed_indexes += self._bag[key][1]
+                # We should empty indexes and values in specified key.
+                self._bag[key] = ([], [])
 
         if len(self._bag[key][0]) == 0:
             del self._bag[key]
@@ -1392,7 +1465,7 @@ class Attributes(object):
 
 def lock_output_type(lock: bool = True) -> None:
     """
-    This method will restrict type entropy by always returning a List[Header] instead of Union[Header, List[Header]]
+    This method will restrict type entropy by always returning a List[Header] instead of Union[Header, List[Header]].
     """
     global OUTPUT_LOCK_TYPE
     OUTPUT_LOCK_TYPE = lock

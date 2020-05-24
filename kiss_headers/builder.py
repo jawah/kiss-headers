@@ -105,11 +105,11 @@ class ContentSecurityPolicy(CustomHeader):
                 "prefetch-src",
                 "navigate-to",
             }:
-                raise ValueError(
+                raise ValueError(  # pragma: no cover
                     f"Policy {policy[0]} is not a valid one. See https://content-security-policy.com/ for instructions."
                 )
             elif len(policy) == 1:
-                raise ValueError(
+                raise ValueError(  # pragma: no cover
                     f"Policy {policy[0]} need at least one argument to proceed."
                 )
 
@@ -160,7 +160,7 @@ class Accept(CustomHeader):
         'text/html'
         """
         if len(mime.split("/")) != 2:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'"
             )
 
@@ -219,7 +219,7 @@ class ContentType(CustomHeader):
         """
 
         if len(mime.split("/")) != 2:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'"
             )
 
@@ -300,7 +300,7 @@ class ContentDisposition(CustomHeader):
         'こんにちは世界.pdf'
         """
         if disposition not in ["attachment", "inline", "form-data", ""]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "Disposition should be either inline, form-data, attachment or empty. Choose one."
             )
 
@@ -308,7 +308,7 @@ class ContentDisposition(CustomHeader):
             try:
                 filename.encode("ASCII")
             except UnicodeEncodeError:
-                raise ValueError(
+                raise ValueError(  # pragma: no cover
                     "The filename should only contain valid ASCII characters. Not '{fb_filename}'. Use fallback_filename instead.".format(
                         fb_filename=fallback_filename
                     )
@@ -380,7 +380,7 @@ class Authorization(CustomHeader):
             "aws4-hmac-sha256",
             "ntlm",
         ]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "Authorization type should exist in IANA registry of Authentication schemes"
             )
 
@@ -424,7 +424,9 @@ class BasicAuthorization(Authorization):
         ('azerty', 'qwerty')
         """
         if ":" in username:
-            raise ValueError("The username cannot contain a single colon in it.")
+            raise ValueError(  # pragma: no cover
+                "The username cannot contain a single colon in it."
+            )
 
         b64_auth_content: str = b64encode(
             (username + ":" + password).encode(charset)
@@ -435,7 +437,7 @@ class BasicAuthorization(Authorization):
     def get_credentials(self, __default_charset: str = "latin1") -> str:
         """Decode base64 encoded credentials from Authorization header."""
         if self.get_auth_type().lower() != "basic":
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 f"Only Authorization using Basic method is supported by BasicAuthorization. Given '{self.get_auth_type()}'."
             )
 
@@ -557,7 +559,7 @@ class CrossOriginResourcePolicy(CustomHeader):
         policy = policy.lower()
 
         if policy not in ["same-site", "same-origin", "cross-origin"]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "'{policy}' is not a recognized policy for Cross-Origin-Resource-Policy. Accepted values are same-site, same-origin or cross-origin."
             )
 
@@ -593,7 +595,7 @@ class Allow(CustomHeader):
             "CONNECT",
             "TRACE",
         ]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "'{verb}' is not a supported verb. Please choose only one HTTP verb per Allow header."
             )
 
@@ -682,12 +684,12 @@ class SetCookie(CustomHeader):
 
         for letter in cookie_name:
             if letter in {'<>@,;:\\"/[]?={}'}:
-                raise ValueError(
+                raise ValueError(  # pragma: no cover
                     'The cookie name can not contains any of the following char: <>@,;:"/[]?={}'
                 )
 
         if samesite and samesite.lower() not in ["strict", "lax", "none"]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "Samesite attribute can only be one of the following: Strict, Lax or None."
             )
 
@@ -828,7 +830,7 @@ class TransferEncoding(CustomHeader):
             "br",
             "*",
         ]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "You should choose between 'chunked', 'compress', 'deflate', 'gzip', 'identity' or 'br' for the encoding method."
             )
 
@@ -1057,7 +1059,7 @@ class ReferrerPolicy(CustomHeader):
             "strict-origin-when-cross-origin",
             "unsafe-url",
         ]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 f"'{policy}' is not a valid referrer policy. Please choose only one per ReferrerPolicy instance"
             )
 
@@ -1158,7 +1160,7 @@ class XFrameOptions(CustomHeader):
         policy = policy.upper()
 
         if policy not in ["DENY", "SAMEORIGIN"]:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "'{policy}' is not a valid X-Frame-Options policy. Choose between DENY and SAMEORIGIN."
             )
 
@@ -1253,7 +1255,7 @@ class WwwAuthenticate(CustomHeader):
                 challenge, value = tuple(part.split("=", maxsplit=1))
                 return challenge, unquote(value)
 
-        raise ValueError(
+        raise ValueError(  # pragma: no cover
             f"WwwAuthenticate header does not seems to contain a valid content. No challenge detected."
         )
 
@@ -1309,7 +1311,9 @@ class From(CustomHeader):
             fullmatch(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email)
             is None
         ):
-            raise ValueError(f"'{email}' is not a valid RFC 5322 email.")
+            raise ValueError(  # pragma: no cover
+                f"'{email}' is not a valid RFC 5322 email."
+            )
 
         super().__init__(email, **kwargs)
 
@@ -1405,7 +1409,7 @@ class CacheControl(CustomHeader):
             min_fresh is not None,
             s_maxage is not None,
         ].count(True) != 1:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "You should only pass one parameter to a single CacheControl instance."
             )
 
@@ -1484,7 +1488,7 @@ class KeepAlive(CustomHeader):
         :param kwargs:
         """
         if timeout is not None and max_ is not None:
-            raise ValueError(
+            raise ValueError(  # pragma: no cover
                 "Can only provide one parameter per KeepAlive instance, either timeout or max, not both."
             )
 
