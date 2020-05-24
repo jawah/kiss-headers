@@ -1341,6 +1341,8 @@ class Attributes(object):
 
             else:
                 freed_indexes += self._bag[key][1]
+                # We should empty indexes and values in specified key.
+                self._bag[key] = ([], [])
 
         if len(self._bag[key][0]) == 0:
             del self._bag[key]
