@@ -4,6 +4,7 @@ from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Type, Union
 
 from kiss_headers.structures import AttributeBag, CaseInsensitiveDict
 from kiss_headers.utils import (
+    escape_double_quote,
     extract_comments,
     header_content_split,
     header_name_to_class,
@@ -11,11 +12,10 @@ from kiss_headers.utils import (
     normalize_list,
     normalize_str,
     prettify_header_name,
+    unescape_double_quote,
     unfold,
     unpack_protected_keyword,
     unquote,
-    escape_double_quote,
-    unescape_double_quote,
 )
 
 OUTPUT_LOCK_TYPE: bool = False
