@@ -14,6 +14,8 @@ from kiss_headers.utils import (
     unfold,
     unpack_protected_keyword,
     unquote,
+    escape_double_quote,
+    unescape_double_quote,
 )
 
 OUTPUT_LOCK_TYPE: bool = False
@@ -1203,7 +1205,7 @@ class Attributes(object):
                     self.insert(unquote(member), None)
                     continue
 
-                self.insert(key, unquote(value))
+                self.insert(key, unescape_double_quote(unquote(value)))
                 continue
 
             self.insert(unquote(member), None)
@@ -1220,7 +1222,9 @@ class Attributes(object):
 
             if value is not None:
                 content += '{semi_colon_r}{key}="{value}"'.format(
-                    key=key, value=value, semi_colon_r="; " if content != "" else "",
+                    key=key,
+                    value=escape_double_quote(value),
+                    semi_colon_r="; " if content != "" else "",
                 )
             else:
                 content += "; " + key if content != "" else key

@@ -89,6 +89,8 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0']
     >>> header_content_split("text/html; charset=UTF-8", ";")
     ['text/html', 'charset=UTF-8']
+    >>> header_content_split('text/html; charset="UTF-\\\"8"', ";")
+    ['text/html', 'charset="UTF-"8"']
     """
     if len(delimiter) != 1 or delimiter not in {";", ",", " "}:
         raise ValueError("Delimiter should be either semi-colon, a coma or a space.")
@@ -427,3 +429,25 @@ def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
             break
 
     return result, b"\r\n".join(lines[index + 1 :])
+
+
+def unescape_double_quote(content: str) -> str:
+    """
+    Replace escaped double quote in content by removing the backslash.
+    >>> unescape_double_quote(r'UTF\"-8')
+    'UTF"-8'
+    >>> unescape_double_quote(r'UTF"-8')
+    'UTF"-8'
+    """
+    return content.replace(r"\"", '"')
+
+
+def escape_double_quote(content: str) -> str:
+    r"""
+    Replace not escaped double quote in content by adding a backslash beforehand.
+    >>> escape_double_quote(r'UTF\"-8')
+    'UTF\\"-8'
+    >>> escape_double_quote(r'UTF"-8')
+    'UTF\\"-8'
+    """
+    return unescape_double_quote(content).replace('"', r"\"")
