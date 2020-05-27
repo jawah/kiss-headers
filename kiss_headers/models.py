@@ -4,6 +4,7 @@ from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Type, Union
 
 from kiss_headers.structures import AttributeBag, CaseInsensitiveDict
 from kiss_headers.utils import (
+    escape_double_quote,
     extract_comments,
     header_content_split,
     header_name_to_class,
@@ -11,6 +12,7 @@ from kiss_headers.utils import (
     normalize_list,
     normalize_str,
     prettify_header_name,
+    unescape_double_quote,
     unfold,
     unpack_protected_keyword,
     unquote,
@@ -1203,7 +1205,7 @@ class Attributes(object):
                     self.insert(unquote(member), None)
                     continue
 
-                self.insert(key, unquote(value))
+                self.insert(key, unescape_double_quote(unquote(value)))
                 continue
 
             self.insert(unquote(member), None)
@@ -1220,7 +1222,9 @@ class Attributes(object):
 
             if value is not None:
                 content += '{semi_colon_r}{key}="{value}"'.format(
-                    key=key, value=value, semi_colon_r="; " if content != "" else "",
+                    key=key,
+                    value=escape_double_quote(value),
+                    semi_colon_r="; " if content != "" else "",
                 )
             else:
                 content += "; " + key if content != "" else key
