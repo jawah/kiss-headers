@@ -1,5 +1,5 @@
 from email.header import decode_header
-from re import findall, search
+from re import findall, search, sub
 from typing import Any, Iterable, List, Optional, Set, Tuple, Type
 
 RESERVED_KEYWORD: Set[str] = {
@@ -396,16 +396,12 @@ def extract_comments(content: str) -> List[str]:
 
 
 def unfold(content: str) -> str:
-    """Some header content may have folded content (LF + 9 spaces, LF + 7 spaces, or LF + 1 spaces) in it, making your job at reading them a little more difficult.
+    r"""Some header content may have folded content (CRLF + n spaces) in it, making your job at reading them a little more difficult.
     This function undoes the folding in the given content.
-    >>> unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\\n         ehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s")
-    'eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bHehSe/2QytZGWM5CewwNdumT1IVGzjFs+cRgfK0V6JlEIOoV3bRXxnjenWFfWdVNXtw8s'
+    >>> unfold("___utmvbtouVBFmB=gZg\r\n    XbNOjalT: Lte; path=/; Max-Age=900")
+    '___utmvbtouVBFmB=gZg XbNOjalT: Lte; path=/; Max-Age=900'
     """
-    return (
-        content.replace("\n" + (9 * " "), "")
-        .replace("\n" + (7 * " "), " ")
-        .replace("\n" + (1 * " "), " ")
-    )
+    return sub(r"\r\n[ ]+", " ", content)
 
 
 def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
