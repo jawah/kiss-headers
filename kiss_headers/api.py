@@ -1,6 +1,6 @@
 from email.message import Message
 from email.parser import HeaderParser
-from io import RawIOBase
+from io import BufferedReader, RawIOBase
 from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
 from kiss_headers.models import Header, Headers
@@ -31,7 +31,11 @@ def parse_it(raw_headers: Any) -> Headers:
 
     if isinstance(raw_headers, str):
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
-    elif isinstance(raw_headers, bytes) or isinstance(raw_headers, RawIOBase):
+    elif (
+        isinstance(raw_headers, bytes)
+        or isinstance(raw_headers, RawIOBase)
+        or isinstance(raw_headers, BufferedReader)
+    ):
         decoded, not_decoded = extract_encoded_headers(
             raw_headers if isinstance(raw_headers, bytes) else raw_headers.read() or b""
         )
