@@ -170,7 +170,7 @@ class Header(object):
 
         if isinstance(__index, int):
             __index = __index if __index >= 0 else __index % len(self._attrs)
-            key, value = self._attrs[__index]
+            key, value = self._attrs[__index]  # type: ignore
         elif isinstance(__index, str):
             key, value = __index, self._attrs[__index]  # type: ignore
         else:
@@ -455,7 +455,7 @@ class Header(object):
             return attrs
 
         for i in range(0, len(self._attrs)):
-            attr, value = self._attrs[i]
+            attr, value = self._attrs[i]  # type: ignore
             attrs.append(attr)
 
         return attrs
@@ -475,7 +475,7 @@ class Header(object):
             return attrs
 
         for i in range(0, len(self._attrs)):
-            attr, value = self._attrs[i]
+            attr, value = self._attrs[i]  # type: ignore
 
             if value is not None and attr not in attrs:
                 attrs.append(attr)
@@ -706,13 +706,13 @@ class Headers(object):
 
         return keys
 
-    def values(self) -> NotImplemented:
+    def values(self) -> None:
         """
         I choose not to implement values() on Headers as it would bring more confusion...
         Either we make it the same len as keys() or we don't. Either way don't please me. Hope to hear from the
         community about this.
         """
-        return NotImplemented
+        raise NotImplementedError
 
     def items(self) -> List[Tuple[str, str]]:
         """
@@ -1218,7 +1218,7 @@ class Attributes(object):
             return content
 
         for i in range(0, len(self)):
-            key, value = self[i]
+            key, value = self[i]  # type: ignore
 
             if value is not None:
                 content += '{semi_colon_r}{key}="{value}"'.format(
@@ -1429,7 +1429,7 @@ class Attributes(object):
         target_key = normalize_str(target_key)
 
         for i in range(0, len(self)):
-            key, value = self[i]
+            key, value = self[i]  # type: ignore
 
             if target_key == key and target_value == value:
                 return True
@@ -1463,7 +1463,7 @@ class Attributes(object):
         """Provide an iterator over all attributes with or without associated value.
         For each entry, output a tuple of index, attribute and a optional value."""
         for i in range(0, len(self)):
-            key, value = self[i]
+            key, value = self[i]  # type: ignore
             yield i, key, value
 
 
