@@ -383,8 +383,6 @@ def is_legal_header_name(name: str) -> bool:
     False
     >>> is_legal_header_name("Hello-World/")
     True
-    >>> is_legal_header_name("\x00")
-    False
     >>> is_legal_header_name("\x07")
     False
     """
