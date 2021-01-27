@@ -14,7 +14,6 @@ from kiss_headers.utils import (
     unquote,
 )
 
-
 """
 Use https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ to create subclasses of CustomHeader.
 """
