@@ -27,7 +27,7 @@ script:
   - export SOURCE_FILES="kiss_headers tests"
   - black --check --diff --target-version=py36 $SOURCE_FILES
   - mypy kiss_headers
-  - isort --check --diff --project=kiss_headers --recursive $SOURCE_FILES
+  - isort --check --diff --project=kiss_headers $SOURCE_FILES
   - pytest
 
 after_success:
