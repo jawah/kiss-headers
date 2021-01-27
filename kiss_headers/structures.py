@@ -11,7 +11,6 @@ from typing import (
 
 from kiss_headers.utils import normalize_str
 
-
 """
 Disclaimer : CaseInsensitiveDict has been borrowed from `psf/requests`.
 Minors changes has been made.
