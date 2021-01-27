@@ -143,7 +143,10 @@ class Accept(CustomHeader):
     __tags__: List[str] = ["request"]
 
     def __init__(
-        self, mime: str = "*/*", qualifier: float = 1.0, **kwargs: Optional[str],
+        self,
+        mime: str = "*/*",
+        qualifier: float = 1.0,
+        **kwargs: Optional[str],
     ):
         """
         :param mime: Describe the MIME using this syntax <MIME_type/MIME_subtype>
@@ -169,7 +172,8 @@ class Accept(CustomHeader):
         args.update(kwargs)
 
         super().__init__(
-            mime, **args,
+            mime,
+            **args,
         )
 
     def get_mime(self) -> Optional[str]:
@@ -326,7 +330,8 @@ class ContentDisposition(CustomHeader):
         args.update(kwargs)
 
         super().__init__(
-            disposition, **args,
+            disposition,
+            **args,
         )
 
     def get_disposition(self) -> Optional[str]:
@@ -812,7 +817,9 @@ class TransferEncoding(CustomHeader):
     __squash__: bool = True
 
     def __init__(
-        self, method: str, **kwargs: Optional[str],
+        self,
+        method: str,
+        **kwargs: Optional[str],
     ):
         """
         :param method: Either chunked, compress, deflate, gzip, identity or br.
@@ -1106,7 +1113,8 @@ class AcceptLanguage(CustomHeader):
         args.update(kwargs)
 
         super().__init__(
-            language, **args,
+            language,
+            **args,
         )
 
     def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:

@@ -648,10 +648,10 @@ class Headers(object):
         """
         :param headers: Initial list of header. Can be empty.
         """
-        self._headers: List[Header] = headers[0] if len(headers) == 1 and isinstance(
-            headers[0], list
-        ) else list(
-            headers  # type: ignore
+        self._headers: List[Header] = (
+            headers[0]
+            if len(headers) == 1 and isinstance(headers[0], list)
+            else list(headers)  # type: ignore
         )
 
     def has(self, header: str) -> bool:
@@ -1101,9 +1101,9 @@ class Headers(object):
         """
 
         value_is_header: bool = isinstance(__value, Header)
-        normalized_value: Optional[str] = normalize_str(
-            __value  # type: ignore
-        ) if not value_is_header else None
+        normalized_value: Optional[str] = (
+            normalize_str(__value) if not value_is_header else None  # type: ignore
+        )
         headers_len: int = len(self)
 
         # Convert indices to positive indices
