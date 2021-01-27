@@ -3,7 +3,7 @@
 <p align="center">
   <sup>Object oriented headers, parser and builder.</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
-    <img src="https://travis-ci.org/Ousret/kiss-headers.svg?branch=master"/>
+    <img src="https://travis-ci.com/Ousret/kiss-headers.svg?branch=master"/>
   </a>
   <a href='https://pypi.org/project/kiss-headers/'>
      <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
