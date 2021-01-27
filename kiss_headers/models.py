@@ -1,4 +1,3 @@
-from builtins import _NotImplementedType
 from copy import deepcopy
 from json import dumps
 from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Type, Union
@@ -707,13 +706,13 @@ class Headers(object):
 
         return keys
 
-    def values(self) -> _NotImplementedType:
+    def values(self) -> None:
         """
         I choose not to implement values() on Headers as it would bring more confusion...
         Either we make it the same len as keys() or we don't. Either way don't please me. Hope to hear from the
         community about this.
         """
-        return NotImplemented
+        raise NotImplementedError
 
     def items(self) -> List[Tuple[str, str]]:
         """
