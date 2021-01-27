@@ -7,13 +7,12 @@ python:
   - "3.6"
   - "3.7"
   - "3.8"
-  - "3.9-dev"
+  - "3.9"
   - "pypy3"
 
 jobs:
   allow_failures:
   - python: "3.5"
-  - python: "3.9-dev"  # See https://github.com/python/mypy/issues/8627
   - python: "pypy3"
 
 before_install:
@@ -27,7 +26,7 @@ script:
   - export SOURCE_FILES="kiss_headers tests"
   - black --check --diff --target-version=py36 $SOURCE_FILES
   - mypy kiss_headers
-  - isort --check --diff --project=kiss_headers --recursive $SOURCE_FILES
+  - isort --check --diff --project=kiss_headers $SOURCE_FILES
   - pytest
 
 after_success:
