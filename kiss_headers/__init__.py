@@ -36,7 +36,7 @@ at <https://github.com/Ousret/kiss-headers>.
 :license: MIT, see LICENSE for more details.
 """
 
-from kiss_headers.api import explain, get_polymorphic, parse_it
+from kiss_headers.api import dumps, explain, get_polymorphic, parse_it
 from kiss_headers.builder import (
     Accept,
     AcceptEncoding,
@@ -88,4 +88,5 @@ from kiss_headers.builder import (
     XXssProtection,
 )
 from kiss_headers.models import Attributes, Header, Headers, lock_output_type
+from kiss_headers.serializer import decode, encode
 from kiss_headers.version import VERSION, __version__
