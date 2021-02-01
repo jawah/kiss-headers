@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from kiss_headers.models import Headers, Header
+from kiss_headers.models import Header, Headers
 
 
 def encode(headers: Headers) -> Dict[str, List[Dict]]:

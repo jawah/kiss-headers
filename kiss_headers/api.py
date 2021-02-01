@@ -1,11 +1,11 @@
 from email.message import Message
 from email.parser import HeaderParser
 from io import BufferedReader, RawIOBase
-from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 from json import dumps as json_dumps, loads as json_loads
+from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
 from kiss_headers.models import Header, Headers
-from kiss_headers.serializer import encode, decode
+from kiss_headers.serializer import decode, encode
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
     class_to_header_name,
@@ -183,4 +183,4 @@ def get_polymorphic(
 
 
 def dumps(headers: Headers, **kwargs: Optional[Any]) -> str:
-    return json_dumps(encode(headers), **kwargs)
+    return json_dumps(encode(headers), **kwargs)  # type: ignore
