@@ -17,7 +17,15 @@ def encode(headers: Headers) -> Dict[str, List[Dict]]:
         encoded_header: Dict[str, Union[Optional[str], List[str]]] = dict()
 
         for attribute, value in header:
-            encoded_header[attribute] = value
+
+            if attribute not in encoded_header:
+                encoded_header[attribute] = value
+                continue
+
+            if isinstance(encoded_header[attribute], list) is False:
+                encoded_header[attribute] = [encoded_header[attribute]]
+
+            encoded_header[attribute].append(value)
 
         result[header.name].append(encoded_header)
 
@@ -32,19 +40,24 @@ def decode(encoded_headers: Dict[str, List[Dict]]) -> Headers:
 
     for header_name, encoded_header_list in encoded_headers.items():
         if not isinstance(encoded_header_list, list):
-            raise ValueError
+            raise ValueError("Decode require first level values to be List")
 
         for encoded_header in encoded_header_list:
             if not isinstance(encoded_header, dict):
-                raise ValueError
+                raise ValueError("Decode require each list element to be Dict")
 
             header = Header(header_name, "")
 
             for attr, value in encoded_header.items():
-                if value is not None:
+                if value is None:
+                    header += attr
+                    continue
+                if isinstance(value, str):
                     header[attr] = value
                     continue
-                header += attr
+
+                for sub_value in value:
+                    header.insert(-1, **{attr: sub_value})
 
             headers += header
 
