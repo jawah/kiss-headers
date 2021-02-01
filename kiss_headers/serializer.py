@@ -19,9 +19,7 @@ def encode(headers: Headers) -> Dict[str, List[Dict]]:
         for attribute, value in header:
             encoded_header[attribute] = value
 
-        result[header.name].append(
-            encoded_header
-        )
+        result[header.name].append(encoded_header)
 
     return result
 

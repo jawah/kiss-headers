@@ -182,8 +182,5 @@ def get_polymorphic(
     return r  # type: ignore
 
 
-def dumps(headers: Headers, **kwargs) -> str:
-    return json_dumps(
-        encode(headers),
-        **kwargs
-    )
+def dumps(headers: Headers, **kwargs: Optional[Any]) -> str:
+    return json_dumps(encode(headers), **kwargs)
