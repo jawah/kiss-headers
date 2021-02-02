@@ -23,9 +23,11 @@ def encode(headers: Headers) -> Dict[str, List[Dict]]:
                 continue
 
             if isinstance(encoded_header[attribute], list) is False:
-                encoded_header[attribute] = [encoded_header[attribute]]
+                # Here encoded_header[attribute] most certainly is str
+                # Had to silent mypy error.
+                encoded_header[attribute] = [encoded_header[attribute]]  # type: ignore
 
-            encoded_header[attribute].append(value)
+            encoded_header[attribute].append(value)  # type: ignore
 
         result[header.name].append(encoded_header)
 

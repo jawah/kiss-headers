@@ -20,6 +20,8 @@ set-cookie: NID=200=IGpBMMA3G7tki0niFFATFQ2BnsNceVP6XBtwOutoyw97AJ4_YFT5l1oLfLeX
 set-cookie: CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; domain=.google.fr
 status: 200
 strict-transport-security: max-age=31536000
+thanos: gem=power; gem=mind; gem=soul; gem=space; gem=time; gems; gem
+the-one-ring: One ring to rule them all, one ring to find them, One ring to bring them all and in the darkness bind them
 x-frame-options: SAMEORIGIN
 x-xss-protection: 0""".replace(
     "\n", "\r\n"
