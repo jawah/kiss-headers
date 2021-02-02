@@ -1,9 +1,11 @@
 from email.message import Message
 from email.parser import HeaderParser
 from io import BufferedReader, RawIOBase
+from json import dumps as json_dumps, loads as json_loads
 from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
 from kiss_headers.models import Header, Headers
+from kiss_headers.serializer import decode, encode
 from kiss_headers.structures import CaseInsensitiveDict
 from kiss_headers.utils import (
     class_to_header_name,
@@ -22,7 +24,7 @@ T = TypeVar("T")
 def parse_it(raw_headers: Any) -> Headers:
     """
     Just decode anything that could contain headers. That simple PERIOD.
-    :param raw_headers: Accept bytes, str, fp, dict, email.Message, requests.Response, urllib3.HTTPResponse and httpx.Response.
+    :param raw_headers: Accept bytes, str, fp, dict, JSON, email.Message, requests.Response, urllib3.HTTPResponse and httpx.Response.
     :raises:
         TypeError: If passed argument cannot be parsed to extract headers from it.
     """
@@ -30,6 +32,9 @@ def parse_it(raw_headers: Any) -> Headers:
     headers: Optional[Iterable[Tuple[str, Any]]] = None
 
     if isinstance(raw_headers, str):
+        if raw_headers.startswith("{") and raw_headers.endswith("}"):
+            return decode(json_loads(raw_headers))
+
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
     elif (
         isinstance(raw_headers, bytes)
@@ -175,3 +180,7 @@ def get_polymorphic(
             header.__class__ = desired_output
 
     return r  # type: ignore
+
+
+def dumps(headers: Headers, **kwargs: Optional[Any]) -> str:
+    return json_dumps(encode(headers), **kwargs)  # type: ignore

@@ -196,7 +196,7 @@ class Header(object):
         'Content-Type: application/json; charset="UTF-8"; format="flowed"'
         """
 
-        __index = __index if __index >= 0 else __index % len(self._attrs)
+        __index = __index if __index >= 0 else __index % (len(self._attrs) or 1)
 
         for member in __members:
             self._attrs.insert(member, None, __index)

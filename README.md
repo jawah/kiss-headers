@@ -30,7 +30,7 @@
 
 ### ❓ Why
 
-No matter if you are currently building software using HTTP or IMAP _(message, email)_, you should not worry about easily accessing header and associated attributes, adjectives or values.
+No matter if you are currently creating/using code using HTTP or IMAP _(message, email)_, you should not worry about easily accessing header and associated attributes, adjectives or values.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/9326700/77257881-55866300-6c77-11ea-820c-7550e6bdeee7.gif" alt="using kiss-headers from python interpreter"/>
@@ -38,9 +38,11 @@ No matter if you are currently building software using HTTP or IMAP _(message, e
 
 I have seen so many chunks of code trying to deal with these headers; often I saw this implementation:
 ```python
+# No more of that!
 charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
-**No more of that!**
+
+**Scroll down and see how you'll do it from now on.**
 
 ## 🔪 Features
 
@@ -50,6 +52,7 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 * Capability to alter headers using simple, human-readable operator notation `+` and `-`.
 * Flexibility if headers are from an email or HTTP, use as you need with one library.
 * Ability to parse any object and extract recognized headers from it, it also supports UTF-8 encoded headers.
+* Offer an opinionated way to un/serialize headers.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
 * No dependencies. And never will be.
@@ -135,6 +138,131 @@ headers.from_ # to access From, just add a single underscore to it
 # or.. just using :
 headers['from']
 ```
+
+#### ✍️Serialization
+
+Since version 2.3.0 the package offer the possibility to un/serialize `Headers`.
+
+```python
+from requests import get
+from kiss_headers import parse_it, dumps
+
+json_repr: str = dumps(
+    parse_it(
+        get("https://www.google.fr")
+    ),
+    indent=4
+)
+
+print(json_repr)  # See the result bellow
+
+# Additionally, how to parse the JSON repr to Headers again
+headers = parse_it(json_repr)  # Yes! that easy!
+```
+
+```json
+{
+    "Date": [
+        {
+            "Tue, 02 Feb 2021 21:43:13 GMT": null
+        }
+    ],
+    "Expires": [
+        {
+            "-1": null
+        }
+    ],
+    "Cache-Control": [
+        {
+            "private": null
+        },
+        {
+            "max-age": "0"
+        }
+    ],
+    "Content-Type": [
+        {
+            "text/html": null,
+            "charset": "ISO-8859-1"
+        }
+    ],
+    "P3P": [
+        {
+            "CP": "This is not a P3P policy! See g.co/p3phelp for more info."
+        }
+    ],
+    "Content-Encoding": [
+        {
+            "gzip": null
+        }
+    ],
+    "Server": [
+        {
+            "gws": null
+        }
+    ],
+    "X-XSS-Protection": [
+        {
+            "0": null
+        }
+    ],
+    "X-Frame-Options": [
+        {
+            "SAMEORIGIN": null
+        }
+    ],
+    "Set-Cookie": [
+        {
+            "NID": "208=D5XUqjrP9PNpiZu4laa_0xvy_IxBzQLtfxqeAqcPBgiY2y5sfSF51IFuXZnH0zDAF1KZ8x-0VsRyGOM0aStIzCUfdiPBOCxHSxUv39N0vwzku3aI2UkeRXhWw8-HWw5Ob41GB0PZi2coQsPM7ZEQ_fl9PlQ_ld1KrPA",
+            "expires": "Wed, 04-Aug-2021 21:43:13 GMT",
+            "path": "/",
+            "domain": ".google.fr",
+            "HttpOnly": null
+        },
+        {
+            "CONSENT": "PENDING+880",
+            "expires": "Fri, 01-Jan-2038 00:00:00 GMT",
+            "path": "/",
+            "domain": ".google.fr"
+        }
+    ],
+    "Alt-Svc": [
+        {
+            "h3-29": ":443",
+            "ma": "2592000"
+        },
+        {
+            "h3-T051": ":443",
+            "ma": "2592000"
+        },
+        {
+            "h3-Q050": ":443",
+            "ma": "2592000"
+        },
+        {
+            "h3-Q046": ":443",
+            "ma": "2592000"
+        },
+        {
+            "h3-Q043": ":443",
+            "ma": "2592000"
+        },
+        {
+            "quic": ":443",
+            "ma": "2592000",
+            "v": "46,43"
+        }
+    ],
+    "Transfer-Encoding": [
+        {
+            "chunked": null
+        }
+    ]
+}
+```
+
+Alternatively you may use `from kiss_headers import parse_it, encode, decode` to transform `Headers` to `dict` (instead of JSON) or the other way around.
+Understand that the `dict` returned in `encode` will differ from the method `to_dict()` in `Headers`.
 
 #### 🛠️ Create headers from objects
 
