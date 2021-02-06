@@ -30,7 +30,7 @@
 
 ### ❓ Why
 
-No matter if you are currently creating/using code using HTTP or IMAP _(message, email)_, you should not worry about easily accessing header and associated attributes, adjectives or values.
+No matter if you are currently dealing with code using HTTP or IMAP _(message, email)_, you should not worry about easily accessing and exploiting headers.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/9326700/77257881-55866300-6c77-11ea-820c-7550e6bdeee7.gif" alt="using kiss-headers from python interpreter"/>
@@ -42,7 +42,7 @@ I have seen so many chunks of code trying to deal with these headers; often I sa
 charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 ```
 
-**Scroll down and see how you'll do it from now on.**
+**Scroll down and see how you could do it from now on.**
 
 ## 🔪 Features
 
@@ -55,17 +55,17 @@ charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
 * Offer an opinionated way to un/serialize headers.
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
-* No dependencies. And never will be.
+* No dependencies. Never will be.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
 
-* Properties syntax for headers and attribute in header.
+* Properties syntax for headers and attribute in a header.
 * Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
 * Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response`, `httpx._models.Response` and `urllib3.HTTPResponse`.
 * Automatically unquote and unfold the value of an attribute when retrieving it.
 * Keep headers and attributes ordering.
-* Case insensitive with header name and attribute key.
+* Case-insensitive with header name and attribute key.
 * Character `-` equal `_` in addition of above feature.
 * Any syntax you like, we like.
 
