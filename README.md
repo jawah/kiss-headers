@@ -1,7 +1,7 @@
 <h1 align="center">HTTP Headers, the Complete Toolkit 🧰 <a href="https://twitter.com/intent/tweet?text=Python%20library%20for%20oriented%20object%20HTTP%20style%20headers.&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers,opensource"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
 
 <p align="center">
-  <sup>Object oriented headers, parser and builder.</sup><br>
+  <sup>Object-oriented headers. Kind of structured headers.</sup><br>
   <a href="https://travis-ci.org/Ousret/kiss-headers">
     <img src="https://travis-ci.com/Ousret/kiss-headers.svg?branch=master"/>
   </a>
