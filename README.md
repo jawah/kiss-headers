@@ -2,26 +2,11 @@
 
 <p align="center">
   <sup>Object-oriented headers. Kind of structured headers.</sup><br>
-  <a href="https://travis-ci.org/Ousret/kiss-headers">
-    <img src="https://travis-ci.com/Ousret/kiss-headers.svg?branch=master"/>
-  </a>
   <a href='https://pypi.org/project/kiss-headers/'>
      <img src="https://img.shields.io/pypi/pyversions/kiss-headers.svg?orange=blue" />
   </a>
-  <a href="https://www.codacy.com/manual/Ousret/kiss-headers?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ousret/kiss-headers&amp;utm_campaign=Badge_Grade">
-    <img src="https://api.codacy.com/project/badge/Grade/0994a03546094b519601e33554c48535"/>
-  </a>
   <a href="https://codecov.io/gh/Ousret/kiss-headers">
       <img src="https://codecov.io/gh/Ousret/kiss-headers/branch/master/graph/badge.svg" />
-  </a>
-  <a href='https://pypi.org/project/kiss-headers/'>
-    <img src='https://badge.fury.io/py/kiss-headers.svg' alt='PyPi Publish Action' />
-  </a>
-  <a href="https://github.com/psf/black">
-    <img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
-  </a>
-  <a href="http://mypy-lang.org/">
-    <img alt="Checked with mypy" src="http://www.mypy-lang.org/static/mypy_badge.svg"/>
   </a>
   <a href="https://pepy.tech/project/kiss-headers/">
      <img alt="Download Count Total" src="https://pepy.tech/badge/kiss-headers" />
@@ -40,6 +25,17 @@ I have seen so many chunks of code trying to deal with these headers; often I sa
 ```python
 # No more of that!
 charset = headers['Content-Type'].split(';')[-1].split('=')[-1].replace('"', '')
+# That too..
+response = get(
+    "https://httpbin.org/headers",
+    headers={
+        "user-agent": "custom/2.22",
+        "referer": "https://www.google.com",
+        "accept": "text/html",
+        "accept-language": "en-US",
+        "custom-header-xyz": "hello; charset=utf-8"
+    }
+)
 ```
 
 **Scroll down and see how you could do it from now on.**
@@ -91,6 +87,51 @@ headers = parse_it(response)
 headers.content_type.charset  # output: ISO-8859-1
 # Its the same as
 headers["content-type"]["charset"]  # output: ISO-8859-1
+```
+
+and also, the other way around:
+
+```python
+from requests import get
+from kiss_headers import Headers, UserAgent, Referer, UpgradeInsecureRequests, Accept, AcceptLanguage, CustomHeader
+
+class CustomHeaderXyz(CustomHeader):
+    
+    __squash__ = False
+    
+    def __init__(self, charset: str = "utf-8"):
+        super().__init__("hello", charset=charset)
+
+# Officially supported with requests
+response = get(
+    "https://httpbin.org/headers",
+    headers=Headers(
+        UserAgent("custom/2.22"),
+        Referer("https://www.google.com"),
+        UpgradeInsecureRequests(),
+        Accept("text/html"),
+        AcceptLanguage("en-US"),
+        CustomHeaderXyz()
+    )
+)
+```
+
+httpbin should get back with:
+
+```json
+{
+    "headers": {
+        "Accept": "text/html",
+        "Accept-Encoding": "identity",
+        "Accept-Language": "en-US",
+        "Custom-Header-Xyz": "hello; charset=\"utf-8\"",
+        "Host": "httpbin.org",
+        "Referer": "https://www.google.com",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "custom/2.22",
+        "X-Amzn-Trace-Id": "Root=1-622sz46b-973c5671113f58d611972de"
+    }
+}
 ```
 
 Do not forget that headers are not OneToOne. One header can be repeated multiple times and attributes can have multiple values within the same header.

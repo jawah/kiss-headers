@@ -21,7 +21,7 @@ DESCRIPTION = "Python package for object oriented headers, HTTP/1.1 style. Parse
 URL = "https://github.com/ousret/kiss-headers"
 EMAIL = "ahmed.tahri@cloudnursery.dev"
 AUTHOR = "Ahmed TAHRI @Ousret"
-REQUIRES_PYTHON = ">=3.6.0"
+REQUIRES_PYTHON = ">=3.6"
 VERSION = get_version()
 
 EXTRAS = {}
@@ -45,7 +45,7 @@ setup(
     python_requires=REQUIRES_PYTHON,
     url=URL,
     project_urls={
-        "Documentation": "https://www.kiss-headers.tech",
+        "Documentation": "https://ousret.github.io/kiss-headers",
         "Source": "https://github.com/Ousret/kiss-headers",
         "Issue tracker": "https://github.com/Ousret/kiss-headers/issues",
     },
@@ -72,6 +72,7 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Utilities",
         "Programming Language :: Python :: Implementation :: PyPy",
