@@ -1,3 +1,4 @@
-include LICENSE
-include README.md
+include LICENSE README.md kiss_headers/py.typed dev-requirements.txt UPGRADE.md
 include kiss_headers/py.typed
+recursive-include docs *
+recursive-include tests *
