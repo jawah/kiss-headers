@@ -91,7 +91,6 @@ from kiss_headers.models import Attributes, Header, Headers, lock_output_type
 from kiss_headers.serializer import decode, encode
 from kiss_headers.version import VERSION, __version__
 
-
 __all__ = (
     "dumps",
     "explain",
