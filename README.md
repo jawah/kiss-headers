@@ -368,7 +368,7 @@ Also, you can create your own custom header object using the class `kiss_headers
 
 ## 📜 Documentation
 
-See the full documentation for advanced usages : [www.kiss-headers.tech](https://www.kiss-headers.tech/)
+See the full documentation for advanced usages : [ousret.github.io/kiss-headers](https://ousret.github.io/kiss-headers/)
 
 ## 👤 Contributing
 
