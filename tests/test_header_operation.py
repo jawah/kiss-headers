@@ -27,7 +27,6 @@ class MyKissHeaderOperation(unittest.TestCase):
         self.assertEqual('charset="utf-8"', str(content_type))
 
     def test_iadd_adjective(self):
-
         content_type = Header("Content-Type", 'charset="utf-8"')
 
         self.assertNotIn("text/html", content_type)
@@ -50,7 +49,6 @@ class MyKissHeaderOperation(unittest.TestCase):
         self.assertEqual('charset="utf-8"', str(content_type))
 
     def test_add_adjective(self):
-
         content_type = Header("Content-Type", 'charset="utf-8"')
 
         self.assertNotIn("text/html", content_type)
@@ -105,7 +103,6 @@ class MyKissHeaderOperation(unittest.TestCase):
         self.assertEqual('text/html; charset="utf-8"', str(content_type))
 
     def test_simple_attr_add(self):
-
         content_type = Header("Content-Type", 'text/html; charset="utf-8"')
 
         self.assertNotIn("format", content_type)
@@ -119,7 +116,6 @@ class MyKissHeaderOperation(unittest.TestCase):
         self.assertEqual('text/html; charset="utf-8"; format="flowed"', content_type)
 
     def test_contain_space_delimiter(self):
-
         authorization = Header("Authorization", "Bearer mysupersecrettoken")
 
         self.assertIn("Bearer", authorization)
@@ -142,7 +138,6 @@ class MyKissHeaderOperation(unittest.TestCase):
                 del content_type["text/html"]
 
     def test_attrs_access_case_insensitive(self):
-
         content_type = Header("Content-Type", 'text/html; charset="utf-8"')
 
         with self.subTest("Verify that attrs can be accessed no matter case"):

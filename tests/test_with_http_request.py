@@ -7,15 +7,12 @@ from kiss_headers import Authorization, Headers, parse_it
 
 
 class MyHttpTestKissHeaders(unittest.TestCase):
-
     HTTPBIN_GET: Optional[Response] = None
 
     def setUp(self) -> None:
-
         MyHttpTestKissHeaders.HTTPBIN_GET = get("https://httpbin.org/get")
 
     def test_httpbin_raw_headers(self):
-
         headers = parse_it(
             """Host: developer.mozilla.org
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
@@ -47,7 +44,6 @@ Cache-Control: max-age=0""".encode(
         self.assertEqual("0", headers.cache_control.max_age)
 
     def test_parse_response(self):
-
         headers = parse_it(MyHttpTestKissHeaders.HTTPBIN_GET)
 
         self.assertEqual(headers.content_type, "application/json")
@@ -60,7 +56,6 @@ Cache-Control: max-age=0""".encode(
             headers.user_agent
 
     def test_httpbin_get(self):
-
         response_headers = MyHttpTestKissHeaders.HTTPBIN_GET.headers
         headers = parse_it(response_headers)
 
@@ -74,7 +69,6 @@ Cache-Control: max-age=0""".encode(
             headers.user_agent
 
     def test_httpbin_freeform(self):
-
         response_headers = get(
             "https://httpbin.org/response-headers",
             params={
@@ -98,7 +92,6 @@ Cache-Control: max-age=0""".encode(
         self.assertIn("application/kiss", headers.freeform)
 
     def test_httpbin_with_our_headers(self):
-
         response = get(
             "https://httpbin.org/bearer",
             headers=Headers(Authorization("Bearer", "qwerty")),

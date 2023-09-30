@@ -11,7 +11,7 @@ else
   python -m venv venv
 fi
 
-${PREFIX}python -m pip install -U pip setuptools
-${PREFIX}python -m pip install -r requirements.txt
+${PREFIX}python -m pip install -U pip build wheel
+${PREFIX}python -m pip install -r dev-requirements.txt
 
 set +x

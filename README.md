@@ -52,6 +52,7 @@ response = get(
 * Fully type-annotated.
 * Provide great auto-completion in Python interpreter or any capable IDE.
 * No dependencies. Never will be.
+* Support JSON in header value.
 * 90% test coverage.
 
 Plus all the features that you would expect from handling headers...
@@ -67,7 +68,7 @@ Plus all the features that you would expect from handling headers...
 
 ### ✨ Installation
 
-Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.6+ installed.
+Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.7+ installed.
 ```sh 
 pip install kiss-headers --upgrade
 ```

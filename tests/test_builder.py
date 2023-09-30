@@ -18,19 +18,16 @@ from kiss_headers import (
 
 class MyBuilderTestCase(unittest.TestCase):
     def test_custom_header_expect(self):
-
         with self.assertRaises(NotImplementedError):
             k = CustomHeader("Should absolutely not work !")
 
     def test_content_type(self):
-
         self.assertEqual(
             repr(ContentType("application/json", charset="utf-8")),
             'Content-Type: application/json; charset="UTF-8"',
         )
 
     def test_set_cookie(self):
-
         dt = datetime.now()
 
         self.assertEqual(
@@ -41,18 +38,15 @@ class MyBuilderTestCase(unittest.TestCase):
         )
 
     def test_content_length(self):
-
         self.assertEqual(repr(ContentLength(1881)), "Content-Length: 1881")
 
     def test_content_disposition(self):
-
         self.assertEqual(
             repr(ContentDisposition("attachment", filename="test-file.json")),
             'Content-Disposition: attachment; filename="test-file.json"',
         )
 
     def test_value_error_builder(self):
-
         with self.assertRaises(ValueError):
             CrossOriginResourcePolicy("policy-not-known-yet")
 
@@ -66,7 +60,6 @@ class MyBuilderTestCase(unittest.TestCase):
             Allow("DOES-NOT-EXIST-HTTP-VERB")
 
     def test_verify_always_gmt(self):
-
         self.assertTrue(repr(Date(datetime.now())).endswith("GMT"))
 
 

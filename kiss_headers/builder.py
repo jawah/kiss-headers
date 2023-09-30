@@ -5,8 +5,8 @@ from re import findall, fullmatch
 from typing import Dict, List, Optional, Tuple, Union
 from urllib.parse import quote as url_quote, unquote as url_unquote
 
-from kiss_headers.models import Header
-from kiss_headers.utils import (
+from .models import Header
+from .utils import (
     class_to_header_name,
     header_content_split,
     prettify_header_name,

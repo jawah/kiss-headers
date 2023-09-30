@@ -24,7 +24,6 @@ class AttributesTestCase(unittest.TestCase):
             self.assertNotEqual(attr_a, attr_e)
 
     def test_esc_double_quote(self):
-
         with self.subTest(
             "Ensure that the double quote character is handled correctly."
         ):

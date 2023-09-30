@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from kiss_headers.models import Header, Headers
+from .models import Header, Headers
 
 
 def encode(headers: Headers) -> Dict[str, List[Dict]]:
@@ -10,14 +10,12 @@ def encode(headers: Headers) -> Dict[str, List[Dict]]:
     result: Dict[str, List[Dict]] = dict()
 
     for header in headers:
-
         if header.name not in result:
             result[header.name] = list()
 
         encoded_header: Dict[str, Union[Optional[str], List[str]]] = dict()
 
         for attribute, value in header:
-
             if attribute not in encoded_header:
                 encoded_header[attribute] = value
                 continue

@@ -4,21 +4,23 @@ from io import BufferedReader, RawIOBase
 from json import dumps as json_dumps, loads as json_loads
 from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 
-from kiss_headers.models import Header, Headers
-from kiss_headers.serializer import decode, encode
-from kiss_headers.structures import CaseInsensitiveDict
-from kiss_headers.utils import (
+from .builder import CustomHeader
+from .models import Header, Headers
+from .serializer import decode, encode
+from .structures import CaseInsensitiveDict
+from .utils import (
     class_to_header_name,
     decode_partials,
     extract_class_name,
     extract_encoded_headers,
     header_content_split,
     header_name_to_class,
+    is_content_json_object,
     is_legal_header_name,
     normalize_str,
 )
 
-T = TypeVar("T")
+T = TypeVar("T", bound=CustomHeader, covariant=True)
 
 
 def parse_it(raw_headers: Any) -> Headers:
@@ -88,12 +90,17 @@ def parse_it(raw_headers: Any) -> Headers:
     list_of_headers: List[Header] = []
 
     for head, content in revised_headers:
-
         # We should ignore when a illegal name is considered as an header. We avoid ValueError (in __init__ of Header)
         if is_legal_header_name(head) is False:
             continue
 
-        entries: List[str] = header_content_split(content, ",")
+        is_json_obj: bool = is_content_json_object(content)
+        entries: List[str]
+
+        if is_json_obj is False:
+            entries = header_content_split(content, ",")
+        else:
+            entries = [content]
 
         # Multiple entries are detected in one content at the only exception that its not IMAP header "Subject".
         if len(entries) > 1 and normalize_str(head) != "subject":

@@ -1,6 +1,11 @@
 name: Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
 
 jobs:
   tests:
@@ -9,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, "3.10", "3.11"]
+        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12-dev"]
         os: [ubuntu-latest]
 
     steps:
@@ -20,11 +25,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools
+        pip install -U pip build wheel
         pip install -r dev-requirements.txt
     - name: Install the package
       run: |
-        python setup.py install
+        pip install .
     - name: Run tests
       run: |
         pytest

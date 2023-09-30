@@ -1,0 +1,84 @@
+[build-system]
+requires = ["hatchling>=1.6.0,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kiss-headers"
+description = "Object-oriented HTTP and IMAP (structured) headers."
+readme = "README.md"
+license-files = { paths = ["LICENSE"] }
+license = "MIT"
+keywords = ["headers", "http", "mail", "text", "imap", "header", "https", "imap4"]
+authors = [
+  {name = "Ahmed R. TAHRI", email="ahmed.tahri@cloudnursery.dev"},
+]
+maintainers = [
+  {name = "Ahmed R. TAHRI", email="ahmed.tahri@cloudnursery.dev"},
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Communications :: Email",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: Content Management System",
+    "Environment :: Web Environment",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Utilities",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+requires-python = ">=3.7"
+dynamic = ["version"]
+
+[project.urls]
+"Documentation" = "https://ousret.github.io/kiss-headers"
+"Code" = "https://github.com/ousret/kiss-headers"
+"Issue tracker" = "https://github.com/ousret/kiss-headers/issues"
+
+[tool.hatch.version]
+path = "kiss_headers/version.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/docs",
+    "/kiss_headers",
+    "/tests",
+    "/dev-requirements.txt",
+    "/README.md",
+    "/LICENSE",
+    "/setup.cfg",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+    "kiss_headers/",
+]
+
+[tool.isort]
+profile = "black"
+src_paths = ["kiss_headers", "tests"]
+honor_noqa = true
+combine_as_imports = true
+force_grid_wrap = 0
+include_trailing_comma = true
+known_first_party = "kiss_headers,tests"
+line_length = 88
+multi_line_output = 3
+
+[tool.pytest.ini_options]
+addopts = "--cov=kiss_headers --doctest-modules --cov-report=term-missing -rxXs"
+doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
+minversion = "6.2"
+testpaths = ["tests", "kiss_headers"]
+
+[tool.mypy]
+disallow_untyped_defs = true
