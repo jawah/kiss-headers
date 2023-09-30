@@ -20,7 +20,6 @@ from kiss_headers import (
 
 class MyExplainTestCase(unittest.TestCase):
     def test_explain_from_objects(self):
-
         headers = (
             Header("Accept-Ch", "DPR")
             + Header("Accept-Ch-Lifetime", "2592000")

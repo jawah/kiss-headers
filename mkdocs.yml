@@ -1,6 +1,6 @@
 site_name: Kiss-Headers
 site_description: Python package for object oriented headers, HTTP/1.1 style. Parse headers to objects.
-site_url: https://kiss-headers.tech/
+site_url: https://ousret.github.io/kiss-headers
 
 theme:
     name: 'material'

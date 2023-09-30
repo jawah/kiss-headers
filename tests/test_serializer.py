@@ -43,12 +43,10 @@ class SerializerTest(unittest.TestCase):
         )
 
     def test_decode_failure(self):
-
         with self.assertRaises(ValueError):
             decode({"Not Decodable": "X"})  # type: ignore
 
     def test_json_with_indent(self):
-
         headers: Headers = parse_it(RAW_HEADERS)
         json_headers: str = dumps(headers, indent=4)
 

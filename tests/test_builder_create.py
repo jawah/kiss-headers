@@ -62,7 +62,6 @@ Cache-Control: max-age=0"""
 
 class MyBuilderCreationTestCase(unittest.TestCase):
     def test_replicate_raw_from_objects_request(self):
-
         headers = (
             Host("developer.mozilla.org")
             + UserAgent(
@@ -88,7 +87,6 @@ class MyBuilderCreationTestCase(unittest.TestCase):
         self.assertEqual(parse_it(RAW_HEADERS_MOZILLA), headers)
 
     def test_replicate_raw_from_objects(self):
-
         headers = (
             Header("Accept-Ch", "DPR")
             + Header("Accept-Ch-Lifetime", "2592000")

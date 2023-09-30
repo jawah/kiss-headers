@@ -5,7 +5,6 @@ from kiss_headers import Allow, ContentType, Header, get_polymorphic, parse_it
 
 class MyPolymorphicTestCase(unittest.TestCase):
     def test_get_polymorphic(self):
-
         headers = parse_it(
             """accept-ch: DPR
 accept-ch-lifetime: 2592000

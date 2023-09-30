@@ -1,7 +1,7 @@
 ## Pull Request
 
 ### My patch is about
-- [ ] :bug: Bugfix 
+- [ ] :bug: Bugfix 
 - [ ] :arrow_up: Improvement
 - [ ] :pencil: Documentation
 - [ ] :heavy_check_mark: Tests

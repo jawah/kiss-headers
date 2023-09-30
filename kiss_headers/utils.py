@@ -103,7 +103,6 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     result: List[str] = [""]
 
     for letter, index in zip(string, range(0, len(string))):
-
         if letter == '"':
             in_double_quote = not in_double_quote
 
@@ -126,7 +125,6 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
             }
 
         if not in_double_quote:
-
             if not in_value and letter == "=":
                 in_value = True
             elif letter == ";" and in_value:
@@ -138,7 +136,6 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
         if letter == delimiter and (
             (in_value or in_double_quote or in_parenthesis or is_on_a_day) is False
         ):
-
             result[-1] = result[-1].lstrip().rstrip()
             result.append("")
 
@@ -453,3 +450,14 @@ def escape_double_quote(content: str) -> str:
     'UTF\\"-8'
     """
     return unescape_double_quote(content).replace('"', r"\"")
+
+
+def is_content_json_object(content: str) -> bool:
+    """
+    Sometime, you may receive a header that hold a JSON list or object.
+    This function detect it.
+    """
+    content = content.strip()
+    return (content.startswith("{") and content.endswith("}")) or (
+        content.startswith("[") and content.endswith("]")
+    )

@@ -41,27 +41,23 @@ Cache-Control: max-age=0""".replace(
 
 
 class MyKissHeadersFromStringTest(unittest.TestCase):
-
     headers: Headers
 
     def setUp(self) -> None:
         MyKissHeadersFromStringTest.headers = parse_it(RAW_HEADERS)
 
     def test_decode_partials(self):
-
         self.assertEqual(
             [("Subject", "pöstal")],
             decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")]),
         )
 
     def test_bytes_headers(self):
-
         self.assertEqual(
             MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS.encode("utf-8"))
         )
 
     def test_two_headers_eq(self):
-
         self.assertEqual(MyKissHeadersFromStringTest.headers, parse_it(RAW_HEADERS))
 
         self.assertNotEqual(
@@ -69,7 +65,6 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         )
 
     def test_headers_get_has(self):
-
         self.assertIsNone(MyKissHeadersFromStringTest.headers.get("received"))
         self.assertFalse(MyKissHeadersFromStringTest.headers.has("received"))
 
@@ -78,7 +73,6 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         )
 
     def test_repr_dict(self):
-
         dict_ = MyKissHeadersFromStringTest.headers.to_dict()
 
         self.assertIn("set-cookie", dict_)
@@ -98,7 +92,6 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         )
 
     def test_repr_str(self):
-
         self.assertEqual(RAW_HEADERS, repr(MyKissHeadersFromStringTest.headers))
 
         self.assertEqual(RAW_HEADERS, str(MyKissHeadersFromStringTest.headers))
@@ -113,7 +106,6 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         )
 
     def test_control_basis_exist(self):
-
         self.assertEqual("DPR", MyKissHeadersFromStringTest.headers.accept_ch)
 
         self.assertEqual(3, len(MyKissHeadersFromStringTest.headers.set_cookie))
@@ -134,7 +126,6 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         )
 
     def test_control_first_line_not_header(self):
-
         headers = parse_it(RAW_HEADERS_MOZILLA)
 
         self.assertEqual(17, len(headers))

@@ -1,13 +1,14 @@
 from copy import deepcopy
-from json import dumps
+from json import JSONDecodeError, dumps, loads
 from typing import Dict, Iterable, Iterator, List, Optional, Tuple, Type, Union
 
-from kiss_headers.structures import AttributeBag, CaseInsensitiveDict
-from kiss_headers.utils import (
+from .structures import AttributeBag, CaseInsensitiveDict
+from .utils import (
     escape_double_quote,
     extract_comments,
     header_content_split,
     header_name_to_class,
+    is_content_json_object,
     is_legal_header_name,
     normalize_list,
     normalize_str,
@@ -54,7 +55,29 @@ class Header(object):
         self._pretty_name: str = prettify_header_name(self._name)
         self._content: str = content
 
-        self._members: List[str] = header_content_split(self._content, ";")
+        self._members: List[str]
+
+        if is_content_json_object(self._content):
+            try:
+                payload = loads(self._content)
+            except JSONDecodeError as e:
+                raise ValueError(
+                    f"Header '{self._name}' contain an invalid JSON value."
+                ) from e
+
+            if isinstance(payload, list):
+                self._members = payload
+            elif isinstance(payload, dict):
+                self._members = []
+                for k, v in payload.items():
+                    if v is not None:
+                        self._members.append(f"{str(k)}={str(v)}")
+                    else:
+                        self._members.append(str(k))
+            else:
+                raise ValueError(f"Header '{self._name}' is malformed.")
+        else:
+            self._members = header_content_split(self._content, ";")
 
         self._attrs: Attributes = Attributes(self._members)
 
@@ -264,7 +287,6 @@ class Header(object):
             )
 
         if isinstance(other, Header):
-
             headers = Headers()
             headers += self
             headers += other
@@ -644,6 +666,8 @@ class Headers(object):
 
     from_: Union[Header, List[Header]]
 
+    report_to: Union[Header, List[Header]]
+
     def __init__(self, *headers: Union[List[Header], Header]):
         """
         :param headers: Initial list of header. Can be empty.
@@ -801,11 +825,9 @@ class Headers(object):
 
         # Permit to detect multiple entries.
         if normalize_str(key) != "subject":
-
             entries: List[str] = header_content_split(value, ",")
 
             if len(entries) > 1:
-
                 for entry in entries:
                     self._headers.append(Header(key, entry))
 
@@ -878,7 +900,6 @@ class Headers(object):
         result: List[str] = []
 
         for header_name in self.keys():
-
             r = self.get(header_name)
 
             if not r:
@@ -1193,7 +1214,6 @@ class Attributes(object):
         self._bag: AttributeBag = CaseInsensitiveDict()
 
         for member, index in zip(members, range(0, len(members))):
-
             if member == "":
                 continue
 
@@ -1255,11 +1275,9 @@ class Attributes(object):
         list_check: List[Tuple[int, str, Optional[str]]] = []
 
         for index_a, key_a, value_a in list_repr_a:
-
             key_a = normalize_str(key_a)
 
             for index_b, key_b, value_b in list_repr_b:
-
                 key_b = normalize_str(key_b)
 
                 if (
@@ -1267,7 +1285,6 @@ class Attributes(object):
                     and value_a == value_b
                     and (index_a, key_a, key_b) not in list_check
                 ):
-
                     list_check.append((index_a, key_a, key_b))
 
         return len(list_check) == len(list_repr_a)
@@ -1358,7 +1375,6 @@ class Attributes(object):
         freed_indexes: List[int] = []
 
         if index is not None:
-
             if with_value is not None:
                 raise ValueError(
                     "Cannot set both index and with_value in the remove method."
@@ -1373,9 +1389,7 @@ class Attributes(object):
             freed_indexes.append(self._bag[key][1].pop(pos))
 
         if index is None:
-
             if with_value is not None:
-
                 for index_, value_ in zip(self._bag[key][1], self._bag[key][0]):
                     if with_value is True and value_ is not None:
                         freed_indexes.append(index_)
@@ -1397,7 +1411,6 @@ class Attributes(object):
             del self._bag[key]
 
         for attr in self._bag:
-
             values, indexes = self._bag[attr]
             max_freed_index: int = max(freed_indexes)
 

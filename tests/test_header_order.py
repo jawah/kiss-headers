@@ -17,7 +17,6 @@ class HeaderOrderingTest(unittest.TestCase):
         self.assertEqual(["a", "b", "ppp", "h", "h", "z"], header.attrs)
 
     def test_pop_in_ordered_header(self):
-
         header = Header("Content-Type", "a; b=k; h; h; z=0")
 
         key, value = header.pop(2)

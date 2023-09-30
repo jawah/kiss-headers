@@ -1,6 +1,11 @@
 name: 🎨 Linters
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
 
 jobs:
   lint:
@@ -20,11 +25,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        pip install -U pip setuptools
+        pip install -U pip build wheel
         pip install -r dev-requirements.txt
     - name: Install the package
       run: |
-        python setup.py install
+        pip install .
     - name: Type checking (Mypy)
       run: |
         mypy kiss_headers
@@ -33,4 +38,4 @@ jobs:
         isort --check kiss_headers
     - name: Code format (Black)
       run: |
-        black --check --diff --target-version=py36 kiss_headers
+        black --check --diff --target-version=py37 kiss_headers
