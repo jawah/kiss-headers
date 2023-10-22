@@ -28,7 +28,7 @@ class Header(object):
     """
 
     # Most common attribute that are associated with value in headers.
-    # Used for type hint, auto completion purpose
+    # Used for type hint, auto-completion purpose
     charset: str
     format: str
     boundary: str
@@ -39,6 +39,11 @@ class Header(object):
     samesite: str
     domain: str
     filename: str
+    to: str
+    report_to: str
+    endpoints: str
+    max_age: str
+    group: str
 
     def __init__(self, name: str, content: str):
         """
@@ -619,6 +624,8 @@ class Headers(object):
 
     alt_svc: Union[Header, List[Header]]
 
+    location: Union[Header, List[Header]]
+
     age: Union[Header, List[Header]]
     cache_control: Union[Header, List[Header]]
     clear_site_data: Union[Header, List[Header]]
@@ -650,8 +657,9 @@ class Headers(object):
     set_cookie: Union[Header, List[Header]]
 
     content_disposition: Union[Header, List[Header]]
-
     content_type: Union[Header, List[Header]]
+    content_range: Union[Header, List[Header]]
+    content_encoding: Union[Header, List[Header]]
 
     host: Union[Header, List[Header]]
     referer: Union[Header, List[Header]]

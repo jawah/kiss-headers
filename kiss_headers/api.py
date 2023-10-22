@@ -18,6 +18,7 @@ from .utils import (
     is_content_json_object,
     is_legal_header_name,
     normalize_str,
+    transform_possible_encoded,
 )
 
 T = TypeVar("T", bound=CustomHeader, covariant=True)
@@ -31,7 +32,7 @@ def parse_it(raw_headers: Any) -> Headers:
         TypeError: If passed argument cannot be parsed to extract headers from it.
     """
 
-    headers: Optional[Iterable[Tuple[str, Any]]] = None
+    headers: Optional[Iterable[Tuple[Union[str, bytes], Union[str, bytes]]]] = None
 
     if isinstance(raw_headers, str):
         if raw_headers.startswith("{") and raw_headers.endswith("}"):
@@ -71,7 +72,9 @@ def parse_it(raw_headers: Any) -> Headers:
             )
         )
 
-    revised_headers: List[Tuple[str, str]] = decode_partials(headers)
+    revised_headers: List[Tuple[str, str]] = decode_partials(
+        transform_possible_encoded(headers)
+    )
 
     # Sometime raw content does not begin with headers. If that is the case, search for the next line.
     if (
