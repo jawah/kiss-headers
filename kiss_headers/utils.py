@@ -1,6 +1,6 @@
 from email.header import decode_header
 from re import findall, search, sub
-from typing import Any, Iterable, List, Optional, Set, Tuple, Type
+from typing import Any, Iterable, List, Optional, Set, Tuple, Type, Union
 
 RESERVED_KEYWORD: Set[str] = {
     "and_",
@@ -461,3 +461,18 @@ def is_content_json_object(content: str) -> bool:
     return (content.startswith("{") and content.endswith("}")) or (
         content.startswith("[") and content.endswith("]")
     )
+
+
+def transform_possible_encoded(
+    headers: Iterable[Tuple[Union[str, bytes], Union[str, bytes]]]
+) -> Iterable[Tuple[str, str]]:
+    decoded = []
+
+    for k, v in headers:
+        if isinstance(k, bytes):
+            k = k.decode("utf_8")
+        if isinstance(v, bytes):
+            v = v.decode("utf_8")
+        decoded.append((k, v))
+
+    return decoded
