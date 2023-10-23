@@ -1224,7 +1224,8 @@ class Attributes(object):
         for member, index in zip(members, range(0, len(members))):
             if member == "":
                 continue
-
+            if isinstance(member, str) is False:
+                member = str(member)
             if "=" in member:
                 key, value = tuple(member.split("=", maxsplit=1))
 
