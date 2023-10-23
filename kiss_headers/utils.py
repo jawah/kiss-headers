@@ -1,4 +1,5 @@
 from email.header import decode_header
+from json import dumps
 from re import findall, search, sub
 from typing import Any, Iterable, List, Optional, Set, Tuple, Type, Union
 
@@ -469,10 +470,18 @@ def transform_possible_encoded(
     decoded = []
 
     for k, v in headers:
+        # we shall discard it if set to None.
+        if v is None:
+            continue
         if isinstance(k, bytes):
             k = k.decode("utf_8")
         if isinstance(v, bytes):
             v = v.decode("utf_8")
+        elif isinstance(v, str) is False:
+            if isinstance(v, (dict, list)):
+                v = dumps(v)
+            else:
+                v = str(v)
         decoded.append((k, v))
 
     return decoded
