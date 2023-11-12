@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.9]
+        python-version: ["3.10"]
         os: [ubuntu-latest]
 
     steps:
@@ -38,4 +38,4 @@ jobs:
         isort --check kiss_headers
     - name: Code format (Black)
       run: |
-        black --check --diff --target-version=py37 kiss_headers
+        black --check --diff kiss_headers

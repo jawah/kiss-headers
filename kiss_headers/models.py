@@ -22,7 +22,7 @@ from .utils import (
 OUTPUT_LOCK_TYPE: bool = False
 
 
-class Header(object):
+class Header:
     """
     Object representation of a single Header.
     """
@@ -606,7 +606,7 @@ class Header(object):
         return False
 
 
-class Headers(object):
+class Headers:
     """
     Object-oriented representation for Headers. Contains a list of Header with some level of abstraction.
     Combine advantages of dict, CaseInsensibleDict, list, multi-dict, and native objects.
@@ -1211,7 +1211,7 @@ class Headers(object):
         )
 
 
-class Attributes(object):
+class Attributes:
     """
     Dedicated class to handle attributes within a Header. Wrap an AttributeBag and offer methods to manipulate it
     with ease.
