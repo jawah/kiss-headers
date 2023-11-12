@@ -39,6 +39,39 @@ Cache-Control: max-age=0""".replace(
     "\n", "\r\n"
 )
 
+RAW_HEADERS_WITH_CONNECT = """HTTP/1.1 200 Connection established
+
+HTTP/2 200 
+date: Tue, 28 Sep 2021 13:45:34 GMT
+content-type: application/epub+zip
+content-length: 3706401
+content-disposition: filename=ipython-readthedocs-io-en-stable.epub
+x-amz-id-2: 2PO2WHP4qGqkhyC1VbRE2KLN2g4uk38vYzaNJDU/OBSxh4lUtYgERD2FNAOPkKPD1a6rsNBMeKI=
+x-amz-request-id: 21E21R71FAY4WQKT
+last-modified: Sat, 25 Sep 2021 00:43:37 GMT
+etag: "6f512f04591f7667486d044c54708448"
+x-served: Nginx-Proxito-Sendfile
+x-backend: web-i-078619706c1392c2c
+x-rtd-project: ipython
+x-rtd-version: stable
+x-rtd-path: /proxito/epub/ipython/stable/ipython.epub
+x-rtd-domain: ipython.readthedocs.io
+x-rtd-version-method: path
+x-rtd-project-method: subdomain
+referrer-policy: no-referrer-when-downgrade
+permissions-policy: interest-cohort=()
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+cf-cache-status: HIT
+age: 270
+expires: Tue, 28 Sep 2021 15:45:34 GMT
+cache-control: public, max-age=7200
+accept-ranges: bytes
+expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+server: cloudflare
+cf-ray: 695d69b549330686-LHR""".replace(
+    "\n", "\r\n"
+)
+
 
 class MyKissHeadersFromStringTest(unittest.TestCase):
     headers: Headers
@@ -168,6 +201,12 @@ class MyKissHeadersFromStringTest(unittest.TestCase):
         self.assertEqual(Header, type(headers.host))
 
         self.assertEqual(str, type(headers.accept[-1].q))
+
+    def test_parse_with_extra_connect(self):
+        headers: Headers = parse_it(RAW_HEADERS_WITH_CONNECT)
+
+        self.assertTrue("Date" in headers)
+        self.assertTrue("Server" in headers)
 
 
 if __name__ == "__main__":

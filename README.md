@@ -59,7 +59,7 @@ Plus all the features that you would expect from handling headers...
 
 * Properties syntax for headers and attribute in a header.
 * Supports headers and attributes OneToOne, OneToMany and ManySquashedIntoOne.
-* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response`, `httpx._models.Response` and `urllib3.HTTPResponse`.
+* Capable of parsing `bytes`, `fp`, `str`, `dict`, `email.Message`, `requests.Response`, `niquests.Response`, `httpx._models.Response` and `urllib3.HTTPResponse`.
 * Automatically unquote and unfold the value of an attribute when retrieving it.
 * Keep headers and attributes ordering.
 * Case-insensitive with header name and attribute key.
@@ -72,6 +72,8 @@ Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.7+ 
 ```sh 
 pip install kiss-headers --upgrade
 ```
+
+This project is included in [Niquests](https://github.com/jawah/niquests)! Your awesome drop-in replacement for Requests!
 
 ### 🍰 Usage
 

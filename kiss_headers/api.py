@@ -1,3 +1,4 @@
+from copy import deepcopy
 from email.message import Message
 from email.parser import HeaderParser
 from io import BufferedReader, RawIOBase
@@ -27,17 +28,20 @@ T = TypeVar("T", bound=CustomHeader, covariant=True)
 def parse_it(raw_headers: Any) -> Headers:
     """
     Just decode anything that could contain headers. That simple PERIOD.
-    :param raw_headers: Accept bytes, str, fp, dict, JSON, email.Message, requests.Response, urllib3.HTTPResponse and httpx.Response.
+    If passed with a Headers instance, return a deep copy of it.
+    :param raw_headers: Accept bytes, str, fp, dict, JSON, email.Message, requests.Response, niquests.Response, urllib3.HTTPResponse and httpx.Response.
     :raises:
         TypeError: If passed argument cannot be parsed to extract headers from it.
     """
+
+    if isinstance(raw_headers, Headers):
+        return deepcopy(raw_headers)
 
     headers: Optional[Iterable[Tuple[Union[str, bytes], Union[str, bytes]]]] = None
 
     if isinstance(raw_headers, str):
         if raw_headers.startswith("{") and raw_headers.endswith("}"):
             return decode(json_loads(raw_headers))
-
         headers = HeaderParser().parsestr(raw_headers, headersonly=True).items()
     elif (
         isinstance(raw_headers, bytes)
@@ -54,7 +58,7 @@ def parse_it(raw_headers: Any) -> Headers:
         r = extract_class_name(type(raw_headers))
 
         if r:
-            if r == "requests.models.Response":
+            if r in ["requests.models.Response", "niquests.models.Response"]:
                 headers = []
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
