@@ -1,6 +1,6 @@
 site_name: Kiss-Headers
 site_description: Python package for object oriented headers, HTTP/1.1 style. Parse headers to objects.
-site_url: https://ousret.github.io/kiss-headers
+site_url: https://jawah.github.io/kiss-headers
 
 theme:
     name: 'material'
@@ -11,9 +11,9 @@ theme:
       primary: 'teal'
       accent: 'deep orange'
 
-repo_name: ousret/kiss-headers
-repo_url: https://github.com/Ousret/kiss-headers/
-edit_uri: "https://github.com/Ousret/kiss-headers/tree/master/docs"
+repo_name: jawah/kiss-headers
+repo_url: https://github.com/jawah/kiss-headers/
+edit_uri: "https://github.com/jawah/kiss-headers/tree/master/docs"
 
 nav:
   - Introduction: 'index.md'

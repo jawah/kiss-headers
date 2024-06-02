@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Headers for Humans 👋 <a href="https://twitter.com/intent/tweet?text=Python%20library%20for%20oriented%20object%20HTTP%20or%20IMAP%20headers.&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
+<h1 align="center">Welcome to Headers for Humans 👋 <a href="https://twitter.com/intent/tweet?text=Python%20library%20for%20oriented%20object%20HTTP%20or%20IMAP%20headers.&url=https://www.github.com/jawah/kiss-headers&hashtags=python,headers"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
 
 <p align="center">
   <sup>Object oriented headers, parser and builder. HTTP/1.1 Style.</sup><br>
@@ -69,4 +69,4 @@ pip install kiss-headers
 ## 📝 License
 
 Copyright © 2020 [Ahmed TAHRI @Ousret](https://github.com/Ousret).<br />
-This project is [MIT](https://github.com/Ousret/kiss-headers/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/jawah/kiss-headers/blob/master/LICENSE) licensed.

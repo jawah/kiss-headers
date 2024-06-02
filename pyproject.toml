@@ -40,9 +40,9 @@ requires-python = ">=3.7"
 dynamic = ["version"]
 
 [project.urls]
-"Documentation" = "https://ousret.github.io/kiss-headers"
-"Code" = "https://github.com/ousret/kiss-headers"
-"Issue tracker" = "https://github.com/ousret/kiss-headers/issues"
+"Documentation" = "https://jawah.github.io/kiss-headers"
+"Code" = "https://github.com/jawah/kiss-headers"
+"Issue tracker" = "https://github.com/jawah/kiss-headers/issues"
 
 [tool.hatch.version]
 path = "kiss_headers/version.py"

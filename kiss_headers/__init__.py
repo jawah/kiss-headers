@@ -30,7 +30,7 @@ Basic usage:
    True
 
 Others methods and usages are available - see the full documentation
-at <https://github.com/Ousret/kiss-headers>.
+at <https://github.com/jawah/kiss-headers>.
 
 :copyright: (c) 2020 by Ahmed TAHRI
 :license: MIT, see LICENSE for more details.

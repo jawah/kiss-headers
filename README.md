@@ -1,4 +1,4 @@
-<h1 align="center">HTTP Headers, the Complete Toolkit 🧰 <a href="https://twitter.com/intent/tweet?text=Python%20library%20for%20oriented%20object%20HTTP%20style%20headers.&url=https://www.github.com/Ousret/kiss-headers&hashtags=python,headers,opensource"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
+<h1 align="center">HTTP Headers, the Complete Toolkit 🧰 <a href="https://twitter.com/intent/tweet?text=Python%20library%20for%20oriented%20object%20HTTP%20style%20headers.&url=https://www.github.com/jawah/kiss-headers&hashtags=python,headers,opensource"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/></a></h1>
 
 <p align="center">
   <sup>Object-oriented headers. Kind of structured headers.</sup><br>
@@ -371,12 +371,12 @@ Also, you can create your own custom header object using the class `kiss_headers
 
 ## 📜 Documentation
 
-See the full documentation for advanced usages : [ousret.github.io/kiss-headers](https://ousret.github.io/kiss-headers/)
+See the full documentation for advanced usages : [jawah.github.io/kiss-headers](https://jawah.github.io/kiss-headers/)
 
 ## 👤 Contributing
 
 Contributions, issues and feature requests are very much welcome.<br />
-Feel free to check [issues page](https://github.com/Ousret/kiss-headers/issues) if you want to contribute.
+Feel free to check [issues page](https://github.com/jawah/kiss-headers/issues) if you want to contribute.
 
 Firstly, after getting your own local copy, run `./scripts/install` to initialize your virtual environment.
 Then run `./scripts/check` before you commit, make sure everything is still working.
@@ -386,4 +386,4 @@ Remember to keep it sweet and simple when contributing to this project.
 ## 📝 License
 
 Copyright © 2020 [Ahmed TAHRI @Ousret](https://github.com/Ousret).<br />
-This project is [MIT](https://github.com/Ousret/kiss-headers/blob/master/LICENSE) licensed.
+This project is [MIT](https://github.com/jawah/kiss-headers/blob/master/LICENSE) licensed.
