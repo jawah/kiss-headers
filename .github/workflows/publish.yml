@@ -62,7 +62,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     environment:
       name: pypi
-      url: https://pypi.org/p/niquests
+      url: https://pypi.org/p/kiss-headers
     needs: ["build", "provenance"]
     permissions:
       contents: write
