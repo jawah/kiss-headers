@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import unittest
 
-from kiss_headers import Allow, ContentType, Header, get_polymorphic, parse_it
+from kiss_headers import Allow, ContentType, get_polymorphic, parse_it
 
 
 class MyPolymorphicTestCase(unittest.TestCase):

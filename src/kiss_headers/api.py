@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 from copy import deepcopy
 from email.message import Message
 from email.parser import HeaderParser
 from io import BufferedReader, RawIOBase
-from json import dumps as json_dumps, loads as json_loads
-from typing import Any, Iterable, List, Mapping, Optional, Tuple, Type, TypeVar, Union
+from json import dumps as json_dumps
+from json import loads as json_loads
+from typing import Any, Iterable, Mapping, TypeVar
 
 from .builder import CustomHeader
 from .models import Header, Headers
@@ -37,7 +40,7 @@ def parse_it(raw_headers: Any) -> Headers:
     if isinstance(raw_headers, Headers):
         return deepcopy(raw_headers)
 
-    headers: Optional[Iterable[Tuple[Union[str, bytes], Union[str, bytes]]]] = None
+    headers: Iterable[tuple[str | bytes, str | bytes]] | None = None
 
     if isinstance(raw_headers, str):
         if raw_headers.startswith("{") and raw_headers.endswith("}"):
@@ -58,7 +61,11 @@ def parse_it(raw_headers: Any) -> Headers:
         r = extract_class_name(type(raw_headers))
 
         if r:
-            if r in ["requests.models.Response", "niquests.models.Response", "niquests.models.AsyncResponse"]:
+            if r in [
+                "requests.models.Response",
+                "niquests.models.Response",
+                "niquests.models.AsyncResponse",
+            ]:
                 headers = []
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
@@ -74,12 +81,10 @@ def parse_it(raw_headers: Any) -> Headers:
 
     if headers is None:
         raise TypeError(  # pragma: no cover
-            "Cannot parse type {type_} as it is not supported by kiss-header.".format(
-                type_=type(raw_headers)
-            )
+            f"Cannot parse type {type(raw_headers)} as it is not supported by kiss-header."
         )
 
-    revised_headers: List[Tuple[str, str]] = decode_partials(
+    revised_headers: list[tuple[str, str]] = decode_partials(
         transform_possible_encoded(headers)
     )
 
@@ -90,14 +95,15 @@ def parse_it(raw_headers: Any) -> Headers:
         and (isinstance(raw_headers, bytes) or isinstance(raw_headers, str))
     ):
         next_iter = raw_headers.split(
-            b"\n" if isinstance(raw_headers, bytes) else "\n", maxsplit=1  # type: ignore
+            b"\n" if isinstance(raw_headers, bytes) else "\n",  # type: ignore[arg-type]
+            maxsplit=1,
         )
 
         if len(next_iter) >= 2:
             return parse_it(next_iter[-1])
 
     # Prepare Header objects
-    list_of_headers: List[Header] = []
+    list_of_headers: list[Header] = []
 
     for head, content in revised_headers:
         # We should ignore when a illegal name is considered as an header. We avoid ValueError (in __init__ of Header)
@@ -105,7 +111,7 @@ def parse_it(raw_headers: Any) -> Headers:
             continue
 
         is_json_obj: bool = is_content_json_object(content)
-        entries: List[str]
+        entries: list[str]
 
         if is_json_obj is False:
             entries = header_content_split(content, ",")
@@ -153,8 +159,8 @@ def explain(headers: Headers) -> CaseInsensitiveDict:
 
 
 def get_polymorphic(
-    target: Union[Headers, Header], desired_output: Type[T]
-) -> Union[T, List[T], None]:
+    target: Headers | Header, desired_output: type[T]
+) -> T | list[T] | None:
     """Experimental. Transform a Header or Headers object to its target `CustomHeader` subclass
     to access more ready-to-use methods. eg. You have a Header object named 'Set-Cookie' and you wish
     to extract the expiration date as a datetime.
@@ -199,5 +205,5 @@ def get_polymorphic(
     return r  # type: ignore
 
 
-def dumps(headers: Headers, **kwargs: Optional[Any]) -> str:
+def dumps(headers: Headers, **kwargs: Any | None) -> str:
     return json_dumps(encode(headers), **kwargs)  # type: ignore

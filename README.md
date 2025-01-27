@@ -69,7 +69,7 @@ Plus all the features that you would expect from handling headers...
 ### ✨ Installation
 
 Whatever you like, use `pipenv` or `pip`, it simply works. Requires Python 3.7+ installed.
-```sh 
+```sh
 pip install kiss-headers --upgrade
 ```
 
@@ -99,9 +99,9 @@ from requests import get
 from kiss_headers import Headers, UserAgent, Referer, UpgradeInsecureRequests, Accept, AcceptLanguage, CustomHeader
 
 class CustomHeaderXyz(CustomHeader):
-    
+
     __squash__ = False
-    
+
     def __init__(self, charset: str = "utf-8"):
         super().__init__("hello", charset=charset)
 
@@ -366,7 +366,7 @@ If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
 Cache-Control: max-age="0"
 ```
 
-See the complete list of available header class in the full documentation. 
+See the complete list of available header class in the full documentation.
 Also, you can create your own custom header object using the class `kiss_headers.CustomHeader`.
 
 ## 📜 Documentation

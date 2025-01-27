@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from base64 import b64decode, b64encode
 from datetime import datetime, timezone
 from email import utils
 from re import findall, fullmatch
-from typing import Dict, List, Optional, Tuple, Union
-from urllib.parse import quote as url_quote, unquote as url_unquote
+from urllib.parse import quote as url_quote
+from urllib.parse import unquote as url_unquote
 
 from .models import Header
 from .utils import (
@@ -28,13 +30,13 @@ class CustomHeader(Header):
     """
 
     __squash__: bool = False  # This value indicate whenever the representation of multiple entries should be squashed into one content.
-    __tags__: List[str] = []
+    __tags__: list[str] = []
 
-    __override__: Optional[
-        str
-    ] = None  # Create this static member in your custom header when the class name does not match the target header.
+    __override__: str | None = (
+        None  # Create this static member in your custom header when the class name does not match the target header.
+    )
 
-    def __init__(self, initial_content: str = "", **kwargs: Optional[str]):
+    def __init__(self, initial_content: str = "", **kwargs: str | None):
         """
         :param initial_content: Initial content of the Header if any.
         :param kwargs: Provided args. Any key that associate a None value are just ignored.
@@ -67,7 +69,7 @@ class ContentSecurityPolicy(CustomHeader):
 
     __tags__ = ["response"]
 
-    def __init__(self, *policies: List[str]):
+    def __init__(self, *policies: list[str]):
         """
         :param policies: One policy consist of a list of str like ["default-src", "'none'"].
         >>> header = ContentSecurityPolicy(["default-src", "'none'"], ["img-src", "'self'", "img.example.com"])
@@ -114,16 +116,16 @@ class ContentSecurityPolicy(CustomHeader):
 
             self += " ".join(policy)  # type: ignore
 
-    def get_policies_names(self) -> List[str]:
+    def get_policies_names(self) -> list[str]:
         """Fetch a list of policy name set in content."""
         return [member.split(" ")[0] for member in self.attrs]
 
-    def get_policy_args(self, policy_name: str) -> Optional[List[str]]:
+    def get_policy_args(self, policy_name: str) -> list[str] | None:
         """Retrieve given arguments for a policy."""
         policy_name = policy_name.lower()
 
         for member in self.attrs:
-            parts: List[str] = member.split(" ")
+            parts: list[str] = member.split(" ")
 
             if parts[0].lower() == policy_name:
                 return parts[1:]
@@ -139,13 +141,13 @@ class Accept(CustomHeader):
     """
 
     __squash__: bool = True
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
     def __init__(
         self,
         mime: str = "*/*",
         qualifier: float = 1.0,
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         :param mime: Describe the MIME using this syntax <MIME_type/MIME_subtype>
@@ -166,7 +168,7 @@ class Accept(CustomHeader):
                 f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'"
             )
 
-        args: Dict = {"q": qualifier if qualifier < 1.0 else None}
+        args: dict = {"q": qualifier if qualifier < 1.0 else None}
 
         args.update(kwargs)
 
@@ -175,14 +177,14 @@ class Accept(CustomHeader):
             **args,
         )
 
-    def get_mime(self) -> Optional[str]:
+    def get_mime(self) -> str | None:
         """Return defined mime in current accept header."""
         for el in self.attrs:
             if "/" in el:
                 return el
         return None
 
-    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+    def get_qualifier(self, _default: float | None = 1.0) -> float | None:
         """Return defined qualifier for specified mime. If not set, output 1.0."""
         return float(str(self["q"])) if self.has("q") else _default
 
@@ -196,15 +198,15 @@ class ContentType(CustomHeader):
     to prevent this behavior, the header X-Content-Type-Options can be set to nosniff.
     """
 
-    __tags__: List[str] = ["request", "response"]
+    __tags__: list[str] = ["request", "response"]
 
     def __init__(
         self,
         mime: str,
-        charset: Optional[str] = None,
-        format_: Optional[str] = None,
-        boundary: Optional[str] = None,
-        **kwargs: Optional[str],
+        charset: str | None = None,
+        format_: str | None = None,
+        boundary: str | None = None,
+        **kwargs: str | None,
     ):
         """
         :param mime_type: The MIME type of the resource or the data. Format <MIME_type>/<MIME_subtype>.
@@ -226,7 +228,7 @@ class ContentType(CustomHeader):
                 f"The MIME should be described using this syntax <MIME_type/MIME_subtype> not '{mime}'"
             )
 
-        args: Dict = {
+        args: dict = {
             "charset": charset.upper() if charset else None,
             "format": format_,
             "boundary": boundary,
@@ -236,14 +238,14 @@ class ContentType(CustomHeader):
 
         super().__init__(mime, **args)
 
-    def get_mime(self) -> Optional[str]:
+    def get_mime(self) -> str | None:
         """Return defined mime in content type."""
         for el in self.attrs:
             if "/" in el:
                 return el
         return None
 
-    def get_charset(self, _default: Optional[str] = "ISO-8859-1") -> Optional[str]:
+    def get_charset(self, _default: str | None = "ISO-8859-1") -> str | None:
         """Extract defined charset, if not present will return 'ISO-8859-1' by default."""
         return str(self["charset"]) if self.has("charset") else _default
 
@@ -256,9 +258,9 @@ class XContentTypeOptions(CustomHeader):
     the webmasters knew what they were doing.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
-    def __init__(self, nosniff: bool = True, **kwargs: Optional[str]):
+    def __init__(self, nosniff: bool = True, **kwargs: str | None):
         """
         :param nosniff: see https://fetch.spec.whatwg.org/#x-content-type-options-header
         :param kwargs:
@@ -276,16 +278,16 @@ class ContentDisposition(CustomHeader):
     as part of a Web page, or as an attachment, that is downloaded and saved locally.
     """
 
-    __tags__: List[str] = ["request", "response"]
+    __tags__: list[str] = ["request", "response"]
 
     def __init__(
         self,
         disposition: str = "inline",
-        name: Optional[str] = None,
-        filename: Optional[str] = None,
-        fallback_filename: Optional[str] = None,
-        boundary: Optional[str] = None,
-        **kwargs: Optional[str],
+        name: str | None = None,
+        filename: str | None = None,
+        fallback_filename: str | None = None,
+        boundary: str | None = None,
+        **kwargs: str | None,
     ):
         """
         :param disposition: Could be either inline, form-data, attachment or empty. Choose one. Default to inline.
@@ -312,12 +314,10 @@ class ContentDisposition(CustomHeader):
                 filename.encode("ASCII")
             except UnicodeEncodeError:
                 raise ValueError(  # pragma: no cover
-                    "The filename should only contain valid ASCII characters. Not '{fb_filename}'. Use fallback_filename instead.".format(
-                        fb_filename=fallback_filename
-                    )
+                    f"The filename should only contain valid ASCII characters. Not '{fallback_filename}'. Use fallback_filename instead."
                 )
 
-        args: Dict = {
+        args: dict = {
             "name": name,
             "filename": filename,
             "filename*": ("UTF-8''" + url_quote(fallback_filename, encoding="utf-8"))
@@ -333,7 +333,7 @@ class ContentDisposition(CustomHeader):
             **args,
         )
 
-    def get_disposition(self) -> Optional[str]:
+    def get_disposition(self) -> str | None:
         """Extract set disposition from Content-Disposition"""
         for attr in self.attrs:
             if attr.lower() in ["attachment", "inline", "form-data"]:
@@ -341,7 +341,7 @@ class ContentDisposition(CustomHeader):
 
         return None
 
-    def get_filename_decoded(self) -> Optional[str]:
+    def get_filename_decoded(self) -> str | None:
         """Retrieve and decode if necessary the associated filename."""
         if "filename*" in self:
             try:
@@ -360,9 +360,9 @@ class Authorization(CustomHeader):
     and the WWW-Authenticate header.
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
-    def __init__(self, type_: str, credentials: str, **kwargs: Optional[str]):
+    def __init__(self, type_: str, credentials: str, **kwargs: str | None):
         """
         :param type_: Authentication type. A common type is "Basic". See IANA registry of Authentication schemes for others.
         :param credentials: Associated credentials to use. Preferably Base-64 encoded.
@@ -389,7 +389,7 @@ class Authorization(CustomHeader):
             )
 
         super().__init__(
-            "{type_} {credentials}".format(type_=type_, credentials=credentials),
+            f"{type_} {credentials}",
             **kwargs,
         )
 
@@ -414,7 +414,7 @@ class BasicAuthorization(Authorization):
         username: str,
         password: str,
         charset: str = "latin1",
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         :param username:
@@ -449,7 +449,7 @@ class BasicAuthorization(Authorization):
 
     def get_username_password(
         self, __default_charset: str = "latin1"
-    ) -> Tuple[str, ...]:
+    ) -> tuple[str, ...]:
         """Extract username and password as a tuple from Basic Authorization."""
         return tuple(self.get_credentials(__default_charset).split(":", maxsplit=1))
 
@@ -461,7 +461,7 @@ class ProxyAuthorization(Authorization):
     and the Proxy-Authenticate header.
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
     def __init__(self, type_: str, credentials: str):
         """
@@ -477,9 +477,9 @@ class Host(CustomHeader):
     and (optionally) the TCP port number on which the server is listening.
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
-    def __init__(self, host: str, port: Optional[int] = None, **kwargs: Optional[str]):
+    def __init__(self, host: str, port: int | None = None, **kwargs: str | None):
         """
         :param host: The domain name of the server (for virtual hosting).
         :param port: TCP port number on which the server is listening.
@@ -501,7 +501,7 @@ class Connection(CustomHeader):
 
     __tags__ = ["request", "response"]
 
-    def __init__(self, should_keep_alive: bool, **kwargs: Optional[str]):
+    def __init__(self, should_keep_alive: bool, **kwargs: str | None):
         """
         :param should_keep_alive: Indicates that the client would like to keep the connection open or not.
         :param kwargs:
@@ -514,9 +514,9 @@ class ContentLength(CustomHeader):
     The Content-Length entity header indicates the size of the entity-body, in bytes, sent to the recipient.
     """
 
-    __tags__: List[str] = ["request", "response"]
+    __tags__: list[str] = ["request", "response"]
 
-    def __init__(self, length: int, **kwargs: Optional[str]):
+    def __init__(self, length: int, **kwargs: str | None):
         """
         :param length: The length in decimal number of octets.
         """
@@ -528,9 +528,9 @@ class Date(CustomHeader):
     The Date general HTTP header contains the date and time at which the message was originated.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
-    def __init__(self, my_date: Union[datetime, str], **kwargs: Optional[str]):
+    def __init__(self, my_date: datetime | str, **kwargs: str | None):
         """
         :param my_date: Can either be a datetime that will be automatically converted or a raw string.
         :param kwargs:
@@ -553,9 +553,9 @@ class CrossOriginResourcePolicy(CustomHeader):
     the browser blocks no-cors cross-origin/cross-site requests to the given resource.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
-    def __init__(self, policy: str, **kwargs: Optional[str]):
+    def __init__(self, policy: str, **kwargs: str | None):
         """
         :param policy: Accepted values are same-site, same-origin or cross-origin.
         :param kwargs:
@@ -578,7 +578,7 @@ class Allow(CustomHeader):
     __tags__ = ["response"]
     __squash__ = True
 
-    def __init__(self, supported_verb: str, **kwargs: Optional[str]):
+    def __init__(self, supported_verb: str, **kwargs: str | None):
         """
         :param supported_verb: Choose exactly one of "HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "PURGE", "CONNECT" or "TRACE" HTTP verbs.
         :param kwargs:
@@ -613,13 +613,13 @@ class Digest(CustomHeader):
 
     __tags__ = ["response"]
 
-    def __init__(self, algorithm: str, value: str, **kwargs: Optional[str]):
+    def __init__(self, algorithm: str, value: str, **kwargs: str | None):
         """
         :param algorithm: Supported digest algorithms are defined in RFC 3230 and RFC 5843, and include SHA-256 and SHA-512.
         :param value: The result of applying the digest algorithm to the resource representation and encoding the result.
         :param kwargs:
         """
-        args: Dict = {algorithm: value}
+        args: dict = {algorithm: value}
         args.update(kwargs)
 
         super().__init__("", **args)
@@ -631,19 +631,19 @@ class Cookie(CustomHeader):
 
     __tags__ = ["request"]
 
-    def __init__(self, **kwargs: Optional[str]):
+    def __init__(self, **kwargs: str | None):
         """
         :param kwargs: Pair of cookie name associated with a value.
         """
         super().__init__("", **kwargs)
 
-    def get_cookies_names(self) -> List[str]:
+    def get_cookies_names(self) -> list[str]:
         """Retrieve all defined cookie names from Cookie header."""
         return self.attrs
 
     def get_cookie_value(
-        self, cookie_name: str, __default: Optional[str] = None
-    ) -> Optional[str]:
+        self, cookie_name: str, __default: str | None = None
+    ) -> str | None:
         """Retrieve associated value with a given cookie name."""
         return (
             str(self[cookie_name]).replace('\\"', "")
@@ -658,20 +658,20 @@ class SetCookie(CustomHeader):
     so the user agent can send them back to the server later.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
     def __init__(
         self,
         cookie_name: str,
         cookie_value: str,
-        expires: Optional[Union[datetime, str]] = None,
-        max_age: Optional[int] = None,
-        domain: Optional[str] = None,
-        path: Optional[str] = None,
-        samesite: Optional[str] = None,
+        expires: datetime | str | None = None,
+        max_age: int | None = None,
+        domain: str | None = None,
+        path: str | None = None,
+        samesite: str | None = None,
         is_secure: bool = False,
         is_httponly: bool = True,
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         :param cookie_name: Can be any US-ASCII characters, except control characters, spaces, or tabs.
@@ -697,7 +697,7 @@ class SetCookie(CustomHeader):
                 "Samesite attribute can only be one of the following: Strict, Lax or None."
             )
 
-        args: Dict = {
+        args: dict = {
             cookie_name: cookie_value,
             "expires": utils.format_datetime(
                 expires.astimezone(timezone.utc), usegmt=True
@@ -727,7 +727,7 @@ class SetCookie(CustomHeader):
         """Determine if the cookie is TLS/SSL only."""
         return "Secure" in self
 
-    def get_expire(self) -> Optional[datetime]:
+    def get_expire(self) -> datetime | None:
         """Retrieve the parsed expiration date."""
         return (
             utils.parsedate_to_datetime(str(self["expires"]))
@@ -735,7 +735,7 @@ class SetCookie(CustomHeader):
             else None
         )
 
-    def get_max_age(self) -> Optional[int]:
+    def get_max_age(self) -> int | None:
         """Getting the max-age value as an integer if set."""
         return int(str(self["max-age"])) if "max-age" in self else None
 
@@ -754,14 +754,14 @@ class StrictTransportSecurity(CustomHeader):
     tell browsers that it should only be accessed using HTTPS, instead of using HTTP.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
     def __init__(
         self,
         max_age: int,
         does_includesubdomains: bool = False,
         is_preload: bool = False,
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         :param max_age: The time, in seconds, that the browser should remember that a site is only to be accessed using HTTPS.
@@ -769,7 +769,7 @@ class StrictTransportSecurity(CustomHeader):
         :param is_preload: Preloading Strict Transport Security. Google maintains an HSTS preload service. By following the guidelines and successfully submitting your domain, browsers will never connect to your domain using an insecure connection.
         :param kwargs:
         """
-        args: Dict = {"max-age": max_age}
+        args: dict = {"max-age": max_age}
 
         args.update(kwargs)
 
@@ -789,7 +789,7 @@ class StrictTransportSecurity(CustomHeader):
         """Verify if Preloading Strict Transport Security should be set."""
         return "preload" in self
 
-    def get_max_age(self) -> Optional[int]:
+    def get_max_age(self) -> int | None:
         """Get the time, in seconds, if set, that the browser should remember."""
         return int(str(self["max-age"])) if self.has("max-age") else None
 
@@ -801,9 +801,9 @@ class UpgradeInsecureRequests(CustomHeader):
     can successfully handle the upgrade-insecure-requests CSP directive.
     """
 
-    __tags__: List[str] = ["request", "response"]
+    __tags__: list[str] = ["request", "response"]
 
-    def __init__(self, **kwargs: Optional[str]):
+    def __init__(self, **kwargs: str | None):
         super().__init__("1", **kwargs)
 
 
@@ -812,13 +812,13 @@ class TransferEncoding(CustomHeader):
     The Transfer-Encoding header specifies the form of encoding used to safely transfer the payload body to the user.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
     __squash__: bool = True
 
     def __init__(
         self,
         method: str,
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         :param method: Either chunked, compress, deflate, gzip, identity or br.
@@ -854,7 +854,7 @@ class ContentEncoding(TransferEncoding):
 
     __tags__ = ["request", "response"]
 
-    def __init__(self, method: str, **kwargs: Optional[str]):
+    def __init__(self, method: str, **kwargs: str | None):
         """
         :param method: Either chunked, compress, deflate, gzip, identity or br.
         :param kwargs:
@@ -872,19 +872,19 @@ class AcceptEncoding(TransferEncoding):
 
     __tags__ = ["request"]
 
-    def __init__(self, method: str, qualifier: float = 1.0, **kwargs: Optional[str]):
+    def __init__(self, method: str, qualifier: float = 1.0, **kwargs: str | None):
         """
         :param method: Either chunked, compress, deflate, gzip, identity, br or a wildcard.
         :param qualifier: Any value used is placed in an order of preference expressed using relative quality value called the weight.
         :param kwargs:
         """
-        args: Dict = {"q": qualifier if qualifier != 1.0 else None}
+        args: dict = {"q": qualifier if qualifier != 1.0 else None}
 
         args.update(kwargs)
 
         super().__init__(method, **args)
 
-    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+    def get_qualifier(self, _default: float | None = 1.0) -> float | None:
         """Return defined qualifier for specified encoding. If not set, output 1.0."""
         return float(str(self["q"])) if self.has("q") else _default
 
@@ -895,9 +895,9 @@ class Dnt(CustomHeader):
     It lets users indicate whether they would prefer privacy rather than personalized content.
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
-    def __init__(self, tracking_consent: bool = False, **kwargs: Optional[str]):
+    def __init__(self, tracking_consent: bool = False, **kwargs: str | None):
         """
         :param tracking_consent: The user prefers to allow tracking on the target site or not.
         :param kwargs:
@@ -911,9 +911,9 @@ class UserAgent(CustomHeader):
     peers identify the application, operating system, vendor, and/or version of the requesting user agent.
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
-    def __init__(self, characteristics: str, **kwargs: Optional[str]):
+    def __init__(self, characteristics: str, **kwargs: str | None):
         super().__init__(characteristics, **kwargs)
 
 
@@ -923,17 +923,17 @@ class AltSvc(CustomHeader):
     the same resource can be reached. An alternative service is defined by a protocol/host/port combination.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
     __squash__: bool = True
 
     def __init__(
         self,
         protocol_id: str,
         alt_authority: str,
-        max_age: Optional[int] = None,
-        versions: Optional[List[str]] = None,
-        do_persist: Optional[bool] = None,
-        **kwargs: Optional[str],
+        max_age: int | None = None,
+        versions: list[str] | None = None,
+        do_persist: bool | None = None,
+        **kwargs: str | None,
     ):
         """
         :param protocol_id: The ALPN protocol identifier. Examples include h2 for HTTP/2 and h3-25 for draft 25 of the HTTP/3 protocol.
@@ -943,7 +943,7 @@ class AltSvc(CustomHeader):
         :param do_persist: Use the parameter to ensures that the entry is not deleted through network configuration changes.
         :param kwargs:
         """
-        args: Dict = {
+        args: dict = {
             protocol_id: alt_authority,
             "ma": max_age,
             "persist": 1 if do_persist else None,
@@ -962,15 +962,15 @@ class AltSvc(CustomHeader):
         """Extract the alternative authority which consists of an optional host override, a colon, and a mandatory port number."""
         return str(self[self.get_protocol_id()])
 
-    def get_max_age(self) -> Optional[int]:
+    def get_max_age(self) -> int | None:
         """Output the number of seconds for which the alternative service is considered fresh. None if undefined."""
         return int(str(self["ma"])) if "ma" in self else None
 
-    def get_versions(self) -> Optional[List[str]]:
+    def get_versions(self) -> list[str] | None:
         """May return, if available, a list of versions of the ALPN protocol identifier."""
         return str(self["v"]).split(",") if "v" in self else None
 
-    def should_persist(self) -> Optional[bool]:
+    def should_persist(self) -> bool | None:
         """Verify if the entry should not be deleted through network configuration changes. None if no indication."""
         return str(self["persist"]) == "1" if "persist" in self else None
 
@@ -981,15 +981,15 @@ class Forwarded(CustomHeader):
     that is altered or lost when a proxy is involved in the path of the request.
     """
 
-    __tags__: List[str] = ["request", "response"]
+    __tags__: list[str] = ["request", "response"]
 
     def __init__(
         self,
         by: str,
         for_: str,
         using_proto: str,
-        host: Optional[str] = None,
-        **kwargs: Optional[str],
+        host: str | None = None,
+        **kwargs: str | None,
     ):
         """
         :param by: The interface where the request came in to the proxy server. Could be an IP address, an obfuscated identifier or "unknown".
@@ -998,7 +998,7 @@ class Forwarded(CustomHeader):
         :param using_proto: Indicates which protocol was used to make the request (typically "http" or "https").
         :param kwargs:
         """
-        args: Dict = {"by": by, "for": for_, "host": host, "proto": using_proto}
+        args: dict = {"by": by, "for": for_, "host": host, "proto": using_proto}
 
         args.update(kwargs)
 
@@ -1012,9 +1012,9 @@ class LastModified(Date):
     to determine if a resource received or stored is the same.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
-    def __init__(self, my_date: Union[datetime, str], **kwargs: Optional[str]):
+    def __init__(self, my_date: datetime | str, **kwargs: str | None):
         """
         :param my_date:
         :param kwargs:
@@ -1031,9 +1031,9 @@ class Referer(CustomHeader):
     Note that referer is actually a misspelling of the word "referrer". See https://en.wikipedia.org/wiki/HTTP_referer
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
-    def __init__(self, url: str, **kwargs: Optional[str]):
+    def __init__(self, url: str, **kwargs: str | None):
         """
         :param url: An absolute or partial address of the previous web page from which a link to the currently requested page was followed. URL fragments not included.
         :param kwargs:
@@ -1047,10 +1047,10 @@ class ReferrerPolicy(CustomHeader):
     (sent via the Referer header) should be included with requests.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
     __squash__ = True
 
-    def __init__(self, policy: str, **kwargs: Optional[str]):
+    def __init__(self, policy: str, **kwargs: str | None):
         """
         :param policy: Either "no-referrer", "no-referrer-when-downgrade", "origin", "origin-when-cross-origin", "same-origin", "strict-origin", "strict-origin-when-cross-origin", "unsafe-url"
         :param kwargs:
@@ -1078,9 +1078,9 @@ class RetryAfter(Date):
     before making a follow-up request.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
-    def __init__(self, delay_or_date: Union[datetime, int], **kwargs: Optional[str]):
+    def __init__(self, delay_or_date: datetime | int, **kwargs: str | None):
         super().__init__(
             delay_or_date
             if isinstance(delay_or_date, datetime)
@@ -1097,17 +1097,17 @@ class AcceptLanguage(CustomHeader):
     """
 
     __squash__: bool = True
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
     def __init__(
-        self, language: str = "*", qualifier: float = 1.0, **kwargs: Optional[str]
+        self, language: str = "*", qualifier: float = 1.0, **kwargs: str | None
     ):
         """
         :param language: A language tag (which is sometimes referred to as a "locale identifier"). This consists of a 2-3 letter base language tag representing the language.
         :param qualifier: Any value placed in an order of preference expressed using a relative quality value called weight.
         :param kwargs:
         """
-        args: Dict = {"q": qualifier if qualifier < 1.0 else None}
+        args: dict = {"q": qualifier if qualifier < 1.0 else None}
 
         args.update(kwargs)
 
@@ -1116,7 +1116,7 @@ class AcceptLanguage(CustomHeader):
             **args,
         )
 
-    def get_qualifier(self, _default: Optional[float] = 1.0) -> Optional[float]:
+    def get_qualifier(self, _default: float | None = 1.0) -> float | None:
         """Return defined qualifier for specified language. If not set, output 1.0."""
         return float(str(self["q"])) if self.has("q") else _default
 
@@ -1128,13 +1128,13 @@ class Etag(CustomHeader):
     resend a full response if the content has not changed.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
     def __init__(
         self,
         etag_value: str,
         is_a_weak_validator: bool = False,
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         :param etag_value: Entity tag uniquely representing the requested resource. ASCII string only. Not quoted.
@@ -1157,9 +1157,9 @@ class XFrameOptions(CustomHeader):
     avoid clickjacking attacks, by ensuring that their content is not embedded into other sites.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
-    def __init__(self, policy: str, **kwargs: Optional[str]):
+    def __init__(self, policy: str, **kwargs: str | None):
         """
         :param policy: Can be either DENY or SAMEORIGIN.
         :param kwargs:
@@ -1182,14 +1182,14 @@ class XXssProtection(CustomHeader):
     Content-Security-Policy that disables the use of inline JavaScript
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
 
     def __init__(
         self,
         enable_filtering: bool = True,
         enable_block_rendering: bool = False,
-        report_uri: Optional[str] = None,
-        **kwargs: Optional[str],
+        report_uri: str | None = None,
+        **kwargs: str | None,
     ):
         """
         :param enable_filtering: Enables XSS filtering (usually default in browsers). If a cross-site scripting attack is detected, the browser will sanitize the page (remove the unsafe parts).
@@ -1201,7 +1201,7 @@ class XXssProtection(CustomHeader):
             super().__init__("0", **kwargs)
             return
 
-        args: Dict = {
+        args: dict = {
             "mode": "block" if enable_block_rendering else None,
             "report": report_uri,
         }
@@ -1218,15 +1218,15 @@ class WwwAuthenticate(CustomHeader):
     Fair-Warning : This header is like none other and is harder to parse. It need a specific case.
     """
 
-    __tags__: List[str] = ["response"]
+    __tags__: list[str] = ["response"]
     __squash__ = True
 
     def __init__(
         self,
-        auth_type: Optional[str] = None,
+        auth_type: str | None = None,
         challenge: str = "realm",
         value: str = "Secured area",
-        **kwargs: Optional[str],
+        **kwargs: str | None,
     ):
         """
         >>> www_authenticate = WwwAuthenticate("Basic", "realm", "Secured area")
@@ -1241,21 +1241,21 @@ class WwwAuthenticate(CustomHeader):
         'Basic'
         """
         super().__init__(
-            f'{auth_type+" " if auth_type else ""}{challenge}="{value}"', **kwargs
+            f'{auth_type + " " if auth_type else ""}{challenge}="{value}"', **kwargs
         )
 
-    def get_auth_type(self) -> Optional[str]:
+    def get_auth_type(self) -> str | None:
         """Retrieve given authentication method if defined."""
-        parts: List[str] = header_content_split(str(self), " ")
+        parts: list[str] = header_content_split(str(self), " ")
 
         if len(parts) >= 1 and "=" not in parts:
             return parts[0]
 
         return None
 
-    def get_challenge(self) -> Tuple[str, str]:
+    def get_challenge(self) -> tuple[str, str]:
         """Output a tuple containing the challenge and the associated value. Raises :ValueError:"""
-        parts: List[str] = header_content_split(str(self), " ")
+        parts: list[str] = header_content_split(str(self), " ")
 
         for part in parts:
             if "=" in part:
@@ -1263,7 +1263,7 @@ class WwwAuthenticate(CustomHeader):
                 return challenge, unquote(value)
 
         raise ValueError(  # pragma: no cover
-            f"WwwAuthenticate header does not seems to contain a valid content. No challenge detected."
+            "WwwAuthenticate header does not seems to contain a valid content. No challenge detected."
         )
 
 
@@ -1276,7 +1276,7 @@ class XDnsPrefetchControl(CustomHeader):
 
     __tags__ = ["response"]
 
-    def __init__(self, enable: bool = True, **kwargs: Optional[str]):
+    def __init__(self, enable: bool = True, **kwargs: str | None):
         """
         :param enable: Toggle the specified behaviour.
         :param kwargs:
@@ -1292,7 +1292,7 @@ class Location(CustomHeader):
 
     __tags__ = ["response"]
 
-    def __init__(self, uri: str, **kwargs: Optional[str]):
+    def __init__(self, uri: str, **kwargs: str | None):
         """
         :param uri: A relative (to the request URL) or absolute URL.
         :param kwargs:
@@ -1307,9 +1307,9 @@ class From(CustomHeader):
     if problems occur on servers, such as if the robot is sending excessive, unwanted, or invalid requests.
     """
 
-    __tags__: List[str] = ["request"]
+    __tags__: list[str] = ["request"]
 
-    def __init__(self, email: str, **kwargs: Optional[str]):
+    def __init__(self, email: str, **kwargs: str | None):
         """
         :param email: A machine-usable email address. See RFC 5322.
         :param kwargs:
@@ -1337,8 +1337,8 @@ class ContentRange(CustomHeader):
         unit: str,
         start: int,
         end: int,
-        size: Union[str, int],
-        **kwargs: Optional[str],
+        size: str | int,
+        **kwargs: str | None,
     ):
         """
         :param unit: The unit in which ranges is specified. This is usually bytes.
@@ -1356,7 +1356,7 @@ class ContentRange(CustomHeader):
         """
         super().__init__(f"{unit} {start}-{end}/{size}", **kwargs)
 
-    def unpack(self) -> Tuple[str, str, str, str]:
+    def unpack(self) -> tuple[str, str, str, str]:
         """Provide a basic way to parse ContentRange format."""
         return findall(
             r"^([0-9a-zA-Z*]+) ([0-9a-zA-Z*]+)-([0-9a-zA-Z*]+)/([0-9a-zA-Z*]+)$",
@@ -1375,7 +1375,7 @@ class ContentRange(CustomHeader):
         """Get the end of the requested range."""
         return int(self.unpack()[2])
 
-    def get_size(self) -> Union[str, int]:
+    def get_size(self) -> str | int:
         """Get the total size of the document (or '*' if unknown)."""
         size: str = self.unpack()[3]
         return int(size) if size.isdigit() else size
@@ -1393,12 +1393,12 @@ class CacheControl(CustomHeader):
 
     def __init__(
         self,
-        directive: Optional[str] = None,
-        max_age: Optional[int] = None,
-        max_stale: Optional[int] = None,
-        min_fresh: Optional[int] = None,
-        s_maxage: Optional[int] = None,
-        **kwargs: Optional[str],
+        directive: str | None = None,
+        max_age: int | None = None,
+        max_stale: int | None = None,
+        min_fresh: int | None = None,
+        s_maxage: int | None = None,
+        **kwargs: str | None,
     ):
         """
         Pass only one parameter per CacheControl instance.
@@ -1420,7 +1420,7 @@ class CacheControl(CustomHeader):
                 "You should only pass one parameter to a single CacheControl instance."
             )
 
-        args: Dict = {
+        args: dict = {
             "max-age": max_age,
             "max-stale": max_stale,
             "min-fresh": min_fresh,
@@ -1440,9 +1440,7 @@ class Expires(Date):
 
     __tags__ = ["response"]
 
-    def __init__(
-        self, datetime_or_custom: Union[datetime, str], **kwargs: Optional[str]
-    ):
+    def __init__(self, datetime_or_custom: datetime | str, **kwargs: str | None):
         super().__init__(datetime_or_custom, **kwargs)
 
 
@@ -1453,7 +1451,7 @@ class IfModifiedSince(Date):
 
     __tags__ = ["request"]
 
-    def __init__(self, dt: Union[datetime, str], **kwargs: Optional[str]):
+    def __init__(self, dt: datetime | str, **kwargs: str | None):
         """
         :param dt:
         :param kwargs:
@@ -1466,7 +1464,7 @@ class IfUnmodifiedSince(Date):
     The If-Unmodified-Since request HTTP header makes the request conditional
     """
 
-    def __init__(self, dt: Union[datetime, str], **kwargs: Optional[str]):
+    def __init__(self, dt: datetime | str, **kwargs: str | None):
         """
         :param dt:
         :param kwargs:
@@ -1485,9 +1483,9 @@ class KeepAlive(CustomHeader):
 
     def __init__(
         self,
-        timeout: Optional[int] = None,
-        max_: Optional[int] = None,
-        **kwargs: Optional[str],
+        timeout: int | None = None,
+        max_: int | None = None,
+        **kwargs: str | None,
     ):
         """
         :param timeout: indicating the minimum amount of time an idle connection has to be kept opened (in seconds).
@@ -1499,7 +1497,7 @@ class KeepAlive(CustomHeader):
                 "Can only provide one parameter per KeepAlive instance, either timeout or max, not both."
             )
 
-        args: Dict = {"timeout": timeout, "max": max_}
+        args: dict = {"timeout": timeout, "max": max_}
 
         args.update(kwargs)
 
@@ -1516,7 +1514,7 @@ class IfMatch(CustomHeader):
     __squash__ = True
     __tags__ = ["request"]
 
-    def __init__(self, etag_value: str, **kwargs: Optional[str]):
+    def __init__(self, etag_value: str, **kwargs: str | None):
         """
         :param etag_value: Entity tags uniquely representing the requested resources. They are a string of ASCII characters placed between double quotes (like "675af34563dc-tr34").
         :param kwargs:
@@ -1532,7 +1530,7 @@ class IfNoneMatch(IfMatch):
     ETag doesn't match any of the values listed.
     """
 
-    def __init__(self, etag_value: str, **kwargs: Optional[str]):
+    def __init__(self, etag_value: str, **kwargs: str | None):
         super().__init__(etag_value, **kwargs)
 
 
@@ -1542,7 +1540,7 @@ class Server(CustomHeader):
 
     __tags__ = ["response"]
 
-    def __init__(self, product: str, **kwargs: Optional[str]):
+    def __init__(self, product: str, **kwargs: str | None):
         """
         :param product: The name of the software or product that handled the request. Usually in a format similar to User-Agent.
         :param kwargs:
@@ -1557,7 +1555,7 @@ class Vary(CustomHeader):
     __squash__ = True
     __tags__ = ["response"]
 
-    def __init__(self, header_name: str, **kwargs: Optional[str]):
+    def __init__(self, header_name: str, **kwargs: str | None):
         """
         :param header_name: An header name to take into account when deciding whether or not a cached response can be used.
         :param kwargs:

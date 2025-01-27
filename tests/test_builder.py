@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 from datetime import datetime, timezone
 from email import utils
@@ -19,7 +21,7 @@ from kiss_headers import (
 class MyBuilderTestCase(unittest.TestCase):
     def test_custom_header_expect(self):
         with self.assertRaises(NotImplementedError):
-            k = CustomHeader("Should absolutely not work !")
+            k = CustomHeader("Should absolutely not work !")  # noqa
 
     def test_content_type(self):
         self.assertEqual(
@@ -32,9 +34,7 @@ class MyBuilderTestCase(unittest.TestCase):
 
         self.assertEqual(
             repr(SetCookie("MACHINE_IDENTIFIANT", "ABCDEFGHI", expires=dt)),
-            'Set-Cookie: MACHINE_IDENTIFIANT="ABCDEFGHI"; expires="{dt}"; HttpOnly'.format(
-                dt=utils.format_datetime(dt.astimezone(timezone.utc), usegmt=True)
-            ),
+            f'Set-Cookie: MACHINE_IDENTIFIANT="ABCDEFGHI"; expires="{utils.format_datetime(dt.astimezone(timezone.utc), usegmt=True)}"; HttpOnly',
         )
 
     def test_content_length(self):

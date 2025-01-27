@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 from email.header import decode_header
 from json import dumps
 from re import findall, search, sub
-from typing import Any, Iterable, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Iterable
 
-RESERVED_KEYWORD: Set[str] = {
+RESERVED_KEYWORD: set[str] = {
     "and_",
     "assert_",
     "in_",
@@ -35,7 +37,7 @@ def normalize_str(string: str) -> str:
     return string.lower().replace("-", "_")
 
 
-def normalize_list(strings: List[str]) -> List[str]:
+def normalize_list(strings: list[str]) -> list[str]:
     """Normalize a list of string by applying fn normalize_str over each element."""
     return list(map(normalize_str, strings))
 
@@ -68,7 +70,7 @@ def unpack_protected_keyword(name: str) -> str:
     return name
 
 
-def extract_class_name(type_: Type) -> Optional[str]:
+def extract_class_name(type_: type) -> str | None:
     """
     Typically extract a class name from a Type.
     """
@@ -76,7 +78,7 @@ def extract_class_name(type_: Type) -> Optional[str]:
     return r[0] if r else None
 
 
-def header_content_split(string: str, delimiter: str) -> List[str]:
+def header_content_split(string: str, delimiter: str) -> list[str]:
     """
     Take a string and split it according to the passed delimiter.
     It will ignore delimiter if inside between double quote, inside a value, or in parenthesis.
@@ -101,7 +103,7 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     in_value: bool = False
     is_on_a_day: bool = False
 
-    result: List[str] = [""]
+    result: list[str] = [""]
 
     for letter, index in zip(string, range(0, len(string))):
         if letter == '"':
@@ -150,7 +152,7 @@ def header_content_split(string: str, delimiter: str) -> List[str]:
     return result
 
 
-def class_to_header_name(type_: Type) -> str:
+def class_to_header_name(type_: type) -> str:
     """
     Take a type and infer its header name.
     >>> from kiss_headers.builder import ContentType, XContentTypeOptions, BasicAuthorization
@@ -172,7 +174,7 @@ def class_to_header_name(type_: Type) -> str:
     if class_raw_name.startswith("_"):
         class_raw_name = class_raw_name[1:]
 
-    header_name: str = str()
+    header_name: str = ""
 
     for letter in class_raw_name:
         if letter.isupper() and header_name != "":
@@ -183,7 +185,7 @@ def class_to_header_name(type_: Type) -> str:
     return header_name
 
 
-def header_name_to_class(name: str, root_type: Type) -> Type:
+def header_name_to_class(name: str, root_type: type) -> type:
     """
     The opposite of class_to_header_name function. Will raise TypeError if no corresponding entry is found.
     Do it recursively from the root type.
@@ -216,9 +218,7 @@ def header_name_to_class(name: str, root_type: Type) -> Type:
             except TypeError:
                 continue
 
-    raise TypeError(
-        "Cannot find a class matching header named '{name}'.".format(name=name)
-    )
+    raise TypeError(f"Cannot find a class matching header named '{name}'.")
 
 
 def prettify_header_name(name: str) -> str:
@@ -236,17 +236,17 @@ def prettify_header_name(name: str) -> str:
     return "-".join([el.capitalize() for el in name.replace("_", "-").split("-")])
 
 
-def decode_partials(items: Iterable[Tuple[str, Any]]) -> List[Tuple[str, str]]:
+def decode_partials(items: Iterable[tuple[str, Any]]) -> list[tuple[str, str]]:
     """
     This function takes a list of tuples, representing headers by key, value. Where value is bytes or string containing
     (RFC 2047 encoded) partials fragments like the following :
     >>> decode_partials([("Subject", "=?iso-8859-1?q?p=F6stal?=")])
     [('Subject', 'pöstal')]
     """
-    revised_items: List[Tuple[str, str]] = list()
+    revised_items: list[tuple[str, str]] = list()
 
     for head, content in items:
-        revised_content: str = str()
+        revised_content: str = ""
 
         for partial, partial_encoding in decode_header(content):
             if isinstance(partial, str):
@@ -322,7 +322,7 @@ def header_strip(content: str, elem: str) -> str:
     >>> header_strip("text/html; charset=UTF-8;    format=flowed", "charset=UTF-8")
     'text/html; format=flowed'
     """
-    next_semi_colon_index: Optional[int] = None
+    next_semi_colon_index: int | None = None
 
     try:
         elem_index: int = content.index(elem)
@@ -390,7 +390,7 @@ def is_legal_header_name(name: str) -> bool:
     )
 
 
-def extract_comments(content: str) -> List[str]:
+def extract_comments(content: str) -> list[str]:
     """
     Extract parts of content that are considered as comments. Between parenthesis.
     >>> extract_comments("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0 (hello) llll (abc)")
@@ -408,7 +408,7 @@ def unfold(content: str) -> str:
     return sub(r"\r\n[ ]+", " ", content)
 
 
-def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
+def extract_encoded_headers(payload: bytes) -> tuple[str, bytes]:
     """This function's purpose is to extract lines that can be decoded using the UTF-8 decoder.
     >>> extract_encoded_headers("Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n\\r\\n".encode("utf-8"))
     ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'')
@@ -416,7 +416,7 @@ def extract_encoded_headers(payload: bytes) -> Tuple[str, bytes]:
     ('Host: developer.mozilla.org\\r\\nX-Hello-World: 死の漢字\\r\\n', b'That IS totally random.')
     """
     result: str = ""
-    lines: List[bytes] = payload.splitlines()
+    lines: list[bytes] = payload.splitlines()
     index: int = 0
 
     for line, index in zip(lines, range(0, len(lines))):
@@ -465,8 +465,8 @@ def is_content_json_object(content: str) -> bool:
 
 
 def transform_possible_encoded(
-    headers: Iterable[Tuple[Union[str, bytes], Union[str, bytes]]]
-) -> Iterable[Tuple[str, str]]:
+    headers: Iterable[tuple[str | bytes, str | bytes]],
+) -> Iterable[tuple[str, str]]:
     decoded = []
 
     for k, v in headers:

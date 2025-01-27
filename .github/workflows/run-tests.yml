@@ -9,28 +9,61 @@ on:
 
 jobs:
   tests:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, "3.10", "3.11", "3.12"]
-        os: [ubuntu-latest]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
     - name: Install dependencies
-      run: |
-        pip install -U pip build wheel
-        pip install -r dev-requirements.txt
-    - name: Install the package
-      run: |
-        pip install .
+      run: pip install nox
     - name: Run tests
-      run: |
-        pytest
-    - uses: codecov/codecov-action@v1
+      run: nox -s test-${{ matrix.python-version }}
+    - name: "Upload artifact"
+      uses: "actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808"
+      with:
+        name: coverage-data-${{ matrix.python-version }}
+        path: ".coverage.*"
+        if-no-files-found: error
+
+  coverage:
+    if: always()
+    runs-on: "ubuntu-latest"
+    needs: tests
+    steps:
+      - name: "Checkout repository"
+        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+
+      - name: "Setup Python"
+        uses: "actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b"
+        with:
+          python-version: "3.x"
+
+      - name: "Install coverage"
+        run: "python -m pip install --upgrade coverage"
+
+      - name: "Download artifact"
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          pattern: coverage-data*
+          merge-multiple: true
+
+      - name: "Combine & check coverage"
+        run: |
+          python -m coverage combine
+          python -m coverage html --skip-covered --skip-empty
+          python -m coverage report --ignore-errors --show-missing --fail-under=77
+
+      - name: "Upload report"
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+        with:
+          name: coverage-report
+          path: htmlcov

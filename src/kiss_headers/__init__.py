@@ -36,6 +36,8 @@ at <https://github.com/jawah/kiss-headers>.
 :license: MIT, see LICENSE for more details.
 """
 
+from __future__ import annotations
+
 from .api import dumps, explain, get_polymorphic, parse_it
 from .builder import (
     Accept,
