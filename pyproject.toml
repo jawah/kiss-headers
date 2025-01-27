@@ -10,10 +10,10 @@ license-files = { paths = ["LICENSE"] }
 license = "MIT"
 keywords = ["headers", "http", "mail", "text", "imap", "header", "https", "imap4"]
 authors = [
-  {name = "Ahmed R. TAHRI", email="ahmed.tahri@cloudnursery.dev"},
+  {name = "Ahmed R. TAHRI", email="tahri.ahmed@proton.me"},
 ]
 maintainers = [
-  {name = "Ahmed R. TAHRI", email="ahmed.tahri@cloudnursery.dev"},
+  {name = "Ahmed R. TAHRI", email="tahri.ahmed@proton.me"},
 ]
 classifiers = [
     "License :: OSI Approved :: MIT License",
@@ -32,6 +32,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Utilities",
     "Programming Language :: Python :: Implementation :: PyPy",
