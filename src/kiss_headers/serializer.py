@@ -1,19 +1,19 @@
-from typing import Dict, List, Optional, Union
+from __future__ import annotations
 
 from .models import Header, Headers
 
 
-def encode(headers: Headers) -> Dict[str, List[Dict]]:
+def encode(headers: Headers) -> dict[str, list[dict]]:
     """
     Provide an opinionated but reliable way to encode headers to dict for serialization purposes.
     """
-    result: Dict[str, List[Dict]] = dict()
+    result: dict[str, list[dict]] = dict()
 
     for header in headers:
         if header.name not in result:
             result[header.name] = list()
 
-        encoded_header: Dict[str, Union[Optional[str], List[str]]] = dict()
+        encoded_header: dict[str, str | None | list[str]] = dict()
 
         for attribute, value in header:
             if attribute not in encoded_header:
@@ -32,7 +32,7 @@ def encode(headers: Headers) -> Dict[str, List[Dict]]:
     return result
 
 
-def decode(encoded_headers: Dict[str, List[Dict]]) -> Headers:
+def decode(encoded_headers: dict[str, list[dict]]) -> Headers:
     """
     Decode any previously encoded headers to a Headers object.
     """

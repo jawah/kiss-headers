@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 
 from requests import Response, get
@@ -23,9 +25,7 @@ strict-transport-security: max-age=31536000
 thanos: gem=power; gem=mind; gem=soul; gem=space; gem=time; gems; gem
 the-one-ring: One ring to rule them all, one ring to find them, One ring to bring them all and in the darkness bind them
 x-frame-options: SAMEORIGIN
-x-xss-protection: 0""".replace(
-    "\n", "\r\n"
-)
+x-xss-protection: 0""".replace("\n", "\r\n")
 
 
 class SerializerTest(unittest.TestCase):

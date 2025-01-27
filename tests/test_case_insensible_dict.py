@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 
 from kiss_headers.structures import CaseInsensitiveDict

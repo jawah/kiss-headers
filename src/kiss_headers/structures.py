@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 from collections import OrderedDict
 from collections.abc import Mapping, MutableMapping
 from typing import (
     Any,
     Iterator,
     List,
-    MutableMapping as MutableMappingType,
     Optional,
     Tuple,
+)
+from typing import (
+    MutableMapping as MutableMappingType,
 )
 
 from kiss_headers.utils import normalize_str
@@ -44,7 +48,7 @@ class CaseInsensitiveDict(MutableMapping):
     behavior is undefined.
     """
 
-    def __init__(self, data: Optional[Mapping] = None, **kwargs: Any):
+    def __init__(self, data: Mapping | None = None, **kwargs: Any):
         self._store: OrderedDict = OrderedDict()
         if data is None:
             data = {}
@@ -61,13 +65,13 @@ class CaseInsensitiveDict(MutableMapping):
     def __delitem__(self, key: str) -> None:
         del self._store[normalize_str(key)]
 
-    def __iter__(self) -> Iterator[Tuple[str, Any]]:
+    def __iter__(self) -> Iterator[tuple[str, Any]]:
         return (casedkey for casedkey, mappedvalue in self._store.values())
 
     def __len__(self) -> int:
         return len(self._store)
 
-    def lower_items(self) -> Iterator[Tuple[str, Any]]:
+    def lower_items(self) -> Iterator[tuple[str, Any]]:
         """Like iteritems(), but with all lowercase keys."""
         return ((lowerkey, keyval[1]) for (lowerkey, keyval) in self._store.items())
 
@@ -80,7 +84,7 @@ class CaseInsensitiveDict(MutableMapping):
         return dict(self.lower_items()) == dict(other.lower_items())
 
     # Copy is required
-    def copy(self) -> "CaseInsensitiveDict":
+    def copy(self) -> CaseInsensitiveDict:
         return CaseInsensitiveDict(dict(self._store.values()))
 
     def __repr__(self) -> str:

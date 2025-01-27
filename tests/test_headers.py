@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 
 from kiss_headers import Header
@@ -20,7 +22,7 @@ class MyKissHeaderTest(unittest.TestCase):
         )
 
         with self.assertRaises(NotImplementedError):
-            k = header == 1
+            k = header == 1  # noqa
 
     def test_simple_eq(self):
         self.assertEqual(

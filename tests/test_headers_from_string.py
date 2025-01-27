@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import unittest
 
 from kiss_headers import Header, Headers, lock_output_type, parse_it
@@ -20,9 +22,7 @@ set-cookie: CONSENT=WP.284b10; expires=Fri, 01-Jan-2038 00:00:00 GMT; path=/; do
 status: 200
 strict-transport-security: max-age=31536000
 x-frame-options: SAMEORIGIN
-x-xss-protection: 0""".replace(
-    "\n", "\r\n"
-)
+x-xss-protection: 0""".replace("\n", "\r\n")
 
 RAW_HEADERS_MOZILLA = """GET /home.html HTTP/1.1
 Host: developer.mozilla.org
@@ -35,13 +35,11 @@ Connection: keep-alive
 Upgrade-Insecure-Requests: 1
 If-Modified-Since: Mon, 18 Jul 2016 02:36:04 GMT
 If-None-Match: "c561c68d0ba92bbeb8b0fff2a9199f722e3a621a"
-Cache-Control: max-age=0""".replace(
-    "\n", "\r\n"
-)
+Cache-Control: max-age=0""".replace("\n", "\r\n")
 
 RAW_HEADERS_WITH_CONNECT = """HTTP/1.1 200 Connection established
 
-HTTP/2 200 
+HTTP/2 200
 date: Tue, 28 Sep 2021 13:45:34 GMT
 content-type: application/epub+zip
 content-length: 3706401
@@ -68,9 +66,7 @@ cache-control: public, max-age=7200
 accept-ranges: bytes
 expect-ct: max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
 server: cloudflare
-cf-ray: 695d69b549330686-LHR""".replace(
-    "\n", "\r\n"
-)
+cf-ray: 695d69b549330686-LHR""".replace("\n", "\r\n")
 
 
 class MyKissHeadersFromStringTest(unittest.TestCase):
