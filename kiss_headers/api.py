@@ -58,7 +58,7 @@ def parse_it(raw_headers: Any) -> Headers:
         r = extract_class_name(type(raw_headers))
 
         if r:
-            if r in ["requests.models.Response", "niquests.models.Response"]:
+            if r in ["requests.models.Response", "niquests.models.Response", "niquests.models.AsyncResponse"]:
                 headers = []
                 for header_name in raw_headers.raw.headers:
                     for header_content in raw_headers.raw.headers.getlist(header_name):
@@ -66,6 +66,9 @@ def parse_it(raw_headers: Any) -> Headers:
             elif r in [
                 "httpx._models.Response",
                 "urllib3.response.HTTPResponse",
+                "urllib3._async.response.AsyncHTTPResponse",
+                "urllib3_future.response.HTTPResponse",
+                "urllib3_future._async.response.AsyncHTTPResponse",
             ]:  # pragma: no cover
                 headers = raw_headers.headers.items()
 
