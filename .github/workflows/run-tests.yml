@@ -17,7 +17,7 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
     steps:
-    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
+    - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v6
       with:
@@ -41,7 +41,7 @@ jobs:
     needs: tests
     steps:
       - name: "Checkout repository"
-        uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
+        uses: "actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493"
 
       - name: "Setup Python"
         uses: "actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234"
