@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
@@ -44,7 +44,7 @@ jobs:
         uses: "actions/checkout@d632683dd7b4114ad314bca15554477dd762a938"
 
       - name: "Setup Python"
-        uses: "actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b"
+        uses: "actions/setup-python@2e3e4b15a884dc73a63f962bff250a855150a234"
         with:
           python-version: "3.x"
 
