@@ -20,7 +20,7 @@ headers.to_dict()  # output: {'Content-Type': 'application/json', 'Allow': 'POST
 
 ### Setup
 
-If you wish to run bellow examples, first do :
+If you wish to run below examples, first do :
 
 ```python
 from kiss_headers import parse_it

@@ -23,7 +23,7 @@ In most headers, the semi-colon `;` character is used as a separator. But you ca
 Here's how I understand those two separators.
 
 - The single comma indicate that their is multiple entries for the same headers.
-- The semi-colon separate members inside the same entry and therefor cannot be interpreted separately.
+- The semi-colon separate members inside the same entry and therefore cannot be interpreted separately.
 
 Writing `Accept: text/html, application/json;q=0.8` is another way to write :
 

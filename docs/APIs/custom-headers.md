@@ -865,7 +865,7 @@ the browser blocks no-cors cross-origin/cross-site requests to the given resourc
 This class is a helper to create ready-to-use Header object with creation assistance.
 Should NOT be instantiated.
 Use this class as a direct parent for creating ready-to-use header object. Inspire yourself with already defined
-class bellow this one.
+class below this one.
 
 :param initial_content: Initial content of the Header if any.
 :param kwargs: Provided args. Any key that associate a None value are just ignored.

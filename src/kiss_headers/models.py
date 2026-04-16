@@ -1383,7 +1383,7 @@ class Attributes:
                     self._bag[attr][1][cur] -= 1
 
     def __contains__(self, item: str | dict[str, list[str] | str]) -> bool:
-        """Verify if a member/attribute/value is in an Attributes instance. See examples bellow :
+        """Verify if a member/attribute/value is in an Attributes instance. See examples below :
         >>> attributes = Attributes(["application/xml", "q=0.9", "q=0.1"])
         >>> "q" in attributes
         True

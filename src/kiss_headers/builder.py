@@ -26,7 +26,7 @@ class CustomHeader(Header):
     This class is a helper to create ready-to-use Header object with creation assistance.
     Should NOT be instantiated.
     Use this class as a direct parent for creating ready-to-use header object. Inspire yourself with already defined
-    class bellow this one.
+    class below this one.
     """
 
     __squash__: bool = False  # This value indicate whenever the representation of multiple entries should be squashed into one content.

@@ -285,7 +285,7 @@ unfold("eqHS2AQD+hfNNlTiLej73CiBUGVQifX4watAaxUkdjGeH578i7n3Wwcdw2nLz+U0bH\n    
 > `def unpack_protected_keyword(name: str) -> str`
 
 
-By choice this project aim to allow developper to access header or attribute in header by using the property
+By choice this project aim to allow developer to access header or attribute in header by using the property
 notation. Some keyword are protected by the language itself. So :
 When starting by a number, prepend a underscore to it. When using a protected keyword, append a underscore to it.
 ```python

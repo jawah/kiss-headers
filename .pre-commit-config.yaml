@@ -2,23 +2,29 @@ exclude: 'docs/'
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
       - id: trailing-whitespace
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.2
+    hooks:
+      - id: codespell # See pyproject.toml for args
+        additional_dependencies:
+          - tomli
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.9.1
+    rev: v0.15.10
     hooks:
       # Run the linter.
-      - id: ruff
+      - id: ruff-check
         args: [ --fix, --target-version=py37 ]
       # Run the formatter.
       - id: ruff-format
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.14.1
+    rev: v1.20.1
     hooks:
       - id: mypy
         args: [ --check-untyped-defs ]

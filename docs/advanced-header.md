@@ -16,7 +16,7 @@ dict(header)  # output: {'text/html': None, 'charset': 'UTF-8'}
 
 ### Setup
 
-If you wish to run bellow examples, first do :
+If you wish to run below examples, first do :
 
 ```python
 from kiss_headers import parse_it

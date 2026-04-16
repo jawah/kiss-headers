@@ -198,7 +198,7 @@ json_repr: str = dumps(
     indent=4
 )
 
-print(json_repr)  # See the result bellow
+print(json_repr)  # See the result below
 
 # Additionally, how to parse the JSON repr to Headers again
 headers = parse_it(json_repr)  # Yes! that easy!
