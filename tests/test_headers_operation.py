@@ -2,10 +2,33 @@ from __future__ import annotations
 
 import unittest
 
-from kiss_headers import Header, parse_it
+from kiss_headers import Header, Headers, parse_it
 
 
 class KissHeadersOperationTest(unittest.TestCase):
+    def test_eq_with_other_object(self):
+        class HasTestHeader:
+            def __eq__(self, other):
+                return other.get("X-Test") == "1"
+
+        expected = HasTestHeader()
+        for value, matches in [("1", True), ("2", False)]:
+            with self.subTest(value=value):
+                headers = Headers(Header("X-Test", value), Header("Extra", "2"))
+                self.assertIs(headers == expected, matches)
+                self.assertIs(expected == headers, matches)
+                self.assertIs(headers != expected, not matches)
+                self.assertIs(expected != headers, not matches)
+
+    def test_eq_with_unknown_type(self):
+        headers = Headers(Header("X-Test", "1"))
+        other = object()
+
+        self.assertIs(headers == other, False)
+        self.assertIs(other == headers, False)
+        self.assertIs(headers != other, True)
+        self.assertIs(other != headers, True)
+
     def test_isub(self):
         headers = parse_it(
             """X-My-Testing: 1\nX-My-Second-Test: 1\nX-My-Second-Test: Precisely\nReceived: outpost\nReceived: outpost"""
