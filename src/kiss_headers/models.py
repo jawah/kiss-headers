@@ -843,9 +843,7 @@ class Headers:
         Essentially compare if one Headers instance equal to another. The order does not matter and instance length matter.
         """
         if not isinstance(other, Headers):
-            raise NotImplementedError(
-                f"Cannot compare type {type(other)} to an Header. Use str or Header."
-            )
+            return NotImplemented
         if len(other) != len(self):
             return False
 
